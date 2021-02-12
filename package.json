@@ -1,0 +1,26 @@
+{
+  "name": "lms-minimall",
+  "version": "1.0.0",
+  "description": "A minimal template (mall) for Node.js applications",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "node src/app.js | pino-pretty",
+    "format": "prettier --write .",
+    "test:lint": "prettier --check .",
+    "test": "npm run test:lint",
+    "build": "npm test"
+  },
+  "author": "KTH Royal Institute of Technology",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "pino-pretty": "^4.5.0",
+    "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "pino": "^6.11.1",
+    "skog": "^2.0.1"
+  }
+}
