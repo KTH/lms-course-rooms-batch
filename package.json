@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
     "pino": "^6.11.1",
     "skog": "^2.0.1"
   }
