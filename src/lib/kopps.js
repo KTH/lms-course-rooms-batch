@@ -59,6 +59,8 @@ module.exports = {
           en: c.course_name_en,
         },
         startTerm: c.first_yearsemester,
+        // FIXME: Is offered_semesters guaranteed to be sorted?
+        startDate: c.offered_semesters[0].start_date,
       }));
   },
 };
