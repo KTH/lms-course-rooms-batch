@@ -49,7 +49,7 @@ module.exports = {
         // dump: util.inspect(c),
         courseCode: c.course_code,
         firstYearsemester: c.first_yearsemester,
-        offeringId: c.offering_id,
+        roundId: c.offering_id,
         shortName: c.short_name,
         language: c.language,
         schoolCode: c.school_code,
