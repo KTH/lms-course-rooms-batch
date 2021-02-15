@@ -43,6 +43,7 @@ module.exports = {
   deleteFile,
   flatten,
   createSisCourseId,
+  createLongName,
 
   buildCanvasCourseObjectV2(courseRound) {
     // new for course from v2

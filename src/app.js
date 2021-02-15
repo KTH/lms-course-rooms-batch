@@ -20,13 +20,14 @@ function createCsvSerializer(name) {
 }
 
 function createRoom(round) {
+  const accountId = "FIXME";
   return {
     course_id: createSisCourseId(round),
     short_name: round.shortName,
     long_name: createLongName(round),
     start_date: round.startDate,
-    account_id: account_id,
-    integration_id: round.ladokId,
+    account_id: accountId,
+    integration_id: round.ladokUid,
     status: "active",
   };
 }
@@ -41,11 +42,11 @@ async function start() {
   log.info(`Creating files in ${dir}`);
 
   for (const period of futurePeriods) {
-    log.info(`Hanling ${period}`);
+    log.info(`Handling ${period}`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
 
     for (round of await getCourseRounds(period)) {
-      log.info(`Handling ${round}`);
+      // log.info(round.dump);
       coursesCsv.write(createRoom(round));
     }
     //addAntagna()

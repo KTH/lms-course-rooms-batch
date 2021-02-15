@@ -40,20 +40,25 @@ module.exports = {
     }
 
     log.debug(`KOPPS: cleanCourseRounds: ${cleanCourseRounds.length}`);
+    // const util = require('util');
 
     return cleanCourseRounds
       .filter((c) => c.state === "Godkänt" || c.state === "Fullsatt")
       .filter((c) => c.first_period === period.toKoppsPeriodString())
       .map((c) => ({
-        course_code: c.course_code,
-        first_yearsemester: c.first_yearsemester,
-        offering_id: c.offering_id,
+        // dump: util.inspect(c),
+        courseCode: c.course_code,
+        firstYearsemester: c.first_yearsemester,
+        offeringId: c.offering_id,
         shortName: c.short_name,
         language: c.language,
         schoolCode: c.school_code,
         ladokUid: c.course_round_applications[0].ladok_uid,
-        courseName: c.course_name,
-        courseNameEn: c.course_name_en,
+        title: {
+          sv: c.course_name,
+          en: c.course_name_en,
+        },
+        startTerm: c.first_yearsemester,
       }));
   },
 };
