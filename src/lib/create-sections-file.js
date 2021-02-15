@@ -1,14 +1,14 @@
-const { csvFile } = require('kth-canvas-utilities')
-const { deleteFile } = require('./utils')
+const { csvFile } = require("kth-canvas-utilities");
+const { deleteFile } = require("./utils");
 
 module.exports = async function ({ canvasCourses, term, year }) {
-  const fileName = `${process.env.CSV_DIR}sections-${year}-${term}.csv`
+  const fileName = `${process.env.CSV_DIR}sections-${year}-${term}.csv`;
 
-  await deleteFile(fileName)
+  await deleteFile(fileName);
   await csvFile.writeLine(
-    ['section_id', 'course_id', 'integration_id', 'name', 'status'],
+    ["section_id", "course_id", "integration_id", "name", "status"],
     fileName
-  )
+  );
 
   for (const canvasCourse of canvasCourses) {
     await csvFile.writeLine(
@@ -17,11 +17,11 @@ module.exports = async function ({ canvasCourses, term, year }) {
         canvasCourse.sisCourseId,
         canvasCourse.integrationId,
         `Section for the course ${canvasCourse.longName}`,
-        'active'
+        "active",
       ],
       fileName
-    )
+    );
   }
 
-  return fileName
-}
+  return fileName;
+};
