@@ -68,6 +68,7 @@ async function start() {
 
     for (round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
+      log.info(`Getting enrollments for ${round.sisId}`);
       // log.info(round.dump);
 
       coursesCsv.write(createRoom(round));

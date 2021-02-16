@@ -75,6 +75,40 @@ async function searchGroup(filter) {
   return members;
 }
 
+/*
+ * For string array with ldap keys for users, fetch every user object
+ */
+async function getUsersForMembers(members) {
+  const usersForMembers = [];
+  for (const member of members) {
+    const filter = new EqualityFilter({
+      attribute: "distinguishedName",
+      value: member,
+    });
+    const { searchEntries } = await ldapClient.search(
+      "OU=UG,DC=ug,DC=kth,DC=se",
+      {
+        scope: "sub",
+        filter,
+        timeLimit: 10,
+        attributes: ["ugKthid", "name"],
+        paged: {
+          pageSize: 1000,
+        },
+      }
+    );
+    usersForMembers.push(...searchEntries);
+  }
+  return usersForMembers;
+}
+
+async function getExaminatorMembers(courseCode) {
+  const filter = createGroupFilter(
+    `edu.courses.${courseCode.substring(0, 2)}.${courseCode}.examiner`
+  );
+  return searchGroup(filter, ldapClient);
+}
+
 async function loadEnrollments(round) {
   const result = [];
   const ugRoleCanvasRole = [
@@ -93,9 +127,9 @@ async function loadEnrollments(round) {
       }.${roundId}.${type}`
     );
     const members = await searchGroup(filter);
-    const users = await getUsersForMembers(members, ldapClient);
+    const users = await getUsersForMembers(members);
 
-    result.append(
+    result.push(
       ...users.map((user) => ({
         section_id: round.sisId,
         user_id: user.ugKthid,
@@ -105,22 +139,23 @@ async function loadEnrollments(round) {
     );
   }
 
+  // examinators, role_id: 10
+  const examinatorMembers = await getExaminatorMembers(round.courseCode);
+  const examinators = await getUsersForMembers(examinatorMembers);
+
+  result.push(
+    ...examinators.map((user) => ({
+      section_id: round.sisId,
+      user_id: user.ugKthid,
+      role_id: 10,
+      status: "active",
+    }))
+  );
+
+  console.log(result);
+
   return result;
   ///////////////////
-
-  // examinators, role_id: 10
-  const examinatorMembers = await getExaminatorMembers(
-    round.courseCode,
-    ldapClient
-  );
-  const examinators = await getUsersForMembers(examinatorMembers, ldapClient);
-  for (const user of examinators) {
-    await csvFile.writeLine(
-      [round.sisId, user.ugKthid, 10, "active"],
-      fileName
-    );
-  }
-
   // Registered students, role_id: 3
   try {
     let lengthOfInitials;
