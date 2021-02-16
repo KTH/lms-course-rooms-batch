@@ -10,6 +10,7 @@ const {
   createLongName,
   createSisCourseId,
   createAccountId,
+  createStartDate,
 } = require("./lib/utils");
 
 log.init.pino({
@@ -28,7 +29,7 @@ function createRoom(round) {
     course_id: createSisCourseId(round),
     short_name: createSisCourseId(round),
     long_name: createLongName(round),
-    start_date: round.startDate,
+    start_date: createStartDate(round),
     account_id: createAccountId(round),
     integration_id: round.ladokUid,
     status: "active",

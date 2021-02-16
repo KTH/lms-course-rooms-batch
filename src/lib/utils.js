@@ -43,12 +43,21 @@ function createAccountId(round) {
   return `${round.schoolCode} - Imported course rounds`;
 }
 
+function createStartDate(round) {
+  const startDate = round.offeredSemesters.find(
+    (o) => o.semester === round.firstYearsemester
+  ).startDate;
+
+  return `${startDate}T06:00:00Z`;
+}
+
 module.exports = {
   deleteFile,
   flatten,
   createSisCourseId,
   createLongName,
   createAccountId,
+  createStartDate,
 
   buildCanvasCourseObjectV2(courseRound) {
     // new for course from v2
