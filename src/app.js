@@ -7,6 +7,7 @@ const os = require("os");
 const log = require("skog");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
+const canvas = require("./lib/canvas");
 const {
   createLongName,
   createSisCourseId,
@@ -107,7 +108,9 @@ async function start() {
         enrollmentsCsv.write(enrollment);
       }
 
-      // ... get antagna from Canvas
+      for (enrollment of await canvas.getAntagna(round.sisId)) {
+        enrollmentsCsv.write(enrollment);
+      }
     }
 
     coursesCsv.end();
