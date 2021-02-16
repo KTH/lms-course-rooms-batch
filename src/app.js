@@ -42,7 +42,7 @@ async function start() {
   const previousPeriods = Period.range(currentPeriod, -5, -1);
   const futurePeriods = Period.range(currentPeriod, 0, 5);
 
-  const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "foo-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "foo-"));
   log.info(`Creating files in ${dir}`);
 
   for (const period of futurePeriods) {
