@@ -6,7 +6,7 @@ const path = require("path");
 const os = require("os");
 const log = require("skog");
 const { getCourseRounds } = require("./lib/kopps");
-const {loadEnrollments }= require('./lib/ug')
+const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const {
   createLongName,
   createSisCourseId,
@@ -53,6 +53,8 @@ async function start() {
   const previousPeriods = Period.range(currentPeriod, -5, -1);
   const futurePeriods = Period.range(currentPeriod, 0, 5);
 
+  await ldapBind();
+
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "foo-"));
   log.info(`Creating files in ${dir}`);
 
@@ -90,6 +92,7 @@ async function start() {
     deleteAntagna();
   }
 
+  await ldapUnbind();
   log.info("Finished batch.");
 }
 start();

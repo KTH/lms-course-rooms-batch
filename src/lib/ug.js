@@ -1,4 +1,5 @@
 const { Client } = require("ldapts");
+const { AndFilter, EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
 const ldapClient = new Client({
@@ -37,6 +38,43 @@ async function ldapSearch({
 }
 
 /////////////////////
+
+function createGroupFilter(groupName) {
+  return new AndFilter({
+    filters: [
+      new EqualityFilter({
+        attribute: "objectClass",
+        value: "group",
+      }),
+      new EqualityFilter({
+        attribute: "CN",
+        value: groupName,
+      }),
+    ],
+  });
+}
+
+async function searchGroup(filter) {
+  const { searchEntries } = await ldapClient.search(
+    "OU=UG,DC=ug,DC=kth,DC=se",
+    {
+      scope: "sub",
+      filter,
+      timeLimit: 11,
+      paged: true,
+    }
+  );
+  let members = [];
+  if (searchEntries[0] && searchEntries[0].member) {
+    if (Array.isArray(searchEntries[0].member)) {
+      members = searchEntries[0].member;
+    } else {
+      members = [searchEntries[0].member];
+    }
+  }
+  return members;
+}
+
 async function loadEnrollments(round) {
   const result = [];
   const ugRoleCanvasRole = [
@@ -54,7 +92,7 @@ async function loadEnrollments(round) {
         round.startTerm
       }.${roundId}.${type}`
     );
-    const members = await searchGroup(filter, ldapClient);
+    const members = await searchGroup(filter);
     const users = await getUsersForMembers(members, ldapClient);
 
     result.append(
@@ -67,9 +105,8 @@ async function loadEnrollments(round) {
     );
   }
 
-  return result
+  return result;
   ///////////////////
-
 
   // examinators, role_id: 10
   const examinatorMembers = await getExaminatorMembers(
