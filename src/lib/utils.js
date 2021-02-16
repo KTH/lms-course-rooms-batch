@@ -39,11 +39,16 @@ function flatten(arr) {
   return [].concat.apply([], arr);
 }
 
+function createAccountId(round) {
+  return `${round.schoolCode} - Imported course rounds`;
+}
+
 module.exports = {
   deleteFile,
   flatten,
   createSisCourseId,
   createLongName,
+  createAccountId,
 
   buildCanvasCourseObjectV2(courseRound) {
     // new for course from v2

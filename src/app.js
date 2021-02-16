@@ -6,7 +6,11 @@ const path = require("path");
 const os = require("os");
 const log = require("skog");
 const { getCourseRounds } = require("./lib/kopps");
-const { createLongName, createSisCourseId } = require("./lib/utils");
+const {
+  createLongName,
+  createSisCourseId,
+  createAccountId,
+} = require("./lib/utils");
 
 log.init.pino({
   app: "lms-minimall",
@@ -20,13 +24,12 @@ function createCsvSerializer(name) {
 }
 
 function createRoom(round) {
-  const accountId = "FIXME";
   return {
     course_id: createSisCourseId(round),
     short_name: createSisCourseId(round),
     long_name: createLongName(round),
     start_date: round.startDate,
-    account_id: accountId,
+    account_id: createAccountId(round),
     integration_id: round.ladokUid,
     status: "active",
   };
