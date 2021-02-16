@@ -65,8 +65,7 @@ test("Period.add() returns the correct term", () => {
   expect(current.add(5).toString()).toBe("2021-HT-P1");
 });
 
-/*
-test("Period.range() returns a range of periods", (t) => {
+test("Period.range() returns a range of periods", () => {
   const current = Period.fromString("2020-HT-P2");
   const expected = [
     "2020-VT-P3",
@@ -84,9 +83,7 @@ test("Period.range() returns a range of periods", (t) => {
     "2021-HT-P1",
   ];
 
-  t.deepEqual(
-    Period.range(current, -5, 5).map((c) => c.toString()),
+  expect(Period.range(current, -5, 5).map((c) => c.toString())).toStrictEqual(
     expected
   );
 });
-*/
