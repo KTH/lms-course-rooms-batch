@@ -152,41 +152,33 @@ async function loadEnrollments(round) {
     }))
   );
 
-  console.log(result);
-
-  return result;
-  ///////////////////
   // Registered students, role_id: 3
-  try {
-    let lengthOfInitials;
-    if (round.courseCode.length > 6) {
-      lengthOfInitials = 3;
-    } else {
-      lengthOfInitials = 2;
-    }
-    const courseInitials = round.courseCode.substring(0, lengthOfInitials);
-    const courseCodeWOInitials = round.courseCode.substring(lengthOfInitials);
-    const filter = createGroupFilter(
-      `ladok2.kurser.${courseInitials}.${courseCodeWOInitials}.registrerade_${round.startTerm}.${roundId}`
-    );
-    const registeredMembers = await searchGroup(filter, ldapClient);
-    const registeredStudents = await getUsersForMembers(
-      registeredMembers,
-      ldapClient
-    );
-    for (const user of registeredStudents) {
-      await csvFile.writeLine(
-        [round.sisId, user.ugKthid, 3, "active"],
-        fileName
-      );
-    }
-  } catch (err) {
-    logger.info(
-      err,
-      "Could not get registered students for this course. Perhaps there are no students?"
+  const matching = round.courseCode.match(/^(F?\w{2})(\w{4})$/);
+
+  if (!matching) {
+    throw new Error(
+      `UG: Wrong course code format [${round.courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
     );
   }
+
+  const [, prefix, suffix] = matching;
+  const groupName = `ladok2.kurser.${prefix}.${suffix}.registrerade_${round.startTerm}.${roundId}`;
+  const filter = createGroupFilter(groupName);
+  const registeredMembers = await searchGroup(filter);
+  const registeredStudents = await getUsersForMembers(registeredMembers);
+
+  result.push(
+    ...registeredStudents.map((user) => ({
+      section_id: round.sisId,
+      user_id: user.ugKthid,
+      role_id: 3,
+      status: "active",
+    }))
+  );
+
+  return result;
 }
+
 ///////////////////
 
 module.exports = {
