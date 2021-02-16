@@ -36,6 +36,26 @@ function createRoom(round) {
   };
 }
 
+function createSection(round) {
+  /*
+   *canvasCourse.sisCourseId,
+        canvasCourse.sisCourseId,
+        canvasCourse.integrationId,
+        
+        "active",
+
+   *
+   * */
+  const sisId = createSisCourseId(round);
+  return {
+    section_id: sisId,
+    course_id: sisId,
+    integration_id: round.ladokUid,
+    name: `Section for the course ${createLongName(round)}`,
+    status: "active",
+  };
+}
+
 async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.PERIOD);
@@ -48,14 +68,18 @@ async function start() {
   for (const period of futurePeriods) {
     log.info(`Handling ${period}`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
+    const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
 
     for (round of await getCourseRounds(period)) {
       // log.info(round.dump);
+
       coursesCsv.write(createRoom(round));
+      sectionsCsv.write(createSection(round));
     }
     //addAntagna()
 
     coursesCsv.end();
+    sectionsCsv.end();
   }
 
   for (const period of previousPeriods) {
