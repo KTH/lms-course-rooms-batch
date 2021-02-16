@@ -1,7 +1,7 @@
 {
-  "name": "lms-minimall",
+  "name": "lms-course-rooms-batch",
   "version": "1.0.0",
-  "description": "A minimal template (mall) for Node.js applications",
+  "description": "Script to synchronize course rooms in Canvas",
   "main": "src/app.js",
   "scripts": {
     "dev": "node src/app.js | pino-pretty",
