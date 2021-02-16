@@ -9,6 +9,7 @@ module.exports = {
       log.debug(`Reaching Kopps endpoint /courses/offerings for ${period}`);
       const response = await got({
         prefixUrl: process.env.KOPPS_API_URL,
+        timeout: 30 * 1000,
         url: "courses/offerings",
         responseType: "json",
         searchParams: {
@@ -19,9 +20,12 @@ module.exports = {
 
       courseRounds = response.body;
     } catch (err) {
-      err.message =
-        "Error reaching Kopps endpoint /courses/offerings: " + err.message;
-      throw err;
+      const error = new Error(
+        "Error reaching Kopps endpoint /courses/offerings: " + err.message
+      );
+      error.code = err.code;
+      error.name = err.name;
+      throw error;
     }
 
     const cleanCourseRounds = courseRounds
