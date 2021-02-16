@@ -74,12 +74,13 @@ async function start() {
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
 
-      const enrollments = await loadEnrollments(round);
+      const enrollments = await loadEnrollments(round, {
+        includeAntagna: true,
+      });
       for (enrollment of enrollments) {
         enrollmentsCsv.write(enrollment);
       }
     }
-    //addAntagna()
 
     coursesCsv.end();
     sectionsCsv.end();
@@ -87,10 +88,31 @@ async function start() {
   }
 
   for (const period of previousPeriods) {
+    log.info(`Handling ${period}`);
+    const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
+    const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
+    const enrollmentsCsv = createCsvSerializer(
+      `${dir}/enrollments-${period}.csv`
+    );
+
     for (round of await getCourseRounds(period)) {
+      round.sisId = createSisCourseId(round);
+      log.info(`Getting enrollments for ${round.sisId}`);
+
+      coursesCsv.write(createRoom(round));
+      sectionsCsv.write(createSection(round));
+
+      const enrollments = await loadEnrollments(round);
+      for (enrollment of enrollments) {
+        enrollmentsCsv.write(enrollment);
+      }
+
+      // ... get antagna from Canvas
     }
-    syncRooms();
-    deleteAntagna();
+
+    coursesCsv.end();
+    sectionsCsv.end();
+    enrollmentsCsv.end();
   }
 
   await ldapUnbind();

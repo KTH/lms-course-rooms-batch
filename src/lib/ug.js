@@ -109,7 +109,7 @@ async function getExaminatorMembers(courseCode) {
   return searchGroup(filter, ldapClient);
 }
 
-async function loadEnrollments(round) {
+async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const result = [];
   const ugRoleCanvasRole = [
     // role_id's are defined in Canvas
@@ -175,6 +175,22 @@ async function loadEnrollments(round) {
       status: "active",
     }))
   );
+
+  if (includeAntagna) {
+    const groupName = `ladok2.kurser.${prefix}.${suffix}.antagna_${round.startTerm}.${roundId}`;
+    const filter = createGroupFilter(groupName);
+    const antagnaMembers = await searchGroup(filter);
+    const antagnaStudents = await getUsersForMembers(antagnaMembers);
+
+    result.push(
+      ...antagnaStudents.map((user) => ({
+        section_id: round.sisId,
+        user_id: user.ugKthid,
+        role_id: 25,
+        status: "active",
+      }))
+    );
+  }
 
   return result;
 }
