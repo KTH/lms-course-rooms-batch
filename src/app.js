@@ -23,7 +23,7 @@ function createRoom(round) {
   const accountId = "FIXME";
   return {
     course_id: createSisCourseId(round),
-    short_name: round.shortName,
+    short_name: createSisCourseId(round),
     long_name: createLongName(round),
     start_date: round.startDate,
     account_id: accountId,
