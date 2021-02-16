@@ -6,6 +6,7 @@ const path = require("path");
 const os = require("os");
 const log = require("skog");
 const { getCourseRounds } = require("./lib/kopps");
+const {loadEnrollments }= require('./lib/ug')
 const {
   createLongName,
   createSisCourseId,
@@ -26,8 +27,8 @@ function createCsvSerializer(name) {
 
 function createRoom(round) {
   return {
-    course_id: createSisCourseId(round),
-    short_name: createSisCourseId(round),
+    course_id: round.sisId,
+    short_name: round.sisId,
     long_name: createLongName(round),
     start_date: createStartDate(round),
     account_id: createAccountId(round),
@@ -37,19 +38,9 @@ function createRoom(round) {
 }
 
 function createSection(round) {
-  /*
-   *canvasCourse.sisCourseId,
-        canvasCourse.sisCourseId,
-        canvasCourse.integrationId,
-        
-        "active",
-
-   *
-   * */
-  const sisId = createSisCourseId(round);
   return {
-    section_id: sisId,
-    course_id: sisId,
+    section_id: round.sisId,
+    course_id: round.sisId,
     integration_id: round.ladokUid,
     name: `Section for the course ${createLongName(round)}`,
     status: "active",
@@ -69,17 +60,27 @@ async function start() {
     log.info(`Handling ${period}`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
+    const enrollmentsCsv = createCsvSerializer(
+      `${dir}/enrollments-${period}.csv`
+    );
 
     for (round of await getCourseRounds(period)) {
+      round.sisId = createSisCourseId(round);
       // log.info(round.dump);
 
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
+
+      const enrollments = await loadEnrollments(round);
+      for (enrollment of enrollments) {
+        enrollmentsCsv.write(enrollment);
+      }
     }
     //addAntagna()
 
     coursesCsv.end();
     sectionsCsv.end();
+    enrollmentsCsv.end();
   }
 
   for (const period of previousPeriods) {
