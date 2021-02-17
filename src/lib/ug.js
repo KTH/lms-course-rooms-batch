@@ -21,12 +21,16 @@ async function ldapSearch({
   filter = "",
   attributes = [],
   scope = "sub",
+  timeLimit = 10,
+  ...extraOptions
 }) {
   try {
     const options = {
       scope,
+      timeLimit,
       filter,
       attributes,
+      ...extraOptions,
     };
 
     const { searchEntries } = await ldapClient.search(base, options);
@@ -39,15 +43,10 @@ async function ldapSearch({
 
 async function searchGroup(groupName) {
   const filter = `(&(objectClass=group)(CN=${groupName}))`;
-  const { searchEntries } = await ldapClient.search(
-    "OU=UG,DC=ug,DC=kth,DC=se",
-    {
-      scope: "sub",
-      filter,
-      timeLimit: 11,
-      paged: true,
-    }
-  );
+  const searchEntries = await ldapSearch({
+    filter,
+    paged: true,
+  });
   let members = [];
   if (searchEntries[0] && searchEntries[0].member) {
     if (Array.isArray(searchEntries[0].member)) {
@@ -69,18 +68,13 @@ async function getUsersForMembers(members) {
       attribute: "distinguishedName",
       value: member,
     });
-    const { searchEntries } = await ldapClient.search(
-      "OU=UG,DC=ug,DC=kth,DC=se",
-      {
-        scope: "sub",
-        filter,
-        timeLimit: 10,
-        attributes: ["ugKthid", "name"],
-        paged: {
-          pageSize: 1000,
-        },
-      }
-    );
+    const searchEntries = await ldapSearch({
+      filter,
+      attributes: ["ugKthid"],
+      paged: {
+        pageSize: 1000,
+      },
+    });
     usersForMembers.push(...searchEntries);
   }
   return usersForMembers;
@@ -168,47 +162,4 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
-  async getAntagna(courseCode, term, round) {
-    const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
-    if (!matching) {
-      throw new Error(
-        `UG: Wrong course code format [${courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
-      );
-    }
-
-    const [, prefix, suffix] = matching;
-    const groupName = `ladok2.kurser.${prefix}.${suffix}.antagna_${term}.${round}`;
-
-    log.trace(`UG: Searching members of group "${groupName}"`);
-    const groups = await ldapSearch({
-      filter: `(&(objectClass=group)(CN=${groupName}))`,
-      attributes: ["member"],
-    });
-
-    if (groups.length > 1) {
-      throw new Error(
-        `UG: There is more than one antagna group for ${courseCode} in term ${term}, round ${round}`
-      );
-    }
-
-    if (groups.length === 0) {
-      log.info(`UG: Group [${groupName}] not found.`);
-      return [];
-    }
-
-    const peopleDNs = Array.isArray(groups[0].member)
-      ? groups[0].member
-      : [groups[0].member];
-    const searchKthIds = peopleDNs
-      .filter((dn) => dn)
-      .map((dn) =>
-        ldapSearch({ base: dn, scope: "base", attributes: ["ugKthId"] })
-      );
-
-    const people = (await Promise.all(searchKthIds)).map((r) => r[0].ugKthid);
-
-    log.trace(`UG: Found ${people.length} people in group "${groupName}"`);
-
-    return people;
-  },
 };
