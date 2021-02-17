@@ -80,6 +80,20 @@ async function getUsersForMembers(members) {
   return usersForMembers;
 }
 
+function getUgNameLadokBase(courseCode) {
+  const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
+
+  if (!matching) {
+    throw new Error(
+      `UG: Wrong course code format [${courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
+    );
+  }
+
+  const [, prefix, suffix] = matching;
+
+  return `ladok2.kurser.${prefix}.${suffix}`;
+}
+
 async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   const members = await searchGroup(groupName);
   const users = await getUsersForMembers(members);
@@ -125,21 +139,12 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   );
 
   // Registered students, role_id: 3
-  const matching = round.courseCode.match(/^(F?\w{2})(\w{4})$/);
-
-  if (!matching) {
-    throw new Error(
-      `UG: Wrong course code format [${round.courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
-    );
-  }
-
-  const [, prefix, suffix] = matching;
-
+  const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
   result.push(
     ...(await getEnrollmentCsvData(
       round.sisId,
       3,
-      `ladok2.kurser.${prefix}.${suffix}.registrerade_${round.startTerm}.${roundId}`
+      `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
     ))
   );
 
@@ -148,7 +153,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
       ...(await getEnrollmentCsvData(
         round.sisId,
         25,
-        `ladok2.kurser.${prefix}.${suffix}.antagna_${round.startTerm}.${roundId}`
+        `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
       ))
     );
   }
