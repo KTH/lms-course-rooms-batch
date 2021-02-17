@@ -112,33 +112,22 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
 
   for (const { type, roleId } of ugRoleCanvasRole) {
-    const members = await searchGroup(
-      `${ugNameEduBase}.${round.startTerm}.${roundId}.${type}`
-    );
-    const users = await getUsersForMembers(members);
-
     result.push(
-      ...users.map((user) => ({
-        section_id: round.sisId,
-        user_id: user.ugKthid,
-        role_id: roleId,
-        status: "active",
-      }))
+      ...(await getEnrollmentCsvData(
+        round.sisId,
+        roleId,
+        `${ugNameEduBase}.${round.startTerm}.${roundId}.${type}`
+      ))
     );
   }
 
   // examinators, role_id: 10 FIXME: handle this value in the same way as other role_ids
-  const examinatorMembers = await searchGroup(`${ugNameEduBase}.examiner`);
-
-  const examinators = await getUsersForMembers(examinatorMembers);
-
   result.push(
-    ...examinators.map((user) => ({
-      section_id: round.sisId,
-      user_id: user.ugKthid,
-      role_id: 10,
-      status: "active",
-    }))
+    ...(await getEnrollmentCsvData(
+      round.sisId,
+      10,
+      `${ugNameEduBase}.examiner`
+    ))
   );
 
   // Registered students, role_id: 3
@@ -161,18 +150,12 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   );
 
   if (includeAntagna) {
-    const antagnaMembers = await searchGroup(
-      `ladok2.kurser.${prefix}.${suffix}.antagna_${round.startTerm}.${roundId}`
-    );
-    const antagnaStudents = await getUsersForMembers(antagnaMembers);
-
     result.push(
-      ...antagnaStudents.map((user) => ({
-        section_id: round.sisId,
-        user_id: user.ugKthid,
-        role_id: 25,
-        status: "active",
-      }))
+      ...(await getEnrollmentCsvData(
+        round.sisId,
+        25,
+        `ladok2.kurser.${prefix}.${suffix}.antagna_${round.startTerm}.${roundId}`
+      ))
     );
   }
 
