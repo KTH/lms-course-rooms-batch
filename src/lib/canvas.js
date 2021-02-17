@@ -9,7 +9,12 @@ const canvasApi = new CanvasApi(
   process.env.CANVAS_API_TOKEN
 );
 
+async function uploadCsvZip(fileName) {
+  return canvasApi.sendSis("accounts/1/sis_imports", fileName);
+}
+
 module.exports = {
+  uploadCsvZip,
   /** Return enrolled people as "Admitted not registered student" in a given section SIS ID */
   async getAntagnaToDelete(sectionSisId) {
     try {

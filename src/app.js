@@ -145,7 +145,10 @@ async function start() {
       .on("error", reject);
   });
 
-  log.info("Finished batch.");
+  log.info(`Uploading ${zipFileName} to canvas`);
+  await canvas.uploadCsvZip(zipFileName);
+
+  log.info(`Finished batch successfully.`);
 }
 
 start();
