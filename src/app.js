@@ -19,6 +19,11 @@ log.init.pino({
   app: "lms-minimall",
 });
 
+process.on("unhandledRejection", (reason) => {
+  log.fatal(reason, `Reject: ${reason}`);
+  process.exit(1);
+});
+
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
   const serializer = csv.format({ headers: true });
@@ -122,4 +127,5 @@ async function start() {
   await ldapUnbind();
   log.info("Finished batch.");
 }
+
 start();
