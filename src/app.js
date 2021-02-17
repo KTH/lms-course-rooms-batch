@@ -51,8 +51,9 @@ function createSection(round) {
 async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.PERIOD);
-  const previousPeriods = Period.range(currentPeriod, -5, -1);
-  const futurePeriods = Period.range(currentPeriod, 0, 5);
+  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS) || 5
+  const previousPeriods = Period.range(currentPeriod, -maxOffsetPeriods, -1);
+  const futurePeriods = Period.range(currentPeriod, 0, maxOffsetPeriods);
 
   await ldapBind();
 
@@ -69,7 +70,7 @@ async function start() {
 
     for (round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
-      log.info(`Getting enrollments for ${round.sisId}`);
+      // log.info(`Getting enrollments for ${round.sisId}`);
       // log.info(round.dump);
 
       coursesCsv.write(createRoom(round));
@@ -98,7 +99,7 @@ async function start() {
 
     for (round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
-      log.info(`Getting enrollments for ${round.sisId}`);
+      // log.info(`Getting enrollments for ${round.sisId}`);
 
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
@@ -108,7 +109,7 @@ async function start() {
         enrollmentsCsv.write(enrollment);
       }
 
-      for (enrollment of await canvas.getAntagna(round.sisId)) {
+      for (enrollment of await canvas.getAntagnaToDelete(round.sisId)) {
         enrollmentsCsv.write(enrollment);
       }
     }

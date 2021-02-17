@@ -11,7 +11,7 @@ const canvasApi = new CanvasApi(
 
 module.exports = {
   /** Return enrolled people as "Admitted not registered student" in a given section SIS ID */
-  async getAntagna(sectionSisId) {
+  async getAntagnaToDelete(sectionSisId) {
     try {
       const enrollments = await canvasApi
         .list(`sections/sis_section_id:${sectionSisId}/enrollments`, {
