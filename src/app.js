@@ -8,6 +8,7 @@ const log = require("skog");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const canvas = require("./lib/canvas");
+const Zip = require("jszip");
 const {
   createLongName,
   createSisCourseId,
@@ -62,8 +63,10 @@ async function start() {
 
   await ldapBind();
 
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "foo-"));
-  log.info(`Creating files in ${dir}`);
+  const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
+  const dir = path.join(baseDir, "csv");
+  fs.mkdirSync(dir);
+  log.info(`Creating csv files in ${dir}`);
 
   for (const period of futurePeriods) {
     log.info(`Handling ${period}`);
@@ -125,6 +128,23 @@ async function start() {
   }
 
   await ldapUnbind();
+
+  const zipFileName = path.join(baseDir, "files.zip");
+  log.info(`Creating zip file ${zipFileName}`);
+  const zip = new Zip();
+
+  for (const file of fs.readdirSync(dir)) {
+    zip.file(file, fs.readFileSync(path.join(dir, file)));
+  }
+
+  await new Promise((resolve, reject) => {
+    zip
+      .generateNodeStream({ type: "nodebuffer", streamFiles: true })
+      .pipe(fs.createWriteStream(zipFileName))
+      .on("finish", resolve)
+      .on("error", reject);
+  });
+
   log.info("Finished batch.");
 }
 
