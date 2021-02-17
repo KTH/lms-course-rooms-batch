@@ -37,24 +37,8 @@ async function ldapSearch({
   }
 }
 
-/////////////////////
-
-function createGroupFilter(groupName) {
-  return new AndFilter({
-    filters: [
-      new EqualityFilter({
-        attribute: "objectClass",
-        value: "group",
-      }),
-      new EqualityFilter({
-        attribute: "CN",
-        value: groupName,
-      }),
-    ],
-  });
-}
-
-async function searchGroup(filter) {
+async function searchGroup(groupName) {
+  const filter = `(&(objectClass=group)(CN=${groupName}))`;
   const { searchEntries } = await ldapClient.search(
     "OU=UG,DC=ug,DC=kth,DC=se",
     {
@@ -102,11 +86,16 @@ async function getUsersForMembers(members) {
   return usersForMembers;
 }
 
-async function getExaminatorMembers(courseCode) {
-  const filter = createGroupFilter(
-    `edu.courses.${courseCode.substring(0, 2)}.${courseCode}.examiner`
-  );
-  return searchGroup(filter, ldapClient);
+async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
+  const members = await searchGroup(groupName);
+  const users = await getUsersForMembers(members);
+
+  return users.map((user) => ({
+    section_id: sisSectionId,
+    user_id: user.ugKthid,
+    role_id: roleId,
+    status: "active",
+  }));
 }
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
@@ -119,14 +108,13 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   ];
 
   const roundId = round.sisId.slice(-1);
+  // prettier-ignore
+  const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
 
   for (const { type, roleId } of ugRoleCanvasRole) {
-    const filter = createGroupFilter(
-      `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}.${
-        round.startTerm
-      }.${roundId}.${type}`
+    const members = await searchGroup(
+      `${ugNameEduBase}.${round.startTerm}.${roundId}.${type}`
     );
-    const members = await searchGroup(filter);
     const users = await getUsersForMembers(members);
 
     result.push(
@@ -139,8 +127,9 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
     );
   }
 
-  // examinators, role_id: 10
-  const examinatorMembers = await getExaminatorMembers(round.courseCode);
+  // examinators, role_id: 10 FIXME: handle this value in the same way as other role_ids
+  const examinatorMembers = await searchGroup(`${ugNameEduBase}.examiner`);
+
   const examinators = await getUsersForMembers(examinatorMembers);
 
   result.push(
@@ -162,24 +151,19 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   }
 
   const [, prefix, suffix] = matching;
-  const groupName = `ladok2.kurser.${prefix}.${suffix}.registrerade_${round.startTerm}.${roundId}`;
-  const filter = createGroupFilter(groupName);
-  const registeredMembers = await searchGroup(filter);
-  const registeredStudents = await getUsersForMembers(registeredMembers);
 
   result.push(
-    ...registeredStudents.map((user) => ({
-      section_id: round.sisId,
-      user_id: user.ugKthid,
-      role_id: 3,
-      status: "active",
-    }))
+    ...(await getEnrollmentCsvData(
+      round.sisId,
+      3,
+      `ladok2.kurser.${prefix}.${suffix}.registrerade_${round.startTerm}.${roundId}`
+    ))
   );
 
   if (includeAntagna) {
-    const groupName = `ladok2.kurser.${prefix}.${suffix}.antagna_${round.startTerm}.${roundId}`;
-    const filter = createGroupFilter(groupName);
-    const antagnaMembers = await searchGroup(filter);
+    const antagnaMembers = await searchGroup(
+      `ladok2.kurser.${prefix}.${suffix}.antagna_${round.startTerm}.${roundId}`
+    );
     const antagnaStudents = await getUsersForMembers(antagnaMembers);
 
     result.push(

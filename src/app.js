@@ -51,7 +51,7 @@ function createSection(round) {
 async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.PERIOD);
-  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS) || 5
+  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS) || 5;
   const previousPeriods = Period.range(currentPeriod, -maxOffsetPeriods, -1);
   const futurePeriods = Period.range(currentPeriod, 0, maxOffsetPeriods);
 
