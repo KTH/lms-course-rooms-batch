@@ -1,10 +1,26 @@
 require("dotenv").config();
+const log = require("skog");
+log.init.pino({
+  app: "lms-course-rooms-batch",
+});
+
+process.on("uncaughtException", (err) => {
+  log.fatal(err, `Reject: ${err}`);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  log.fatal(reason, `Reject: ${reason}`);
+  process.exit(1);
+});
+
+require("@kth/reqvars").check();
+
 const Period = require("./lib/period");
 const csv = require("fast-csv");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const log = require("skog");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const canvas = require("./lib/canvas");
@@ -15,15 +31,6 @@ const {
   createAccountId,
   createStartDate,
 } = require("./lib/utils");
-
-log.init.pino({
-  app: "lms-minimall",
-});
-
-process.on("unhandledRejection", (reason) => {
-  log.fatal(reason, `Reject: ${reason}`);
-  process.exit(1);
-});
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
