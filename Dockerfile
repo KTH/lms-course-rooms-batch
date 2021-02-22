@@ -37,10 +37,10 @@ COPY --from=builder node_modules node_modules
 
 COPY . .
 
-ADD crontab /etc/cron.d/lms-cron
-RUN chmod 0644 /etc/cron.d/lms-cron
+ADD crontab /etc/crontabs/root
+RUN chmod 0644 /etc/crontabs/root
 
 RUN touch /var/log/cron.log
 
 EXPOSE 3000
-CMD crond -S && tail -f /var/log/cron.log
+CMD ["crond","-f", "-L", "/dev/stdout"]
