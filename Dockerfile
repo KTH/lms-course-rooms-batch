@@ -37,5 +37,10 @@ COPY --from=builder node_modules node_modules
 
 COPY . .
 
+ADD crontab /etc/crontabs/root
+RUN chmod 0644 /etc/crontabs/root
+
+RUN touch /var/log/cron.log
+
 EXPOSE 3000
-CMD ["node", "src/app.js"]
+CMD ["crond","-f", "-L", "/dev/stdout"]
