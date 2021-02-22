@@ -21,6 +21,7 @@ COPY . .
 
 # Second "stage" is a builder image, used to install production dependencies
 FROM kthse/kth-nodejs:14.0.0 AS builder
+WORKDIR /usr/src/app
 COPY ["package.json", "package.json"]
 COPY ["package-lock.json", "package-lock.json"]
 
@@ -32,7 +33,8 @@ RUN npm ci --production --unsafe-perm
 #
 # This way we can deliver an image without the toolchain (python, make, etc)
 FROM kthse/kth-nodejs:14.0.0 AS production
-COPY --from=builder node_modules node_modules
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app/node_modules node_modules
 # Add extra build steps if needed: "COPY --from=development /usr/src/app/dist dist" etc
 
 COPY . .
