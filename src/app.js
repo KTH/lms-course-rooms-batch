@@ -22,7 +22,12 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { getCourseRounds } = require("./lib/kopps");
-const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
+const {
+  loadEnrollments,
+  ldapBind,
+  ldapUnbind,
+  printCacheStats,
+} = require("./lib/ug");
 const canvas = require("./lib/canvas");
 const Zip = require("jszip");
 const {
@@ -135,6 +140,7 @@ async function start() {
   }
 
   await ldapUnbind();
+  printCacheStats();
 
   const zipFileName = path.join(baseDir, "files.zip");
   log.info(`Creating zip file ${zipFileName}`);

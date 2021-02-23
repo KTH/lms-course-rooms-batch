@@ -58,7 +58,13 @@ async function searchGroup(groupName) {
   return members;
 }
 
+const cacheStats = {
+  total: 0,
+  fail: 0,
+};
+
 async function getKthId(dn) {
+  cacheStats.fail++;
   return ldapSearch({ base: dn, scope: "base", attributes: ["ugKthId"] }).then(
     (entries) => entries[0].ugKthid
   );
@@ -72,6 +78,7 @@ getKthId = memoize(getKthId);
 async function getUsersForMembers(members) {
   const kthIds = [];
   for (const member of members) {
+    cacheStats.total++;
     const kthId = await getKthId(member);
     kthIds.push(kthId);
   }
@@ -165,4 +172,15 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
+  printCacheStats() {
+    log.info({
+      "Total calls": cacheStats.total,
+      "Requests to UG (failure)": cacheStats.fail,
+      "Cache hit": cacheStats.total - cacheStats.fail,
+      "Cache hit (%)": (
+        ((cacheStats.total - cacheStats.fail) / cacheStats.total) *
+        100
+      ).toFixed(2),
+    });
+  },
 };
