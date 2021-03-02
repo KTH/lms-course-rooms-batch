@@ -1,2 +1,3 @@
 # From here, everything is a copy from .gitignore
 node_modules
+.env

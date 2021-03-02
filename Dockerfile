@@ -41,5 +41,4 @@ COPY . .
 
 ADD crontab /etc/crontabs/root
 RUN chmod 0644 /etc/crontabs/root
-
-CMD ["crond","-f", "-L", "/dev/stdout"]
+CMD node src/check.js && crond -f -L /dev/stdout
