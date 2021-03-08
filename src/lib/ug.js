@@ -106,6 +106,24 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
+class EducatorsGroup {
+  constructor(round) {
+    // prettier-ignore
+    this.ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
+    this.startTerm = round.startTerm;
+    this.roundId = round.sisId.slice(-1);
+  }
+
+  examiner() {
+    return `${ugNameEduBase}.examiner`;
+  }
+
+  nonExaminer(role) {
+    // prettier-ignore
+    return `${this.ugNameEduBase}.${this.startTerm}.${this.roundId}.${role}`;
+  }
+}
+
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const result = [];
   const ugRoleCanvasRole = [
@@ -116,26 +134,21 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   ];
 
   const roundId = round.sisId.slice(-1);
-  // prettier-ignore
-  const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
+  const eduGroups = new EducatorsGroup(round);
 
   for (const { type, roleId } of ugRoleCanvasRole) {
     result.push(
       ...(await getEnrollmentCsvData(
         round.sisId,
         roleId,
-        `${ugNameEduBase}.${round.startTerm}.${roundId}.${type}`
+        eduGroups.nonExaminer(type)
       ))
     );
   }
 
   // examinators, role_id: 10 FIXME: handle this value in the same way as other role_ids
   result.push(
-    ...(await getEnrollmentCsvData(
-      round.sisId,
-      10,
-      `${ugNameEduBase}.examiner`
-    ))
+    ...(await getEnrollmentCsvData(round.sisId, 10, eduGroups.examiner()))
   );
 
   // Registered students, role_id: 3
