@@ -126,28 +126,14 @@ class EducatorsGroup {
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const result = [];
-  const ugRoleCanvasRole = [
-    // role_id's are defined in Canvas
-    { type: "teachers", roleId: 4 },
-    { type: "courseresponsible", roleId: 9 },
-    { type: "assistants", roleId: 5 },
-  ];
-
   const roundId = round.sisId.slice(-1);
   const eduGroups = new EducatorsGroup(round);
 
-  for (const { type, roleId } of ugRoleCanvasRole) {
-    result.push(
-      ...(await getEnrollmentCsvData(
-        round.sisId,
-        roleId,
-        eduGroups.nonExaminer(type)
-      ))
-    );
-  }
-
-  // examinators, role_id: 10 FIXME: handle this value in the same way as other role_ids
+  // prettier-ignore
   result.push(
+    ...(await getEnrollmentCsvData(round.sisId, 4, eduGroups.nonExaminer("teachers"))),
+    ...(await getEnrollmentCsvData(round.sisId, 9, eduGroups.nonExaminer("courseresponsible"))),
+    ...(await getEnrollmentCsvData(round.sisId, 5, eduGroups.nonExaminer("assistants"))),
     ...(await getEnrollmentCsvData(round.sisId, 10, eduGroups.examiner()))
   );
 
