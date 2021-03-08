@@ -106,7 +106,7 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
-class EducatorsGroup {
+class EducatorsGroupNames {
   constructor(round) {
     // prettier-ignore
     this.ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
@@ -124,35 +124,57 @@ class EducatorsGroup {
   }
 }
 
+class StudentsGroupNames {
+  constructor(round) {
+    const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
+
+    if (!matching) {
+      throw new Error(
+        `UG: Wrong course code format [${courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
+      );
+    }
+
+    const [, prefix, suffix] = matching;
+
+    this.ugNameLadokBase = `ladok2.kurser.${prefix}.${suffix}`;
+    this.startTerm = round.startTerm;
+    this.roundId = round.sisId.slice(-1);
+  }
+
+  getGroupName(role) {
+    // prettier-ignore
+    return `${this.ugNameLadokBase}.${role}_${this.startTerm}.${this.roundId}`;
+  }
+}
+
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const result = [];
-  const roundId = round.sisId.slice(-1);
-  const eduGroups = new EducatorsGroup(round);
+  const sisId = round.sisId;
+  const eduGroups = new EducatorsGroupNames(round);
+  const studentGroups = new StudentsGroupNames(round);
 
   // prettier-ignore
   result.push(
-    ...(await getEnrollmentCsvData(round.sisId, 4, eduGroups.nonExaminer("teachers"))),
-    ...(await getEnrollmentCsvData(round.sisId, 9, eduGroups.nonExaminer("courseresponsible"))),
-    ...(await getEnrollmentCsvData(round.sisId, 5, eduGroups.nonExaminer("assistants"))),
-    ...(await getEnrollmentCsvData(round.sisId, 10, eduGroups.examiner()))
+    ...(await getEnrollmentCsvData(sisId, 4, eduGroups.nonExaminer("teachers"))),
+    ...(await getEnrollmentCsvData(sisId, 9, eduGroups.nonExaminer("courseresponsible"))),
+    ...(await getEnrollmentCsvData(sisId, 5, eduGroups.nonExaminer("assistants"))),
+    ...(await getEnrollmentCsvData(sisId, 10, eduGroups.examiner()))
   );
 
-  // Registered students, role_id: 3
-  const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
   result.push(
     ...(await getEnrollmentCsvData(
-      round.sisId,
+      sisId,
       3,
-      `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
+      studentGroups.getGroupName("registrerade")
     ))
   );
 
   if (includeAntagna) {
     result.push(
       ...(await getEnrollmentCsvData(
-        round.sisId,
+        sisId,
         25,
-        `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
+        studentGroups.getGroupName("antagna")
       ))
     );
   }
