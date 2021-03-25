@@ -60,7 +60,7 @@ async function start() {
   log.info(`Creating csv files in ${dir}`);
 
   for (const period of futurePeriods) {
-    log.info(`Handling ${period}`);
+    log.info(`Handling ${period}, including admitted`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
     const enrollmentsCsv = createCsvSerializer(
@@ -89,7 +89,7 @@ async function start() {
   }
 
   for (const period of previousPeriods) {
-    log.info(`Handling ${period}`);
+    log.info(`Handling ${period}, removing admitted`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
     const enrollmentsCsv = createCsvSerializer(
