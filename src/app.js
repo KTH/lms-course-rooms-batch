@@ -1,21 +1,5 @@
-require("dotenv").config();
+require("./check");
 const log = require("skog");
-log.init.pino({
-  app: "lms-course-rooms-batch",
-});
-
-process.on("uncaughtException", (err) => {
-  log.fatal(err, `Reject: ${err}`);
-  process.exit(1);
-});
-
-process.on("unhandledRejection", (reason) => {
-  log.fatal(reason, `Reject: ${reason}`);
-  process.exit(1);
-});
-
-require("@kth/reqvars").check();
-
 const Period = require("./lib/period");
 const csv = require("fast-csv");
 const fs = require("fs");
@@ -76,7 +60,7 @@ async function start() {
   log.info(`Creating csv files in ${dir}`);
 
   for (const period of futurePeriods) {
-    log.info(`Handling ${period}`);
+    log.info(`Handling ${period}, including admitted`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
     const enrollmentsCsv = createCsvSerializer(
@@ -105,7 +89,7 @@ async function start() {
   }
 
   for (const period of previousPeriods) {
-    log.info(`Handling ${period}`);
+    log.info(`Handling ${period}, removing admitted`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
     const enrollmentsCsv = createCsvSerializer(
