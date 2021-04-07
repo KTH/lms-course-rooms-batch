@@ -73,9 +73,7 @@ test("Period.range() returns a range of periods", () => {
     "2020-VT-P5",
     "2020-HT-P0",
     "2020-HT-P1",
-
     "2020-HT-P2",
-
     "2021-VT-P3",
     "2021-VT-P4",
     "2021-VT-P5",
