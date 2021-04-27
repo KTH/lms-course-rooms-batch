@@ -14,6 +14,7 @@ const {
   createSisCourseId,
   createAccountId,
   createStartDate,
+  createEndDate,
 } = require("./lib/utils");
 
 function createCsvSerializer(name) {
@@ -29,6 +30,7 @@ function createRoom(round) {
     short_name: round.sisId,
     long_name: createLongName(round),
     start_date: createStartDate(round),
+    end_date: createEndDate(round),
     account_id: createAccountId(round),
     integration_id: round.ladokUid,
     status: "active",

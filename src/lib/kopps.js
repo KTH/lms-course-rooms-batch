@@ -66,6 +66,7 @@ module.exports = {
         offeredSemesters: c.offered_semesters.map((offered) => ({
           semester: offered.semester,
           startDate: offered.start_date,
+          endDate: offered.end_date,
         })),
       }));
   },

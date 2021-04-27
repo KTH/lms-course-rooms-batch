@@ -34,9 +34,21 @@ function createStartDate(round) {
   return `${startDate}T06:00:00Z`;
 }
 
+function createEndDate(round) {
+  const roundEndDate = round.offeredSemesters.find(
+    (o) => o.semester === round.firstYearsemester
+  ).endDate;
+
+  const roomEndDate = new Date(roundEndDate);
+  roomEndDate.setDate(roomEndDate.getDate() + 60);
+
+  return roomEndDate.toISOString();
+}
+
 module.exports = {
   createSisCourseId,
   createLongName,
   createAccountId,
   createStartDate,
+  createEndDate,
 };
