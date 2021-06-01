@@ -26,6 +26,11 @@ function createAccountId(round) {
   return `${round.schoolCode} - Imported course rounds`;
 }
 
+function createEndDate(round){
+  console.log(round)
+  process.exit()
+}
+
 function createStartDate(round) {
   const startDate = round.offeredSemesters.find(
     (o) => o.semester === round.firstYearsemester
@@ -39,4 +44,5 @@ module.exports = {
   createLongName,
   createAccountId,
   createStartDate,
+  createEndDate
 };
