@@ -27,9 +27,9 @@ function createAccountId(round) {
 }
 
 function createEndDate(round) {
-  // TODO: find the latest offeredSemester, and choose the endDate for that
-  // console.log(round);
-  // process.exit();
+  const semestersDescending = round.offeredSemesters.sort((a,b)=> new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+
+  return semestersDescending[0].endDate
 }
 
 function createStartDate(round) {
