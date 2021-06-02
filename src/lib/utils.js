@@ -26,9 +26,10 @@ function createAccountId(round) {
   return `${round.schoolCode} - Imported course rounds`;
 }
 
-function createEndDate(round){
-  console.log(round)
-  process.exit()
+function createEndDate(round) {
+  // TODO: find the latest offeredSemester, and choose the endDate for that
+  console.log(round);
+  process.exit();
 }
 
 function createStartDate(round) {
@@ -44,5 +45,5 @@ module.exports = {
   createLongName,
   createAccountId,
   createStartDate,
-  createEndDate
+  createEndDate,
 };
