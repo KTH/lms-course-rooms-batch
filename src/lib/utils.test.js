@@ -20,5 +20,5 @@ test("should choose the latest date", () => {
     ],
   };
   const endDate = utils.createEndDate(courseRound);
-  expect(endDate).toBe('2021-12-30');
+  expect(endDate).toBe("2021-12-30");
 });

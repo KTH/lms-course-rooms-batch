@@ -28,9 +28,11 @@ function createAccountId(round) {
 
 function createEndDate(round) {
   // A round can span multiple semesters. Choose the last end date of all of the semesters to be used as end date for the course round
-  const semestersDescending = round.offeredSemesters.sort((a,b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+  const semestersDescending = round.offeredSemesters.sort(
+    (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
+  );
 
-  return semestersDescending[0].endDate
+  return semestersDescending[0].endDate;
 }
 
 function createStartDate(round) {
