@@ -28,8 +28,8 @@ function createAccountId(round) {
 
 function createEndDate(round) {
   // TODO: find the latest offeredSemester, and choose the endDate for that
-  console.log(round);
-  process.exit();
+  // console.log(round);
+  // process.exit();
 }
 
 function createStartDate(round) {
