@@ -11,7 +11,7 @@ test("should choose the latest date", () => {
       },
       {
         semester: "20212",
-        endDate: "2021-12-30",
+        endDate: "2021-12-10",
       },
       {
         semester: "20202",
@@ -19,6 +19,6 @@ test("should choose the latest date", () => {
       },
     ],
   };
-  const endDate = utils.createEndDate(courseRound);
-  expect(endDate).toBe("2021-12-30");
+  const endDate = utils.createEndDate(courseRound, 10);
+  expect(endDate).toBe("2021-12-20");
 });

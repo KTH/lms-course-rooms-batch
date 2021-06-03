@@ -26,7 +26,7 @@ function createAccountId(round) {
   return `${round.schoolCode} - Imported course rounds`;
 }
 
-function createEndDate(round) {
+function createEndDate(round, addNumberOfDays = 60) {
   // A round can span multiple semesters. Choose the last end date of all of the semesters to be used as end date for the course round
   const semestersDescending = round.offeredSemesters.sort(
     (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
@@ -34,10 +34,11 @@ function createEndDate(round) {
 
   const exactEndDate = semestersDescending[0].endDate;
   const roomEndDate = new Date(exactEndDate);
-  roomEndDate.setDate(roomEndDate.getDate() + 60);
-  
-  const roomEndDateStr = new Date().toISOString().split('T')[0]
-  return roomEndDateStr
+  roomEndDate.setDate(roomEndDate.getDate() + addNumberOfDays);
+
+  // Use only date, no time, to make tests consistent in dev computers and build server
+  const roomEndDateStr = roomEndDate.toISOString().split("T")[0];
+  return roomEndDateStr;
 }
 
 function createStartDate(round) {
