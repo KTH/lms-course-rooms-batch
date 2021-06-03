@@ -2,7 +2,7 @@ const { expect, test } = require("@jest/globals");
 
 const utils = require("./utils");
 
-test("should choose the latest date", () => {
+test("should choose the latest date plus 10 days", () => {
   const courseRound = {
     offeredSemesters: [
       {
