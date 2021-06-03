@@ -32,7 +32,12 @@ function createEndDate(round) {
     (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
   );
 
-  return semestersDescending[0].endDate;
+  const exactEndDate = semestersDescending[0].endDate;
+  const roomEndDate = new Date(exactEndDate);
+  roomEndDate.setDate(roomEndDate.getDate() + 60);
+  
+  const roomEndDateStr = new Date().toISOString().split('T')[0]
+  return roomEndDateStr
 }
 
 function createStartDate(round) {
