@@ -4,10 +4,12 @@
   "description": "Script to synchronize course rooms in Canvas",
   "main": "src/app.js",
   "scripts": {
+    "start": "npm run dev",
     "dev": "node src/app.js | pino-pretty",
     "format": "prettier --write .",
     "test:lint": "prettier --check .",
-    "test": "npm run test:lint",
+    "test:unit": "jest",
+    "test": "npm run test:unit && npm run test:lint",
     "build": "npm test"
   },
   "author": "KTH Royal Institute of Technology",

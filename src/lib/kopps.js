@@ -44,13 +44,11 @@ module.exports = {
     }
 
     log.debug(`KOPPS: cleanCourseRounds: ${cleanCourseRounds.length}`);
-    // const util = require('util');
 
     return cleanCourseRounds
       .filter((c) => c.state === "Godkänt" || c.state === "Fullsatt")
       .filter((c) => c.first_period === period.toKoppsPeriodString())
       .map((c) => ({
-        // dump: util.inspect(c),
         courseCode: c.course_code,
         firstYearsemester: c.first_yearsemester,
         roundId: c.offering_id,
@@ -66,6 +64,7 @@ module.exports = {
         offeredSemesters: c.offered_semesters.map((offered) => ({
           semester: offered.semester,
           startDate: offered.start_date,
+          endDate: offered.end_date,
         })),
       }));
   },
