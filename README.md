@@ -1,12 +1,4 @@
-# LMS Mini-mall
-
-A minimal template –_mall_ in Swedish \*badumtss\*– for Node.js web applications.
-
-## Getting started
-
-[▶️▶️▶️▶️ Use this as a template!](https://github.com/kth/lms-minimall/generate)
-
-And then…
+# LMS course rooms batch
 
 - Install all dependencies
 
