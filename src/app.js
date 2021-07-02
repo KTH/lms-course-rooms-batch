@@ -49,10 +49,17 @@ function createSection(round) {
 
 async function start() {
   log.info("Run batch...");
-  const currentPeriod = Period.fromString(process.env.PERIOD);
-  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS) || 5;
-  const previousPeriods = Period.range(currentPeriod, -maxOffsetPeriods, -1);
-  const futurePeriods = Period.range(currentPeriod, 0, maxOffsetPeriods);
+  const currentPeriod = Period.fromString(process.env.CURRENT_PERIOD);
+  const offset = parseInt(process.env.MAX_OFFSET_PERIODS) || 5;
+
+  // "previousPeriods" are the periods where we are going to remove antagna
+  // which is from "currentPeriod - offset + 1" to "currentPeriod"
+  const previousPeriods = Period.range(currentPeriod, -offset + 1, 0);
+
+  // "future Periods" are the periods where we are going to create course rooms,
+  // enroll students (including antagna)
+  // which is from "currentPeriod + 1" to "currentPeriod + offset"
+  const futurePeriods = Period.range(currentPeriod, 1, offset);
 
   await ldapBind();
 
