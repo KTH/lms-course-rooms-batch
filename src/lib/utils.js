@@ -42,9 +42,9 @@ function createEndDate(round, addNumberOfDays = 60) {
 }
 
 function createStartDate(round) {
-  const startDate = round.offeredSemesters.find(
+  const { startDate } = round.offeredSemesters.find(
     (o) => o.semester === round.firstYearsemester
-  ).startDate;
+  );
 
   return `${startDate}T06:00:00Z`;
 }

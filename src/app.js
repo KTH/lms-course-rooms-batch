@@ -1,14 +1,14 @@
 require("./check");
 const log = require("skog");
-const Period = require("./lib/period");
 const csv = require("fast-csv");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
+const Zip = require("jszip");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const canvas = require("./lib/canvas");
-const Zip = require("jszip");
+const Period = require("./lib/period");
 const {
   createLongName,
   createSisCourseId,
@@ -50,7 +50,7 @@ function createSection(round) {
 async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.PERIOD);
-  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS) || 5;
+  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS, 10) || 5;
   const previousPeriods = Period.range(currentPeriod, -maxOffsetPeriods, -1);
   const futurePeriods = Period.range(currentPeriod, 0, maxOffsetPeriods);
 
@@ -69,7 +69,8 @@ async function start() {
       `${dir}/enrollments-${period}.csv`
     );
 
-    for (round of await getCourseRounds(period)) {
+    // eslint-disable-next-line no-await-in-loop
+    for (const round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
       // log.info(`Getting enrollments for ${round.sisId}`);
       // log.info(round.dump);
@@ -77,10 +78,11 @@ async function start() {
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
 
+      // eslint-disable-next-line no-await-in-loop
       const enrollments = await loadEnrollments(round, {
         includeAntagna: true,
       });
-      for (enrollment of enrollments) {
+      for (const enrollment of enrollments) {
         enrollmentsCsv.write(enrollment);
       }
     }
@@ -98,19 +100,22 @@ async function start() {
       `${dir}/enrollments-${period}.csv`
     );
 
-    for (round of await getCourseRounds(period)) {
+    // eslint-disable-next-line no-await-in-loop
+    for (const round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
       // log.info(`Getting enrollments for ${round.sisId}`);
 
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
 
+      // eslint-disable-next-line no-await-in-loop
       const enrollments = await loadEnrollments(round);
-      for (enrollment of enrollments) {
+      for (const enrollment of enrollments) {
         enrollmentsCsv.write(enrollment);
       }
 
-      for (enrollment of await canvas.getAntagnaToDelete(round.sisId)) {
+      // eslint-disable-next-line no-await-in-loop
+      for (const enrollment of await canvas.getAntagnaToDelete(round.sisId)) {
         enrollmentsCsv.write(enrollment);
       }
     }
