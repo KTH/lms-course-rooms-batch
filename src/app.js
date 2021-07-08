@@ -51,16 +51,10 @@ async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.CURRENT_PERIOD);
 
-  // "previousPeriods" are the periods where we are going to remove antagna
-  // We are currently handling 5 periods
-  const previousPeriods = Period.range(currentPeriod, -4, 0);
-  log.info(`previous periods: ${previousPeriods}`);
-
   // "future Periods" are the periods where we are going to create course rooms,
   // enroll students (including antagna)
   // We are currently handling 5 periods
   const futurePeriods = Period.range(currentPeriod, 1, 5);
-  log.info(`future periods: ${futurePeriods}`);
 
   await ldapBind();
 
@@ -98,7 +92,9 @@ async function start() {
     enrollmentsCsv.end();
   }
 
-  for (const period of previousPeriods) {
+  // Current and previous where we are going to remove antagna
+  // We are currently handling 5 periods
+  for (const period of Period.range(currentPeriod, -4, 0)) {
     log.info(`Handling ${period}, removing admitted`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
