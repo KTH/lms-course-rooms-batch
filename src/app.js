@@ -54,11 +54,13 @@ async function start() {
   // "previousPeriods" are the periods where we are going to remove antagna
   // We are currently handling 5 periods
   const previousPeriods = Period.range(currentPeriod, -4, 0);
+  log.info(`previous periods: ${previousPeriods}`)
 
   // "future Periods" are the periods where we are going to create course rooms,
   // enroll students (including antagna)
   // We are currently handling 5 periods
   const futurePeriods = Period.range(currentPeriod, 1, 5);
+  log.info(`future periods: ${futurePeriods}`)
 
   await ldapBind();
 
