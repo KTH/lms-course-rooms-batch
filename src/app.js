@@ -1,14 +1,14 @@
 require("./check");
 const log = require("skog");
+const Period = require("./lib/period");
 const csv = require("fast-csv");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const Zip = require("jszip");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const canvas = require("./lib/canvas");
-const Period = require("./lib/period");
+const Zip = require("jszip");
 const {
   createLongName,
   createSisCourseId,
@@ -49,10 +49,12 @@ function createSection(round) {
 
 async function start() {
   log.info("Run batch...");
-  const currentPeriod = Period.fromString(process.env.PERIOD);
-  const maxOffsetPeriods = parseInt(process.env.MAX_OFFSET_PERIODS, 10) || 5;
-  const previousPeriods = Period.range(currentPeriod, -maxOffsetPeriods, -1);
-  const futurePeriods = Period.range(currentPeriod, 0, maxOffsetPeriods);
+  const currentPeriod = Period.fromString(process.env.CURRENT_PERIOD);
+
+  // "future Periods" are the periods where we are going to create course rooms,
+  // enroll students (including antagna)
+  // We are currently handling 5 periods
+  const futurePeriods = Period.range(currentPeriod, 1, 5);
 
   await ldapBind();
 
@@ -92,7 +94,9 @@ async function start() {
     enrollmentsCsv.end();
   }
 
-  for (const period of previousPeriods) {
+  // Current and previous where we are going to remove antagna
+  // We are currently handling 5 periods
+  for (const period of Period.range(currentPeriod, -4, 0)) {
     log.info(`Handling ${period}, removing admitted`);
     const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
     const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);

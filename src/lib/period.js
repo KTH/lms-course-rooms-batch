@@ -51,7 +51,9 @@ module.exports = class Period {
   }
 
   /**
-   * Get a range of periods between (period - startOffset) and (period + endOffset)
+   * Get a range of periods between (period + startOffset) and (period + endOffset)
+   * For example: for period:P3, startOffset:1 and endOffset:2 would return P4,P5
+   *
    * @param {Period} period
    */
   static range(period, startOffset, endOffset) {

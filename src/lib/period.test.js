@@ -65,15 +65,24 @@ test("Period.add() returns the correct term", () => {
   expect(current.add(5).toString()).toBe("2021-HT-P1");
 });
 
-test("Period.range() returns a range of periods", () => {
+test("Period.range() returns the 4 previous periods and the current one", () => {
   const current = Period.fromString("2020-HT-P2");
   const expected = [
-    "2020-VT-P3",
     "2020-VT-P4",
     "2020-VT-P5",
     "2020-HT-P0",
     "2020-HT-P1",
     "2020-HT-P2",
+  ];
+
+  expect(Period.range(current, -4, 0).map((c) => c.toString())).toStrictEqual(
+    expected
+  );
+});
+
+test("Period.range() returns the 5 following periods excluding the current", () => {
+  const current = Period.fromString("2020-HT-P2");
+  const expected = [
     "2021-VT-P3",
     "2021-VT-P4",
     "2021-VT-P5",
@@ -81,7 +90,7 @@ test("Period.range() returns a range of periods", () => {
     "2021-HT-P1",
   ];
 
-  expect(Period.range(current, -5, 5).map((c) => c.toString())).toStrictEqual(
+  expect(Period.range(current, 1, 5).map((c) => c.toString())).toStrictEqual(
     expected
   );
 });
