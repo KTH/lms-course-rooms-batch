@@ -46,9 +46,8 @@ module.exports = {
       if (err.response && err.response.statusCode === 404) {
         log.info(`CANVAS: section ${sectionSisId} not found`);
         return [];
-      } else {
-        throw err;
       }
+      throw err;
     }
   },
 };

@@ -1,5 +1,5 @@
 const { Client } = require("ldapts");
-const { AndFilter, EqualityFilter } = require("ldapts/filters");
+const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
 const ldapClient = new Client({
@@ -68,6 +68,7 @@ async function getUsersForMembers(members) {
       attribute: "distinguishedName",
       value: member,
     });
+    // eslint-disable-next-line no-await-in-loop
     const searchEntries = await ldapSearch({
       filter,
       attributes: ["ugKthid"],
@@ -121,6 +122,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
 
   for (const { type, roleId } of ugRoleCanvasRole) {
     result.push(
+      // eslint-disable-next-line no-await-in-loop
       ...(await getEnrollmentCsvData(
         round.sisId,
         roleId,
@@ -161,7 +163,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   return result;
 }
 
-///////////////////
+/// ////////////////
 
 module.exports = {
   ldapBind,

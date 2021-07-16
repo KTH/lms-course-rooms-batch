@@ -1,5 +1,6 @@
 require("dotenv").config();
 const log = require("skog");
+
 log.init.pino({
   app: "lms-course-rooms-batch",
 });
@@ -15,4 +16,5 @@ process.on("unhandledRejection", (reason) => {
 });
 
 require("@kth/reqvars").check();
+
 log.info("Enrvironment check successful");

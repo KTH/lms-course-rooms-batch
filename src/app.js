@@ -71,7 +71,8 @@ async function start() {
       `${dir}/enrollments-${period}.csv`
     );
 
-    for (round of await getCourseRounds(period)) {
+    // eslint-disable-next-line no-await-in-loop
+    for (const round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
       // log.info(`Getting enrollments for ${round.sisId}`);
       // log.info(round.dump);
@@ -79,10 +80,11 @@ async function start() {
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
 
+      // eslint-disable-next-line no-await-in-loop
       const enrollments = await loadEnrollments(round, {
         includeAntagna: true,
       });
-      for (enrollment of enrollments) {
+      for (const enrollment of enrollments) {
         enrollmentsCsv.write(enrollment);
       }
     }
@@ -102,19 +104,22 @@ async function start() {
       `${dir}/enrollments-${period}.csv`
     );
 
-    for (round of await getCourseRounds(period)) {
+    // eslint-disable-next-line no-await-in-loop
+    for (const round of await getCourseRounds(period)) {
       round.sisId = createSisCourseId(round);
       // log.info(`Getting enrollments for ${round.sisId}`);
 
       coursesCsv.write(createRoom(round));
       sectionsCsv.write(createSection(round));
 
+      // eslint-disable-next-line no-await-in-loop
       const enrollments = await loadEnrollments(round);
-      for (enrollment of enrollments) {
+      for (const enrollment of enrollments) {
         enrollmentsCsv.write(enrollment);
       }
 
-      for (enrollment of await canvas.getAntagnaToDelete(round.sisId)) {
+      // eslint-disable-next-line no-await-in-loop
+      for (const enrollment of await canvas.getAntagnaToDelete(round.sisId)) {
         enrollmentsCsv.write(enrollment);
       }
     }

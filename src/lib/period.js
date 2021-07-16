@@ -46,9 +46,8 @@ module.exports = class Period {
   static getTerm(periodNumber) {
     if (periodNumber <= 2) {
       return "HT";
-    } else {
-      return "VT";
     }
+    return "VT";
   }
 
   /**
@@ -89,7 +88,7 @@ module.exports = class Period {
     let newPeriod = this.period + 1;
 
     if (newPeriod === 3) {
-      newYear = newYear + 1;
+      newYear += 1;
     }
 
     if (newPeriod === 6) {
@@ -109,7 +108,7 @@ module.exports = class Period {
     let newPeriod = this.period - 1;
 
     if (newPeriod === 2) {
-      newYear = newYear - 1;
+      newYear -= 1;
     }
 
     if (newPeriod === -1) {
@@ -129,7 +128,8 @@ module.exports = class Period {
   add(n) {
     if (n > 0) {
       return this.next().add(n - 1);
-    } else if (n < 0) {
+    }
+    if (n < 0) {
       return this.prev().add(n + 1);
     }
 
