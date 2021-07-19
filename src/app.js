@@ -1,14 +1,15 @@
 require("./check");
 const log = require("skog");
-const Period = require("./lib/period");
+const Zip = require("jszip");
 const csv = require("fast-csv");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
+
+const Period = require("./lib/period");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const canvas = require("./lib/canvas");
-const Zip = require("jszip");
 const {
   createLongName,
   createSisCourseId,
