@@ -36,7 +36,7 @@ Any **feature** or decision:
 
 - Configuration files: `.gitignore`, `.prettierignore`, `.dockerignore`, etc.
 - Dev dependencies: prettier and eslint for formatting and linting; jest for testing
-- NPM commands: `npm test`, `npm run format` and `npm run dev`
+- NPM commands: `npm test`, `npm run format`, `npm start` and `npm run dev`
 - KTH-specific Docker-related files: `docker.conf`, `Dockerfile`, `docker-compose-unit-tests.yml`, `.dockerignore`
 
 ## Contributing
