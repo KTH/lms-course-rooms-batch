@@ -10,8 +10,7 @@ jobs:
       - name: Run Evolene CI pipeline steps
         shell: bash
         env:
-          SLACK_CHANNELS: '#team-e-larande-build'
-          BUILD_INFORMATION_OUTPUT_FILE: '/config/version.js'
+          SLACK_CHANNELS: "#team-e-larande-build"
           SKIP_DRY_RUN: True
 
         run: |
