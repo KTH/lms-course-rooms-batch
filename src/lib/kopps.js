@@ -9,7 +9,7 @@ module.exports = {
       log.debug(`Reaching Kopps endpoint /courses/offerings for ${period}`);
       const response = await got({
         prefixUrl: process.env.KOPPS_API_URL,
-        timeout: 30 * 1000,
+        timeout: 300 * 1000,
         url: "courses/offerings",
         responseType: "json",
         searchParams: {
