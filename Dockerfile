@@ -11,7 +11,6 @@ WORKDIR /usr/src/app
 # they haven't changed
 COPY ["package.json", "package.json"]
 COPY ["package-lock.json", "package-lock.json"]
-RUN apk add --no-cache python make g++
 
 # Why --unsafe-perm?
 # > See: https://stackoverflow.com/questions/18136746/npm-install-failed-with-cannot-run-in-wd
@@ -25,7 +24,6 @@ WORKDIR /usr/src/app
 COPY ["package.json", "package.json"]
 COPY ["package-lock.json", "package-lock.json"]
 
-RUN apk add --no-cache python make g++
 RUN npm ci --production --unsafe-perm
 
 # Third "stage" is the production image, where we don't install dependencies
