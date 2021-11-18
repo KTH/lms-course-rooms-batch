@@ -141,28 +141,40 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   }
 
   // Student enrollments
-  const studentEnrollments = [];
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
 
-  studentEnrollments.push(
-    ...(await getEnrollmentCsvData(
-      round.sisId,
-      3,
-      `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
-    ))
+  const registeredStudentsEnrollments = await getEnrollmentCsvData(
+    round.sisId,
+    3,
+    `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
   );
+  let antagnaStudentsEnrollments = [];
 
   if (includeAntagna) {
-    studentEnrollments.push(
-      ...(await getEnrollmentCsvData(
-        round.sisId,
-        25,
-        `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
-      ))
+    antagnaStudentsEnrollments = await getEnrollmentCsvData(
+      round.sisId,
+      25,
+      `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
     );
+
+    for (const antagnaEnrollment of antagnaStudentsEnrollments) {
+      const isRegistered = registeredStudentsEnrollments.find(
+        (regEnr) => regEnr.user_id === antagnaEnrollment.user_id
+      );
+
+      if (isRegistered) {
+        // NOTE: Check in Canvas that the student has no longer antagna role
+        // otherwise this can provoke false SIS Import Errors
+        antagnaEnrollment.status = "deleted";
+      }
+    }
   }
 
-  return [...teacherEnrollments, ...studentEnrollments];
+  return [
+    ...teacherEnrollments,
+    ...registeredStudentsEnrollments,
+    ...antagnaStudentsEnrollments,
+  ];
 }
 
 /// ////////////////
