@@ -108,41 +108,43 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
 }
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
-  const result = [];
-  const ugRoleCanvasRole = [
-    // role_id's are defined in Canvas
-    { type: "teachers", roleId: 4 },
-    { type: "courseresponsible", roleId: 9 },
-    { type: "assistants", roleId: 5 },
-  ];
-
+  const teacherEnrollments = [];
   const roundId = round.sisId.slice(-1);
+
+  // Teacher enrollments
   // prettier-ignore
   const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
+  const teacherRoles = [
+    {
+      canvasRoleId: 4,
+      ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.teachers`,
+    },
+    {
+      canvasRoleId: 9,
+      ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.courseresponsible`,
+    },
+    {
+      canvasRoleId: 5,
+      ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.assistants`,
+    },
+    {
+      canvasRoleId: 10,
+      ugGroupName: `${ugNameEduBase}.examiner`,
+    },
+  ];
 
-  for (const { type, roleId } of ugRoleCanvasRole) {
-    result.push(
+  for (const { canvasRoleId, ugGroupName } of teacherRoles) {
+    teacherEnrollments.push(
       // eslint-disable-next-line no-await-in-loop
-      ...(await getEnrollmentCsvData(
-        round.sisId,
-        roleId,
-        `${ugNameEduBase}.${round.startTerm}.${roundId}.${type}`
-      ))
+      ...(await getEnrollmentCsvData(round.sisId, canvasRoleId, ugGroupName))
     );
   }
 
-  // examinators, role_id: 10 FIXME: handle this value in the same way as other role_ids
-  result.push(
-    ...(await getEnrollmentCsvData(
-      round.sisId,
-      10,
-      `${ugNameEduBase}.examiner`
-    ))
-  );
-
-  // Registered students, role_id: 3
+  // Student enrollments
+  const studentEnrollments = [];
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
-  result.push(
+
+  studentEnrollments.push(
     ...(await getEnrollmentCsvData(
       round.sisId,
       3,
@@ -151,7 +153,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
   );
 
   if (includeAntagna) {
-    result.push(
+    studentEnrollments.push(
       ...(await getEnrollmentCsvData(
         round.sisId,
         25,
@@ -160,7 +162,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
     );
   }
 
-  return result;
+  return [...teacherEnrollments, ...studentEnrollments];
 }
 
 /// ////////////////
