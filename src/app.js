@@ -51,14 +51,15 @@ function createSection(round) {
 // ADD NEW COURSE ROOMS
 // 1. Determine current semester i.e. 20212 yyyyn n: [1 - spring | 2 - autumn]
 // 2. Fetch course rounds from Kopps that start this semester or later
-// 3. Filter by startDate so we only get course rounds that start within preCreationDuration
+//    NOTE: We need to have some margins, perhaps current semester +/-2 semesters
+// 3. Filter by startDate so we only get course rounds where: startDate - preCreationDuration <= today
 //    - preCreationDuration -- how far in advance should a course room be created (default: 180 days)
 // 4. For each course round create source id and add to CSV
-//    - coursesCsv -- creates course rooms
-//    - sectionsCsv -- creates a section in each course room
-//    - enrollmentsCsv -- all students and teachers added to section
+//    - coursesData -- creates course rooms
+//    - sectionsData -- creates a section in each course room
+//    - enrollmentsData -- all students (both 'admitted-not-registerd', 'registered') and teachers added to section
 //    NOTE: students and teachers are ONLY added to sections, never course rooms
-// 5. Write files to disk
+// 5. Return data structure
 //    NOTE: Send files as an atomic delivery
 
 // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
@@ -67,16 +68,71 @@ function createSection(round) {
 // - role: registered = 'registrerad student'
 // 1. Determine last semester i.e. 20212 yyyyn n: [1 - spring | 2 - autumn]
 // 2. Fetch course rounds from Kopps that start last semester or later
-// 3. Filter by startDate so we only get course rounds that start within purgeDuration
+//    NOTE: We need to have some margins, perhaps current semester +1/-2 semesters
+// 3. Filter by startDate so we only get course rounds where: startDate + purgeDuration <= today
 //    - purgeDuration -- how long since course round startDate can a students remain if not registered (default: 3 days)
-// 4. 
+// 4. For each course round, figure out which students should be removed
+//    - enrollmentsCsv -- this is the data that is affected
+// 5. Manipulate existing data structure OR return new data structure
 
+// SUBMIT TO CANVAS
+// 1. Potentially merge data structures from ADD NEW COURSE ROOMS and REMOVE ADMITTED-NOT-REGISTERED STUDENTS
+// 2. Convert data structure to something we can send to Canvas
+//    NOTE: We currently use csv-files and Zip them to send as a single file
+// 3. Send files to Canvas
+// 4. Report result to logging
 
-// FINALLY
-// 1. Send files to Canvas
-//    - coursesCsv
-//    - sectionsCsv
-//    - enrollmentsCsv
+async function getCourseRoundData() {
+  return null;
+}
+async function getCourseRoomData({ courseRoundDataIn }) {
+  return null;
+}
+async function getStudentsPendingRemoval({
+  enrollmentsDataIn,
+  courseRoundDataIn,
+}) {
+  return null;
+}
+function purgeStudents({ enrollmentsDataIn, studentsPendingRemoval }) {
+  return null;
+}
+async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
+  return null;
+}
+
+async function main() {
+  // GET COURSE ROUND DATA
+  const { courseRoundDataIn } = await getCourseRoundData();
+
+  // ADD NEW COURSE ROOMS
+  const {
+    courseData,
+    sectionsData,
+    enrollmentsData: enrollmentsDataIn,
+  } = await getCourseRoomData({ courseRoundDataIn });
+
+  // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
+  const { studentsPendingRemoval } = await getStudentsPendingRemoval({
+    enrollmentsDataIn,
+    courseRoundDataIn,
+  });
+
+  const { enrollmentsData } = purgeStudents({
+    enrollmentsDataIn,
+    studentsPendingRemoval,
+  });
+
+  // SUBMIT TO CANVAS
+  const { result } = await submitToCanvas({
+    courseData,
+    sectionsData,
+    enrollmentsData,
+  });
+
+  console.info(result);
+}
+main();
 
 async function start() {
   log.info("Run batch...");
