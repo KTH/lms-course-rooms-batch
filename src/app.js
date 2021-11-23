@@ -48,6 +48,36 @@ function createSection(round) {
   };
 }
 
+// ADD NEW COURSE ROOMS
+// 1. Determine current semester i.e. 20212 yyyyn n: [1 - spring | 2 - autumn]
+// 2. Fetch course rounds from Kopps that start this semester or later
+// 3. Filter by startDate so we only get course rounds that start within preCreationDuration
+//    - preCreationDuration -- how far in advance should a course room be created (default: 180 days)
+// 4. For each course round create source id and add to CSV
+//    - coursesCsv -- creates course rooms
+//    - sectionsCsv -- creates a section in each course room
+//    - enrollmentsCsv -- all students and teachers added to section
+//    NOTE: students and teachers are ONLY added to sections, never course rooms
+// 5. Write files to disk
+//    NOTE: Send files as an atomic delivery
+
+// REMOVE ADMITTED-NOT-REGISTERED STUDENTS
+// NOTE: Students change role from 'admitted-not-registerd' to 'registered', we only remove the former
+// - role: admitted-not-registerd = 'antagen'
+// - role: registered = 'registrerad student'
+// 1. Determine last semester i.e. 20212 yyyyn n: [1 - spring | 2 - autumn]
+// 2. Fetch course rounds from Kopps that start last semester or later
+// 3. Filter by startDate so we only get course rounds that start within purgeDuration
+//    - purgeDuration -- how long since course round startDate can a students remain if not registered (default: 3 days)
+// 4. 
+
+
+// FINALLY
+// 1. Send files to Canvas
+//    - coursesCsv
+//    - sectionsCsv
+//    - enrollmentsCsv
+
 async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.CURRENT_PERIOD);
