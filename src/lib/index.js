@@ -106,7 +106,10 @@ async function getCourseRoundData() {
   return result;
 }
 async function getCourseRoomData(courseRoundDataIn) {
-  return { courseData: courseRoundDataIn.map(createRoom) };
+  return { 
+    courseData: courseRoundDataIn.map(createRoom),
+    sectionsData: courseRoundDataIn.map(createSection)
+  };
 }
 async function getStudentsPendingRemoval({
   enrollmentsDataIn,
