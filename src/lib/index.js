@@ -106,7 +106,13 @@ async function getCourseRoundData() {
   return result;
 }
 async function getCourseRoomData(courseRoundDataIn) {
-  const filteredRounds = courseRoundDataIn.filter( round => {})
+  const filteredRounds = courseRoundDataIn.filter( round => {
+    const roundDate = new Date(createStartDate(round))
+    const diff = new Date() - roundDate
+    // 180 days
+    return diff <= 180 * 24 * 60 * 60 * 1000
+
+  })
 
   return { 
     courseData: filteredRounds.map(createRoom),

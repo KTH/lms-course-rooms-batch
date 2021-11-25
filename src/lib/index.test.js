@@ -7,11 +7,11 @@ describe("getCourseRoundData", () => {
   it("should filter out course rounds that starts in the far future", async () => {
     const {getCourseRoundDataResult, mockedDate }= require('./index.fixture')
     jest.useFakeTimers('modern').setSystemTime(mockedDate)
-
+    
     const { courseData} = await _getCourseRoomData(getCourseRoundDataResult);
     expect(courseData.length).toBe(1);
+    expect(courseData[0].courseCode).toEqual('F1A5033')
 
-    // TODO: enrollmentsData
   });
 
   it.skip("should return section objects for each round", async () => {
