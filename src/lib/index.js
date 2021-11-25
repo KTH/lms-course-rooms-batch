@@ -106,10 +106,13 @@ async function getCourseRoundData() {
   return result;
 }
 async function getCourseRoomData(courseRoundDataIn) {
+  const filteredRounds = courseRoundDataIn.filter( round => {})
+
   return { 
-    courseData: courseRoundDataIn.map(createRoom),
-    sectionsData: courseRoundDataIn.map(createSection)
+    courseData: filteredRounds.map(createRoom),
+    sectionsData: filteredRounds.map(createSection)
   };
+
 }
 async function getStudentsPendingRemoval({
   enrollmentsDataIn,
