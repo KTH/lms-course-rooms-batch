@@ -82,34 +82,6 @@ function createSection(round) {
 // 3. Send files to Canvas
 // 4. Report result to logging
 
-/**
- * Returns course rounds that start last year autumn semester or later
- * @returns {Promise<CourseRoundData[]>}
- */
-async function getCourseRoundData() {
-  const today = new Date();
-  const lastYear = today.getFullYear() - 1;
-  const nextYear = today.getFullYear() + 1;
-
-  const semesters = [
-    `${lastYear}2`,
-    `${today.getFullYear()}1`,
-    `${today.getFullYear()}2`,
-    `${nextYear}1`,
-  ];
-
-  const result = [];
-
-  for (const semester of semesters) {
-    // eslint-disable-next-line no-await-in-loop
-    result.push(...(await getCourseRounds(semester)));
-  }
-
-  return result;
-}
-async function getCourseRoomData({ courseRoundDataIn }) {
-  return null;
-}
 async function getStudentsPendingRemoval({
   enrollmentsDataIn,
   courseRoundDataIn,

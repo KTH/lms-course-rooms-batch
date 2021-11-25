@@ -5,16 +5,16 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-const { getCourseRounds } = require("./lib/kopps");
-const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
-const canvas = require("./lib/canvas");
+const { getCourseRounds } = require("./kopps");
+// const { loadEnrollments, ldapBind, ldapUnbind } = require("./ug");
+const canvas = require("./canvas");
 const {
   createLongName,
   createSisCourseId,
   createAccountId,
   createEndDate,
   createStartDate,
-} = require("./lib/utils");
+} = require("./utils");
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -105,8 +105,8 @@ async function getCourseRoundData() {
 
   return result;
 }
-async function getCourseRoomData({ courseRoundDataIn }) {
-  return null;
+async function getCourseRoomData(courseRoundDataIn) {
+  return { courseData: courseRoundDataIn.map(createRoom) };
 }
 async function getStudentsPendingRemoval({
   enrollmentsDataIn,
@@ -122,5 +122,6 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 module.exports = {
-  _getCourseRoundData:getCourseRoundData
-}
+  _getCourseRoomData: getCourseRoomData,
+  _getCourseRoundData: getCourseRoundData,
+};
