@@ -105,6 +105,7 @@ async function getCourseRoundData() {
 
   return result;
 }
+// TODO: rename this function since it doesn't fetch any data
 async function getCourseRoomData(courseRoundDataIn) {
   const courseRounds = courseRoundDataIn.filter( round => {
     const roundDate = new Date(createStartDate(round))

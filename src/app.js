@@ -8,7 +8,7 @@ const os = require("os");
 
 const Period = require("./lib/period");
 const { getCourseRounds } = require("./lib/kopps");
-const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
+const { loadEnrollments, ldapBind, ldapUnbind, loadAllEnrollments } = require("./lib/ug");
 const canvas = require("./lib/canvas");
 const {
   createLongName,
@@ -103,10 +103,11 @@ async function main() {
   const {
     coursesData,
     sectionsData
-  } = await getCourseRoomData({ courseRoundData });
+  } = await getCourseRoomData( courseRoundData );
   
   const enrollments = loadAllEnrollments(coursesData)
   console.log(JSON.stringify(enrollments))
+  process.exit()
 
   // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
   const { studentsPendingRemoval } = await getStudentsPendingRemoval({
