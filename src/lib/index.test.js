@@ -4,23 +4,16 @@ const { expect, test, describe } = require("@jest/globals");
 const { _getCourseRoomData } = require("./index");
 
 describe("getCourseRoundData", () => {
-  it("should filter out course rounds that starts in the far future", async () => {
+  it("should filter course rounds to include only those starting in the past or the near future", async () => {
     const {getCourseRoundDataResult, mockedDate }= require('./index.fixture')
     jest.useFakeTimers('modern').setSystemTime(mockedDate)
     
-    const { courseData} = await _getCourseRoomData(getCourseRoundDataResult);
-    console.log(courseData)
+    const { courseData, sectionsData } = await _getCourseRoomData(getCourseRoundDataResult);
     expect(courseData.length).toBe(1);
-    expect(courseData[0].course_id).toMatch(/F1A5033/) // Not exact match, since this is a sis id containing term and roundId as well 
+    expect(sectionsData.length).toBe(1);
 
-  });
+    expect(courseData[0].course_id).toMatch(/F1A5033/) 
+    expect(sectionsData[0].course_id).toMatch(/F1A5033/) 
 
-  it.skip("should return section objects for each round", async () => {
-    const {getCourseRoundDataResult }= require('./index.fixture')
-
-    const { sectionsData } = await _getCourseRoomData(getCourseRoundDataResult);
-    expect(sectionsData.length).toBe(2);
-
-    // TODO: enrollmentsData
   });
 });
