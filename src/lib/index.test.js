@@ -11,7 +11,7 @@ describe("getCourseRoundData", () => {
     const { courseData} = await _getCourseRoomData(getCourseRoundDataResult);
     console.log(courseData)
     expect(courseData.length).toBe(1);
-    expect(courseData[0].courseCode).toEqual('F1A5033')
+    expect(courseData[0].course_id).toMatch(/F1A5033/) // Not exact match, since this is a sis id containing term and roundId as well 
 
   });
 

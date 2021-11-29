@@ -106,18 +106,18 @@ async function getCourseRoundData() {
   return result;
 }
 async function getCourseRoomData(courseRoundDataIn) {
-  const filteredRounds = courseRoundDataIn.filter( round => {
+  const courseRounds = courseRoundDataIn.filter( round => {
     const roundDate = new Date(createStartDate(round))
     const diff = roundDate - new Date() 
     // 180 days
     return diff <= 180 * 24 * 60 * 60 * 1000
 
   })
-
-  // TODO: I don't think this is the correct function. createRoom reads sisId, which the akt api doesn't include.
+    .map(round => ({sisId: createSisCourseId(round), ...round}))
+debugger
   return { 
-    courseData: filteredRounds.map(createRoom),
-    sectionsData: filteredRounds.map(createSection)
+    courseData: courseRounds.map(createRoom),
+    sectionsData: courseRounds.map(createSection)
   };
 
 }
