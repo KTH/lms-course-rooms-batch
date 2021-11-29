@@ -114,7 +114,6 @@ async function getCourseRoomData(courseRoundDataIn) {
 
   })
     .map(round => ({sisId: createSisCourseId(round), ...round}))
-debugger
   return { 
     courseData: courseRounds.map(createRoom),
     sectionsData: courseRounds.map(createSection)
