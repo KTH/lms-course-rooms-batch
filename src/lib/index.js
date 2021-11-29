@@ -114,11 +114,9 @@ async function getCourseRoomData(courseRoundDataIn) {
     return diff <= 180 * 24 * 60 * 60 * 1000
 
   })
-    .map(round => ({sisId: createSisCourseId(round), ...round}))
-  return { 
-    coursesData: courseRounds.map(createRoom),
-    sectionsData: courseRounds.map(createSection)
-  };
+  //TODO: should not re-map the objects here, since the enrollments require original format. Do this in the end instead.
+    // .map(round => ({sisId: createSisCourseId(round), ...round}))
+  return courseRounds;
 
 }
 async function getStudentsPendingRemoval({
