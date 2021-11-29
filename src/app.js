@@ -100,11 +100,9 @@ async function main() {
   // GET COURSE ROUND DATA
   const courseRoundData = await getCourseRoundData();
 
-  const {
-    coursesData,
-    sectionsData
-  } = await getCourseRoomData( courseRoundData );
+  const coursesData = await filterCourseRounds( courseRoundData );
   
+  //TODO
   const enrollments = loadAllEnrollments(coursesData)
   console.log(JSON.stringify(enrollments))
   process.exit()
