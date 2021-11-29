@@ -17,6 +17,7 @@ const {
   createEndDate,
   createStartDate,
 } = require("./lib/utils");
+const {getCourseRoundData, getCourseRoomData} = require('./lib/index')
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -97,19 +98,20 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 
 async function main() {
   // GET COURSE ROUND DATA
-  const courseRoundDataIn = await getCourseRoundData();
+  const courseRoundData = await getCourseRoundData();
 
-  // ADD NEW COURSE ROOMS
   const {
-    courseData,
-    sectionsData,
-    enrollmentsData: enrollmentsDataIn,
-  } = await getCourseRoomData({ courseRoundDataIn });
+    coursesData,
+    sectionsData
+  } = await getCourseRoomData({ courseRoundData });
+  
+  const enrollments = loadAllEnrollments(coursesData)
+  console.log(JSON.stringify(enrollments))
 
   // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
   const { studentsPendingRemoval } = await getStudentsPendingRemoval({
-    enrollmentsDataIn,
-    courseRoundDataIn,
+    enrollmentsDataIn:enrollments,
+    courseRoundDataIn:courseRoundData,
   });
 
   const { enrollmentsData } = purgeStudents({
@@ -126,8 +128,6 @@ async function main() {
 
   console.info(result);
 }
-main();
-
 async function start() {
   log.info("Run batch...");
   const currentPeriod = Period.fromString(process.env.CURRENT_PERIOD);
@@ -234,4 +234,4 @@ async function start() {
   log.info(`Finished batch successfully.`);
 }
 
-start();
+main();

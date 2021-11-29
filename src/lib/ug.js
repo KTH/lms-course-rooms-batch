@@ -107,6 +107,15 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
+
+async function loadAllEnrollments(rounds){
+  const result = []
+  for (const round in rounds){
+    result.push(await loadEnrollments(round, {includeAntagna: true}))
+  }
+  return results
+}
+
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const result = [];
   const ugRoleCanvasRole = [
@@ -169,4 +178,5 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
+  loadAllEnrollments
 };

@@ -115,7 +115,7 @@ async function getCourseRoomData(courseRoundDataIn) {
   })
     .map(round => ({sisId: createSisCourseId(round), ...round}))
   return { 
-    courseData: courseRounds.map(createRoom),
+    coursesData: courseRounds.map(createRoom),
     sectionsData: courseRounds.map(createSection)
   };
 
@@ -134,6 +134,6 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 module.exports = {
-  _getCourseRoomData: getCourseRoomData,
-  _getCourseRoundData: getCourseRoundData,
+  getCourseRoomData,
+  getCourseRoundData,
 };
