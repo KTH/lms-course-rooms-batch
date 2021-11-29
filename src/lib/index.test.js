@@ -9,6 +9,7 @@ describe("getCourseRoundData", () => {
     jest.useFakeTimers('modern').setSystemTime(mockedDate)
     
     const { courseData} = await _getCourseRoomData(getCourseRoundDataResult);
+    console.log(courseData)
     expect(courseData.length).toBe(1);
     expect(courseData[0].courseCode).toEqual('F1A5033')
 
