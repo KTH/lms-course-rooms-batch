@@ -1,10 +1,13 @@
 require("dotenv").config();
-const { expect, test, describe, beforeAll } = require("@jest/globals");
+const { expect, test, describe, beforeAll, afterAll } = require("@jest/globals");
 
 const { filterFutureRounds } = require("./index");
 beforeAll(()=>{
     const { mockedDate } = require("./index.fixture");
     jest.useFakeTimers("modern").setSystemTime(mockedDate);
+})
+afterAll(()=>{
+  jest.useRealTimers()
 })
 describe("filterFutureRounds", () => {
   it("should only include rounds starting in the future, but no longer then 6 months ahead", async () => {
