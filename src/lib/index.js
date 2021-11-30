@@ -145,5 +145,6 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 
 module.exports = {
   filterFutureRounds,
+  filterNearFutureRounds,
   getCourseRoundData,
 };
