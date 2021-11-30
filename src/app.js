@@ -17,7 +17,7 @@ const {
   createEndDate,
   createStartDate,
 } = require("./lib/utils");
-const {getCourseRoundData, groupCourseRoundsByStartdate} = require('./lib/index')
+const {getCourseRoundData, filterFutureRounds} = require('./lib/index')
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -100,13 +100,8 @@ async function main() {
   // GET COURSE ROUND DATA
   const courseRoundData = await getCourseRoundData();
 
-  const filteredCourseRounds = groupCourseRoundsByStartdate( courseRoundData );
+  const futureRounds = filterFutureRounds( courseRoundData );
   
-  //TODO
-  const enrollments = loadAllEnrollments(filteredCourseRounds)
-  console.log(JSON.stringify(enrollments))
-  process.exit()
-
   // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
   const { studentsPendingRemoval } = await getStudentsPendingRemoval({
     enrollmentsDataIn:enrollments,

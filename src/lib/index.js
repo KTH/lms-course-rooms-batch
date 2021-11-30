@@ -105,8 +105,7 @@ async function getCourseRoundData() {
 
   return result;
 }
-// TODO: rename this function since it doesn't fetch any data
-async function groupCourseRoundsByStartdate(courseRoundDataIn) {
+async function filterFutureRounds(courseRoundDataIn) {
   // We care about course rounds starting in 6 months or sooner. Rounds starting later is skipped. We care about rounds that started in the past.
   const futureThreshold = 180 * 24 * 60 * 60 * 1000
   const pastAndFutureCourserounds= courseRoundDataIn.filter( round => {
@@ -114,7 +113,7 @@ async function groupCourseRoundsByStartdate(courseRoundDataIn) {
     const diff = roundDate - new Date() 
     return diff <= futureThreshold
   })
-  return {'PAST_AND_FUTURE_ROUNDS':pastAndFutureCourserounds};
+  return pastAndFutureCourserounds;
 
 }
 async function getStudentsPendingRemoval({
@@ -131,6 +130,6 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 module.exports = {
-  groupCourseRoundsByStartdate,
+  filterFutureRounds,
   getCourseRoundData,
 };
