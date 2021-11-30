@@ -8,7 +8,12 @@ const os = require("os");
 
 const Period = require("./lib/period");
 const { getCourseRounds } = require("./lib/kopps");
-const { loadEnrollments, ldapBind, ldapUnbind, loadAllEnrollments } = require("./lib/ug");
+const {
+  loadEnrollments,
+  ldapBind,
+  ldapUnbind,
+  loadAllEnrollments,
+} = require("./lib/ug");
 const canvas = require("./lib/canvas");
 const {
   createLongName,
@@ -17,7 +22,7 @@ const {
   createEndDate,
   createStartDate,
 } = require("./lib/utils");
-const {getCourseRoundData, filterFutureRounds} = require('./lib/index')
+const { getCourseRoundData, filterFutureRounds } = require("./lib/index");
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -100,12 +105,12 @@ async function main() {
   // GET COURSE ROUND DATA
   const courseRoundData = await getCourseRoundData();
 
-  const futureRounds = filterFutureRounds( courseRoundData );
-  
+  const futureRounds = filterFutureRounds(courseRoundData);
+
   // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
   const { studentsPendingRemoval } = await getStudentsPendingRemoval({
-    enrollmentsDataIn:enrollments,
-    courseRoundDataIn:courseRoundData,
+    enrollmentsDataIn: enrollments,
+    courseRoundDataIn: courseRoundData,
   });
 
   const { enrollmentsData } = purgeStudents({

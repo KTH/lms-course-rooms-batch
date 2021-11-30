@@ -1,6 +1,5 @@
-
 module.exports = {
-  mockedDate:new Date('2021-01-01T00:00:01Z'),
+  mockedDate: new Date("2021-01-01T00:00:01Z"),
   getCourseRoundDataResult: [
     // start in the past
     {

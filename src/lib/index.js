@@ -107,14 +107,13 @@ async function getCourseRoundData() {
 }
 async function filterFutureRounds(courseRoundDataIn) {
   // We care about course rounds starting in 6 months or sooner. Rounds starting later is skipped. We care about rounds that started in the past.
-  const futureThreshold = 180 * 24 * 60 * 60 * 1000
-  const pastAndFutureCourserounds= courseRoundDataIn.filter( round => {
-    const roundDate = new Date(createStartDate(round))
-    const diff = roundDate - new Date() 
-    return diff <= futureThreshold
-  })
-  return pastAndFutureCourserounds;
-
+  const futureThreshold = 180 * 24 * 60 * 60 * 1000;
+  return courseRoundDataIn.filter((round) => {
+    const roundDate =
+      new Date(createStartDate(round))
+    const now = new Date();
+    return roundDate - now <= futureThreshold && roundDate - now >= 0;
+  });
 }
 async function getStudentsPendingRemoval({
   enrollmentsDataIn,

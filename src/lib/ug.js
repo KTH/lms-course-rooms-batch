@@ -107,13 +107,12 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
-
-async function loadAllEnrollments(rounds){
-  const result = []
-  for (const round of rounds){
-    result.push(await loadEnrollments(round, {includeAntagna: true}))
+async function loadAllEnrollments(rounds) {
+  const result = [];
+  for (const round of rounds) {
+    result.push(await loadEnrollments(round, { includeAntagna: true }));
   }
-  return results
+  return results;
 }
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
@@ -178,5 +177,5 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
-  loadAllEnrollments
+  loadAllEnrollments,
 };
