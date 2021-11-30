@@ -108,8 +108,7 @@ async function getCourseRoundData() {
 /**course rounds starting in 3 days or sooner. Rounds starting later is skipped. Rounds already started is skipped
  */
 async function filterNearFutureRounds(courseRoundDataIn) {
-  // 
-  const futureThreshold = 180 * 24 * 60 * 60 * 1000;
+  const futureThreshold = 3 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
@@ -121,7 +120,6 @@ async function filterNearFutureRounds(courseRoundDataIn) {
 /* course rounds starting in 6 months or sooner. Rounds starting later is skipped. Rounds already started are skipped
  */
 async function filterFutureRounds(courseRoundDataIn) {
-  // 
   const futureThreshold = 180 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =

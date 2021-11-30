@@ -23,7 +23,7 @@ describe("filterFutureRounds", () => {
   });
 });
 describe("filterNearFutureRounds", ()=>{
-  it("should...", async ()=>{
+  it("should only include rounds starting in a few days", async ()=>{
     const nearFutureRounds = await filterNearFutureRounds(getCourseRoundDataResult);
     expect(nearFutureRounds.length).toBe(1)
     expect(nearFutureRounds[0].courseCode).toMatch('F1A5032')
