@@ -106,17 +106,15 @@ async function getCourseRoundData() {
   return result;
 }
 // TODO: rename this function since it doesn't fetch any data
-async function getCourseRoomData(courseRoundDataIn) {
-  const courseRounds = courseRoundDataIn.filter( round => {
+async function groupCourseRoundsByStartdate(courseRoundDataIn) {
+  // We care about course rounds starting in 6 months or sooner. Rounds starting later is skipped. We care about rounds that started in the past.
+  const futureThreshold = 180 * 24 * 60 * 60 * 1000
+  const pastAndFutureCourserounds= courseRoundDataIn.filter( round => {
     const roundDate = new Date(createStartDate(round))
     const diff = roundDate - new Date() 
-    // 180 days
-    return diff <= 180 * 24 * 60 * 60 * 1000
-
+    return diff <= futureThreshold
   })
-  //TODO: should not re-map the objects here, since the enrollments require original format. Do this in the end instead.
-    // .map(round => ({sisId: createSisCourseId(round), ...round}))
-  return courseRounds;
+  return {'PAST_AND_FUTURE_ROUNDS':pastAndFutureCourserounds};
 
 }
 async function getStudentsPendingRemoval({
@@ -133,6 +131,6 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 module.exports = {
-  getCourseRoomData,
+  groupCourseRoundsByStartdate,
   getCourseRoundData,
 };
