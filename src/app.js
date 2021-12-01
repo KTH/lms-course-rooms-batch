@@ -110,6 +110,8 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 
 async function main() {
   log.info('Run batch...')
+
+  await ldapBind();
   const courseRoundData = await getCourseRoundData();
 
   const pastOrFutureRounds = removeRoundsInTheFarFuture(courseRoundData);
