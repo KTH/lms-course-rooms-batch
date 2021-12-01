@@ -125,12 +125,13 @@ async function removeRoundsInTheFarFuture(courseRoundDataIn) {
     return roundDate - now <= futureThreshold 
   });
 }
-async function filterPastRounds(courseRoundDataIn) {
+async function filterRoundsStartedInThePast(courseRoundDataIn) {
+  const threshold = 3 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
     const now = new Date();
-    return roundDate - now <= 0;
+    return roundDate <= now - threshold 
   });
 }
 async function getStudentsPendingRemoval({
@@ -149,6 +150,6 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 module.exports = {
   removeRoundsInTheFarFuture,
   filterNewlyStartedOrFutureRounds,
-  filterPastRounds,
+  filterRoundsStartedInThePast,
   getCourseRoundData,
 };

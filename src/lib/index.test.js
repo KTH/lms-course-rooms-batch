@@ -2,7 +2,7 @@ require("dotenv").config();
 const { expect, test, describe, beforeAll, afterAll } = require("@jest/globals");
 
 const { getCourseRoundDataResult} = require("./index.fixture");
-const { removeRoundsInTheFarFuture, filterNewlyStartedOrFutureRounds, filterPastRounds} = require("./index");
+const { removeRoundsInTheFarFuture, filterNewlyStartedOrFutureRounds, filterRoundsStartedInThePast} = require("./index");
 
 beforeAll(()=>{
     const { mockedDate } = require("./index.fixture");
@@ -33,10 +33,11 @@ describe("filterNewlyStartedOrFutureRounds", ()=>{
     expect(rounds.length).toBe(2)
   })
 })
-describe.skip("filterPastRounds", ()=>{
-  it("should include rounds started more then 3 days ago", async ()=>{
-    const nearFutureRounds = await filterPastRounds(getCourseRoundDataResult);
-    expect(nearFutureRounds.length).toBe(1)
-    expect(nearFutureRounds[0].courseCode).toMatch('F1A5031')
+describe("filterRoundsStartedInThePast", ()=>{
+  it("should only include rounds started more then 3 days ago", async ()=>{
+    const rounds = await filterRoundsStartedInThePast(getCourseRoundDataResult);
+    const courseCodes = rounds.map(r => r.courseCode)
+    expect(courseCodes).toContain('F1A5031')
+    expect(rounds.length).toBe(1)
   })
 })
