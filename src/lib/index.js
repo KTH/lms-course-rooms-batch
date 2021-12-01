@@ -16,6 +16,9 @@ const {
   createStartDate,
 } = require("./utils");
 
+const admittedThreshold = 3 * 24 * 60 * 60 * 1000;
+const courseRoomThreshold = 180 * 24 * 60 * 60 * 1000;
+
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
   const serializer = csv.format({ headers: true });
@@ -106,32 +109,30 @@ async function getCourseRoundData() {
   return result;
 }
 async function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
-  const threshold = 3 * 24 * 60 * 60 * 1000;
   const newlyCreatedAndAllFutureRounds = courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
     const now = new Date();
-    return roundDate >= now - threshold 
+    return roundDate >= now - admittedThreshold 
   });
   return removeRoundsInTheFarFuture(newlyCreatedAndAllFutureRounds)
 }
 
 async function removeRoundsInTheFarFuture(courseRoundDataIn) {
-  const futureThreshold = 180 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
     const now = new Date();
-    return roundDate - now <= futureThreshold 
+    return roundDate - now <= courseRoomThreshold 
   });
 }
 async function filterRoundsStartedInThePast(courseRoundDataIn) {
-  const threshold = 3 * 24 * 60 * 60 * 1000;
+  const admittedThreshold = 3 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
     const now = new Date();
-    return roundDate <= now - threshold 
+    return roundDate <= now - admittedThreshold 
   });
 }
 async function getStudentsPendingRemoval({
