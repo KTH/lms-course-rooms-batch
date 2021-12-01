@@ -22,7 +22,12 @@ const {
   createEndDate,
   createStartDate,
 } = require("./lib/utils");
-const { getCourseRoundData, removeRoundsInTheFarFuture } = require("./lib/index");
+const { 
+  getCourseRoundData, 
+  removeRoundsInTheFarFuture, 
+  filterRoundsStartedInThePast, 
+  filterNewlyStartedOrFutureRounds
+} = require("./lib/index");
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -102,14 +107,19 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 async function main() {
-  // GET COURSE ROUND DATA
   const courseRoundData = await getCourseRoundData();
 
+  // create csv data for creating rooms and sections
   const pastOrFutureRounds = removeRoundsInTheFarFuture(courseRoundData);
   // 1) create courserooms and sections for these rounds
   // 2) Enroll registered students and teachers for these rounds
   
   
+  const pastRounds = filterRoundsStartedInThePast(courseRoundData)
+  // Remove antagna from these rounds
+  
+  const futureRounds = filterNewlyStartedOrFutureRounds(courseRoundData)
+  // Add antagna to these rounds
   
 
   // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
