@@ -124,7 +124,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
     { type: "assistants", roleId: 5 },
   ];
 
-  const roundId = round.sisId.slice(-1);
+  // const roundId = round.sisId.slice(-1);
   // prettier-ignore
   const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
 
@@ -134,7 +134,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
       ...(await getEnrollmentCsvData(
         round.sisId,
         roleId,
-        `${ugNameEduBase}.${round.startTerm}.${roundId}.${type}`
+        `${ugNameEduBase}.${round.startTerm}.${round.roundId}.${type}`
       ))
     );
   }

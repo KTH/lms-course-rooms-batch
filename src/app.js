@@ -109,16 +109,23 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 async function main() {
-  log.info('starting batch...')
+  log.info('Run batch...')
   const courseRoundData = await getCourseRoundData();
 
   const pastOrFutureRounds = removeRoundsInTheFarFuture(courseRoundData);
-  // 1) create courserooms and sections for these rounds
-  // 2) Enroll registered students and teachers for these rounds
+  // create courserooms and sections for these rounds
   const roomsCsvData = pastOrFutureRounds.map(createRoom)
   const sectionsCsvData = pastOrFutureRounds.map(createSection)
 
-  console.log(sectionsCsvData)
+  // Enroll registered students and teachers for these rounds
+  const enrollments = []
+  for (const round of pastOrFutureRounds) {
+    enrollments.push(...await loadEnrollments(round, {
+        includeAntagna: false,
+      }));
+  }
+
+  console.log(enrollments)
   
   // const pastRounds = filterRoundsStartedInThePast(courseRoundData)
   // // Remove antagna from these rounds
