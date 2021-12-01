@@ -108,7 +108,7 @@ async function getCourseRoundData() {
 
   return result;
 }
-async function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
+function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
   const newlyCreatedAndAllFutureRounds = courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
@@ -118,7 +118,7 @@ async function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
   return removeRoundsInTheFarFuture(newlyCreatedAndAllFutureRounds)
 }
 
-async function removeRoundsInTheFarFuture(courseRoundDataIn) {
+function removeRoundsInTheFarFuture(courseRoundDataIn) {
   return courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
@@ -126,7 +126,7 @@ async function removeRoundsInTheFarFuture(courseRoundDataIn) {
     return roundDate - now <= courseRoomThreshold 
   });
 }
-async function filterRoundsStartedInThePast(courseRoundDataIn) {
+function filterRoundsStartedInThePast(courseRoundDataIn) {
   const admittedThreshold = 3 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =

@@ -37,9 +37,10 @@ function createCsvSerializer(name) {
 }
 
 function createRoom(round) {
+  const sisId = createSisCourseId(round);
   return {
-    course_id: round.sisId,
-    short_name: round.sisId,
+    course_id: sisId,
+    short_name: sisId,
     long_name: createLongName(round),
     start_date: createStartDate(round),
     end_date: createEndDate(round),
@@ -107,40 +108,40 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 async function main() {
+  log.info('starting batch...')
   const courseRoundData = await getCourseRoundData();
 
-  // create csv data for creating rooms and sections
   const pastOrFutureRounds = removeRoundsInTheFarFuture(courseRoundData);
   // 1) create courserooms and sections for these rounds
   // 2) Enroll registered students and teachers for these rounds
-  
-  
-  const pastRounds = filterRoundsStartedInThePast(courseRoundData)
-  // Remove antagna from these rounds
-  
-  const futureRounds = filterNewlyStartedOrFutureRounds(courseRoundData)
-  // Add antagna to these rounds
-  
+  const roomsCsvData = pastOrFutureRounds.map(createRoom)
+  const sectionsCsvData = pastOrFutureRounds.map(createSection)
 
-  // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
-  const { studentsPendingRemoval } = await getStudentsPendingRemoval({
-    enrollmentsDataIn: enrollments,
-    courseRoundDataIn: courseRoundData,
-  });
+  console.log(roomsCsvData)
+  
+  // const pastRounds = filterRoundsStartedInThePast(courseRoundData)
+  // // Remove antagna from these rounds
+  
+  // const futureRounds = filterNewlyStartedOrFutureRounds(courseRoundData)
+  // // Add antagna to these rounds
+  
+  // // REMOVE ADMITTED-NOT-REGISTERED STUDENTS
+  // const { studentsPendingRemoval } = await getStudentsPendingRemoval({
+  //   enrollmentsDataIn: enrollments,
+  //   courseRoundDataIn: courseRoundData,
+  // });
 
-  const { enrollmentsData } = purgeStudents({
-    enrollmentsDataIn,
-    studentsPendingRemoval,
-  });
+  // const { enrollmentsData } = purgeStudents({
+  //   enrollmentsDataIn,
+  //   studentsPendingRemoval,
+  // });
 
-  // SUBMIT TO CANVAS
-  const { result } = await submitToCanvas({
-    courseData,
-    sectionsData,
-    enrollmentsData,
-  });
-
-  console.info(result);
+  // // SUBMIT TO CANVAS
+  // const { result } = await submitToCanvas({
+  //   courseData,
+  //   sectionsData,
+  //   enrollmentsData,
+  // });
 }
 async function start() {
   log.info("Run batch...");
