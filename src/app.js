@@ -51,9 +51,10 @@ function createRoom(round) {
 }
 
 function createSection(round) {
+  const sisId = createSisCourseId(round);
   return {
-    section_id: round.sisId,
-    course_id: round.sisId,
+    section_id: sisId,
+    course_id: sisId,
     integration_id: round.ladokUid,
     name: `Section for the course ${createLongName(round)}`,
     status: "active",
@@ -117,7 +118,7 @@ async function main() {
   const roomsCsvData = pastOrFutureRounds.map(createRoom)
   const sectionsCsvData = pastOrFutureRounds.map(createSection)
 
-  console.log(roomsCsvData)
+  console.log(sectionsCsvData)
   
   // const pastRounds = filterRoundsStartedInThePast(courseRoundData)
   // // Remove antagna from these rounds
