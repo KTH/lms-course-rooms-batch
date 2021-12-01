@@ -22,7 +22,7 @@ const {
   createEndDate,
   createStartDate,
 } = require("./lib/utils");
-const { getCourseRoundData, filterPastOrFutureRounds } = require("./lib/index");
+const { getCourseRoundData, removeRoundsInTheFarFuture } = require("./lib/index");
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -105,7 +105,7 @@ async function main() {
   // GET COURSE ROUND DATA
   const courseRoundData = await getCourseRoundData();
 
-  const pastOrFutureRounds = filterPastOrFutureRounds(courseRoundData);
+  const pastOrFutureRounds = removeRoundsInTheFarFuture(courseRoundData);
   // 1) create courserooms and sections for these rounds
   // 2) Enroll registered students and teachers for these rounds
   

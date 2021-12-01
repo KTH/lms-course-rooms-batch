@@ -105,21 +105,18 @@ async function getCourseRoundData() {
 
   return result;
 }
-/**course rounds starting in 3 days or sooner. Rounds starting later is skipped. Rounds already started is skipped
- */
 async function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
-  const futureThreshold = 3 * 24 * 60 * 60 * 1000;
-  return courseRoundDataIn.filter((round) => {
+  const threshold = 3 * 24 * 60 * 60 * 1000;
+  const newlyCreatedAndAllFutureRounds = courseRoundDataIn.filter((round) => {
     const roundDate =
       new Date(createStartDate(round))
     const now = new Date();
-    return roundDate - now >= futureThreshold //&& roundDate - now >= 0;
+    return roundDate >= now - threshold 
   });
+  return removeRoundsInTheFarFuture(newlyCreatedAndAllFutureRounds)
 }
 
-/* course rounds starting in 6 months or sooner. Rounds starting later is skipped. Rounds already started are skipped
- */
-async function filterPastOrFutureRounds(courseRoundDataIn) {
+async function removeRoundsInTheFarFuture(courseRoundDataIn) {
   const futureThreshold = 180 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
     const roundDate =
@@ -150,7 +147,7 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
 }
 
 module.exports = {
-  filterPastOrFutureRounds,
+  removeRoundsInTheFarFuture,
   filterNewlyStartedOrFutureRounds,
   filterPastRounds,
   getCourseRoundData,
