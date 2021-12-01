@@ -113,7 +113,7 @@ async function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
     const roundDate =
       new Date(createStartDate(round))
     const now = new Date();
-    return roundDate - now <= futureThreshold && roundDate - now >= 0;
+    return roundDate - now >= futureThreshold //&& roundDate - now >= 0;
   });
 }
 
