@@ -2,7 +2,7 @@ require("dotenv").config();
 const { expect, test, describe, beforeAll, afterAll } = require("@jest/globals");
 
 const { getCourseRoundDataResult} = require("./index.fixture");
-const { filterFutureRounds, filterNearFutureRounds, filterPastRounds} = require("./index");
+const { filterPastOrFutureRounds, filterNewlyStartedOrFutureRounds, filterPastRounds} = require("./index");
 
 beforeAll(()=>{
     const { mockedDate } = require("./index.fixture");
@@ -13,24 +13,26 @@ afterAll(()=>{
   jest.useRealTimers()
 })
 
-describe("filterFutureRounds", () => {
-  it("should only include rounds starting in the future, but no longer then 6 months ahead", async () => {
+describe.only("filterPastOrFutureRounds", () => {
+  it("should include all past and future rounds, except those starting in more then 6 months", async () => {
+    const futureRounds = await filterPastOrFutureRounds(getCourseRoundDataResult);
+    const courseCodes = futureRounds.map(r => r.courseCode)
 
-    const futureRounds = await filterFutureRounds(getCourseRoundDataResult);
-    expect(futureRounds.length).toBe(2);
-    expect(futureRounds[0].courseCode).toMatch(/F1A5032/);
-    expect(futureRounds[1].courseCode).toMatch(/F1A5033/);
+    expect(futureRounds.length).toBe(3);
+    expect(courseCodes).toContain('F1A5031')
+    expect(courseCodes).toContain('F1A5032')
+    expect(courseCodes).toContain('F1A5033')
   });
 });
-describe("filterNearFutureRounds", ()=>{
-  it("should only include rounds starting in a few days", async ()=>{
-    const nearFutureRounds = await filterNearFutureRounds(getCourseRoundDataResult);
+describe("filterNewlyStartedOrFutureRounds", ()=>{
+  it("should include rounds started in the last 3 days, or starting in the future", async ()=>{
+    const nearFutureRounds = await filterNewlyStartedOrFutureRounds(getCourseRoundDataResult);
     expect(nearFutureRounds.length).toBe(1)
     expect(nearFutureRounds[0].courseCode).toMatch('F1A5032')
   })
 })
 describe("filterPastRounds", ()=>{
-  it("should only include rounds starting in a few days", async ()=>{
+  it("should include rounds started more then 3 days ago", async ()=>{
     const nearFutureRounds = await filterPastRounds(getCourseRoundDataResult);
     expect(nearFutureRounds.length).toBe(1)
     expect(nearFutureRounds[0].courseCode).toMatch('F1A5031')

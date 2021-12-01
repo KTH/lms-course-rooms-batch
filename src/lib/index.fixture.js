@@ -1,7 +1,6 @@
 module.exports = {
-  mockedDate: new Date("2021-01-01T00:00:01Z"),
+  mockedDate: new Date("2021-02-01T00:00:01Z"),
   getCourseRoundDataResult: [
-    // started in the past
     {
       courseCode: "F1A5031",
       firstYearsemester: "20202",
@@ -15,10 +14,9 @@ module.exports = {
       },
       startTerm: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2020-12-01", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-01-01", endDate: "2022-10-23" },
       ],
     },
-    // Start in the near future
     {
       courseCode: "F1A5032",
       firstYearsemester: "20202",
@@ -32,10 +30,9 @@ module.exports = {
       },
       startTerm: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2021-01-02", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-01-30", endDate: "2022-10-23" },
       ],
     },
-    // start in the future
     {
       courseCode: "F1A5033",
       firstYearsemester: "20202",
@@ -49,10 +46,9 @@ module.exports = {
       },
       startTerm: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2021-05-02", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-02-05", endDate: "2022-10-23" },
       ],
     },
-    // start in the far future
     {
       courseCode: "F1A5034",
       firstYearsemester: "20202",
@@ -66,7 +62,7 @@ module.exports = {
       },
       startTerm: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2021-07-02", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-09-02", endDate: "2022-10-23" },
       ],
     },
   ],
