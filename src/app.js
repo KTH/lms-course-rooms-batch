@@ -59,39 +59,6 @@ function createSection(round) {
   };
 }
 
-// ADD NEW COURSE ROOMS
-// 1. Determine current semester i.e. 20212 yyyyn n: [1 - spring | 2 - autumn]
-// 2. Fetch course rounds from Kopps that start this semester or later
-//    NOTE: We need to have some margins, perhaps current semester +/-2 semesters
-// 3. Filter by startDate so we only get course rounds where: startDate - preCreationDuration <= today
-//    - preCreationDuration -- how far in advance should a course room be created (default: 180 days)
-// 4. For each course round create source id and add to CSV
-//    - coursesData -- creates course rooms
-//    - sectionsData -- creates a section in each course room
-//    - enrollmentsData -- all students (both 'admitted-not-registerd', 'registered') and teachers added to section
-//    NOTE: students and teachers are ONLY added to sections, never course rooms
-// 5. Return data structure
-//    NOTE: Send files as an atomic delivery
-
-// REMOVE ADMITTED-NOT-REGISTERED STUDENTS
-// NOTE: Students change role from 'admitted-not-registerd' to 'registered', we only remove the former
-// - role: admitted-not-registerd = 'antagen'
-// - role: registered = 'registrerad student'
-// 1. Determine last semester i.e. 20212 yyyyn n: [1 - spring | 2 - autumn]
-// 2. Fetch course rounds from Kopps that start last semester or later
-//    NOTE: We need to have some margins, perhaps current semester +1/-2 semesters
-// 3. Filter by startDate so we only get course rounds where: startDate + purgeDuration <= today
-//    - purgeDuration -- how long since course round startDate can a students remain if not registered (default: 3 days)
-// 4. For each course round, figure out which students should be removed
-//    - enrollmentsCsv -- this is the data that is affected
-// 5. Manipulate existing data structure OR return new data structure
-
-// SUBMIT TO CANVAS
-// 1. Potentially merge data structures from ADD NEW COURSE ROOMS and REMOVE ADMITTED-NOT-REGISTERED STUDENTS
-// 2. Convert data structure to something we can send to Canvas
-//    NOTE: We currently use csv-files and Zip them to send as a single file
-// 3. Send files to Canvas
-// 4. Report result to logging
 
 async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
   return null;
