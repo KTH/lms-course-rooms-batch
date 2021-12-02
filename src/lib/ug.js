@@ -96,7 +96,7 @@ function getUgNameLadokBase(courseCode) {
 }
 
 async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
-  log.debug(`getting enrollments for ${sisSectionId}`)
+  log.debug(`getting enrollments for ${sisSectionId}`);
   const members = await searchGroup(groupName);
   const users = await getUsersForMembers(members);
 
@@ -116,9 +116,9 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
 //   return results;
 // }
 
-async function loadAntagna(round){
+async function loadAntagna(round) {
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
-  const result = []
+  const result = [];
   result.push(
     ...(await getEnrollmentCsvData(
       round.sisId,
@@ -126,14 +126,13 @@ async function loadAntagna(round){
       `${ugNameLadokBase}.antagna_${round.startTerm}.${round.roundId}`
     ))
   );
-  return result
+  return result;
 }
 
 /**
  * Load registered students and teacher roles
  */
 async function loadEnrollments(round) {
-  
   const result = [];
   const ugRoleCanvasRole = [
     // role_id's are defined in Canvas
@@ -175,11 +174,8 @@ async function loadEnrollments(round) {
     ))
   );
 
-  
-
   return result;
 }
-
 
 /// ////////////////
 
@@ -187,5 +183,5 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
-  loadAntagna
+  loadAntagna,
 };

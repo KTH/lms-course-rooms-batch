@@ -76,29 +76,26 @@ async function getCourseRoundData() {
 }
 function filterNewlyStartedOrFutureRounds(courseRoundDataIn) {
   const newlyCreatedAndAllFutureRounds = courseRoundDataIn.filter((round) => {
-    const roundDate =
-      new Date(createStartDate(round))
+    const roundDate = new Date(createStartDate(round));
     const now = new Date();
-    return roundDate >= now - admittedThreshold 
+    return roundDate >= now - admittedThreshold;
   });
-  return removeRoundsInTheFarFuture(newlyCreatedAndAllFutureRounds)
+  return removeRoundsInTheFarFuture(newlyCreatedAndAllFutureRounds);
 }
 
 function removeRoundsInTheFarFuture(courseRoundDataIn) {
   return courseRoundDataIn.filter((round) => {
-    const roundDate =
-      new Date(createStartDate(round))
+    const roundDate = new Date(createStartDate(round));
     const now = new Date();
-    return roundDate - now <= courseRoomThreshold 
+    return roundDate - now <= courseRoomThreshold;
   });
 }
 function filterRoundsStartedInThePast(courseRoundDataIn) {
   const admittedThreshold = 3 * 24 * 60 * 60 * 1000;
   return courseRoundDataIn.filter((round) => {
-    const roundDate =
-      new Date(createStartDate(round))
+    const roundDate = new Date(createStartDate(round));
     const now = new Date();
-    return roundDate <= now - admittedThreshold 
+    return roundDate <= now - admittedThreshold;
   });
 }
 async function getStudentsPendingRemoval({

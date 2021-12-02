@@ -12,7 +12,7 @@ const {
   loadEnrollments,
   ldapBind,
   ldapUnbind,
-  loadAntagna
+  loadAntagna,
 } = require("./lib/ug");
 const canvas = require("./lib/canvas");
 const {
@@ -22,11 +22,11 @@ const {
   createEndDate,
   createStartDate,
 } = require("./lib/utils");
-const { 
-  getCourseRoundData, 
-  removeRoundsInTheFarFuture, 
-  filterRoundsStartedInThePast, 
-  filterNewlyStartedOrFutureRounds
+const {
+  getCourseRoundData,
+  removeRoundsInTheFarFuture,
+  filterRoundsStartedInThePast,
+  filterNewlyStartedOrFutureRounds,
 } = require("./lib/index");
 
 function createCsvSerializer(name) {
@@ -97,67 +97,66 @@ async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
   return null;
 }
 
-async function createCourseRoomsCsvData(rounds){
+async function createCourseRoomsCsvData(rounds) {
   const pastOrFutureRounds = removeRoundsInTheFarFuture(rounds);
-  const courseRooms = pastOrFutureRounds.map(createRoom)
-  const sections = pastOrFutureRounds.map(createSection)
+  const courseRooms = pastOrFutureRounds.map(createRoom);
+  const sections = pastOrFutureRounds.map(createSection);
 
   // Enroll registered students and teachers for these rounds
-  const teachersAndRegisteredStudents= []
+  const teachersAndRegisteredStudents = [];
   for (const round of pastOrFutureRounds) {
-    teachersAndRegisteredStudents.push(...await loadEnrollments(round));
+    teachersAndRegisteredStudents.push(...(await loadEnrollments(round)));
   }
   return {
     courseRooms,
     sections,
-    teachersAndRegisteredStudents 
-  }
+    teachersAndRegisteredStudents,
+  };
 }
 
-async function createRemoveAntagnaCsvData(rounds){
+async function createRemoveAntagnaCsvData(rounds) {
   // Past rounds: meaning started more then a few days ago
-  const pastRounds = filterRoundsStartedInThePast(rounds)
-  const enrollments = []
-  
+  const pastRounds = filterRoundsStartedInThePast(rounds);
+  const enrollments = [];
+
   for (const round of pastRounds) {
-    enrollments.push(...await canvas.getAntagnaToDelete(round.sisId));
+    enrollments.push(...(await canvas.getAntagnaToDelete(round.sisId)));
   }
-  return enrollments
+  return enrollments;
 }
 
-async function createAddAntagnaCsvData(rounds){
-  const futureRounds = filterNewlyStartedOrFutureRounds(rounds)
-  const enrollments = []
+async function createAddAntagnaCsvData(rounds) {
+  const futureRounds = filterNewlyStartedOrFutureRounds(rounds);
+  const enrollments = [];
 
   for (const round of futureRounds) {
-    enrollments.push(...await loadAntagna(round));
+    enrollments.push(...(await loadAntagna(round)));
   }
- return enrollments 
+  return enrollments;
 }
 
 async function main() {
   // TODO Rebase main!
-  log.info('Run batch...')
+  log.info("Run batch...");
 
   await ldapBind();
-  const courseRounds = (await getCourseRoundData())
-    .map(r => ({sisId:createSisCourseId(r), ...r})) // Add sisId
+  const courseRounds = (await getCourseRoundData()).map((r) => ({
+    sisId: createSisCourseId(r),
+    ...r,
+  })); // Add sisId
 
-  const {
-    courseRooms,
-    sections,
-    teachersAndRegisteredStudents 
-  } = createCourseRoomsCsvData(courseRounds)
- 
-  const antagnaToAdd = await createAddAntagnaCsvData(courseRounds)
+  const { courseRooms, sections, teachersAndRegisteredStudents } =
+    createCourseRoomsCsvData(courseRounds);
 
-  const antagnaToRemove = await createRemoveAntagnaCsvData(courseRounds)
+  const antagnaToAdd = await createAddAntagnaCsvData(courseRounds);
+
+  const antagnaToRemove = await createRemoveAntagnaCsvData(courseRounds);
 
   const enrollmentsCsvData = [
     ...teachersAndRegisteredStudents,
     ...antagnaToRemove,
-    ...antagnaToAdd
-  ]
+    ...antagnaToAdd,
+  ];
   // TODO: SUBMIT TO CANVAS
   // const { result } = await submitToCanvas({
   //   courseData,
