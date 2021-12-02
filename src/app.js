@@ -93,15 +93,6 @@ function createSection(round) {
 // 3. Send files to Canvas
 // 4. Report result to logging
 
-async function getStudentsPendingRemoval({
-  enrollmentsDataIn,
-  courseRoundDataIn,
-}) {
-  return null;
-}
-function purgeStudents({ enrollmentsDataIn, studentsPendingRemoval }) {
-  return null;
-}
 async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
   return null;
 }
