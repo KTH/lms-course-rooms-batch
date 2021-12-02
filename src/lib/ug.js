@@ -108,15 +108,31 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
-async function loadAllEnrollments(rounds) {
-  const result = [];
-  for (const round of rounds) {
-    result.push(await loadEnrollments(round, { includeAntagna: true }));
-  }
-  return results;
+// async function loadEnrollments(rounds) {
+//   const result = [];
+//   for (const round of rounds) {
+//     result.push(await loadEnrollments(round, { includeAntagna: true }));
+//   }
+//   return results;
+// }
+
+async function loadAntagna(round){
+  const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
+  const result = []
+  result.push(
+    ...(await getEnrollmentCsvData(
+      round.sisId,
+      25,
+      `${ugNameLadokBase}.antagna_${round.startTerm}.${round.roundId}`
+    ))
+  );
+  return result
 }
 
-async function loadEnrollments(round, { includeAntagna = false } = {}) {
+/**
+ * Load registered students and teacher roles
+ */
+async function loadEnrollments(round) {
   
   const result = [];
   const ugRoleCanvasRole = [
@@ -159,15 +175,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
     ))
   );
 
-  if (includeAntagna) {
-    result.push(
-      ...(await getEnrollmentCsvData(
-        round.sisId,
-        25,
-        `${ugNameLadokBase}.antagna_${round.startTerm}.${round.roundId}`
-      ))
-    );
-  }
+  
 
   return result;
 }
@@ -179,5 +187,5 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
-  loadAllEnrollments,
+  loadAntagna
 };
