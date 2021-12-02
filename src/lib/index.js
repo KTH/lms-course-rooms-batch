@@ -98,15 +98,7 @@ function filterRoundsStartedInThePast(courseRoundDataIn) {
     return roundDate <= now - admittedThreshold;
   });
 }
-async function getStudentsPendingRemoval({
-  enrollmentsDataIn,
-  courseRoundDataIn,
-}) {
-  return null;
-}
-function purgeStudents({ enrollmentsDataIn, studentsPendingRemoval }) {
-  return null;
-}
+
 async function submitToCanvas({ courseData, sectionsData, enrollmentsData }) {
   return null;
 }
