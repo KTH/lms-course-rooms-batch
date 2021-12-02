@@ -3,17 +3,17 @@ const log = require("skog");
 
 /** Singleton object wrapping API calls to Kopps. */
 module.exports = {
-  async getCourseRounds(period) {
+  async getCourseRounds(term) {
     let courseRounds = [];
     try {
-      log.debug(`Reaching Kopps endpoint /courses/offerings for ${period}`);
+      log.debug(`Reaching Kopps endpoint /courses/offerings for ${term}`);
       const response = await got({
         prefixUrl: process.env.KOPPS_API_URL,
         timeout: 300 * 1000,
         url: "courses/offerings",
         responseType: "json",
         searchParams: {
-          from: period.toKoppsTermString(),
+          from: term,
           skip_coordinator_info: true,
         },
       });
@@ -47,7 +47,6 @@ module.exports = {
 
     return cleanCourseRounds
       .filter((c) => c.state === "Godkänt" || c.state === "Fullsatt")
-      .filter((c) => c.first_period === period.toKoppsPeriodString())
       .map((c) => ({
         courseCode: c.course_code,
         firstYearsemester: c.first_yearsemester,

@@ -6,13 +6,11 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-const Period = require("./lib/period");
 const { getCourseRounds } = require("./lib/kopps");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const canvas = require("./lib/canvas");
 const {
   createLongName,
-  createSisCourseId,
   createAccountId,
   createEndDate,
   createStartDate,
@@ -48,89 +46,101 @@ function createSection(round) {
   };
 }
 
+/**
+ * Returns a list of Kopps rounds that can be handled at this moment
+ */
+async function getAllCourseRounds() {
+  const today = new Date();
+  const lastYear = today.getFullYear() - 1;
+  const nextYear = today.getFullYear() + 1;
+
+  const terms = [
+    `${lastYear}2`,
+    `${today.getFullYear()}1`,
+    `${today.getFullYear()}2`,
+    `${nextYear}1`,
+  ];
+
+  const result = [];
+
+  for (const term of terms) {
+    // eslint-disable-next-line no-await-in-loop
+    result.push(...(await getCourseRounds(term)));
+  }
+
+  return result;
+}
+
+function isFarFuture(round) {
+  const HALF_YEAR = 180 * 24 * 60 * 60 * 1000;
+  const startDate = new Date(createStartDate(round));
+
+  return startDate - new Date() > HALF_YEAR;
+}
+
+function shouldHaveAntagna(round) {
+  const THREE_DAYS = 72 * 60 * 60 * 1000;
+  const startDate = new Date(createStartDate(round));
+
+  return startDate - new Date() < THREE_DAYS;
+}
+
 async function start() {
   log.info("Run batch...");
-  const currentPeriod = Period.fromString(process.env.CURRENT_PERIOD);
-
-  // "future Periods" are the periods where we are going to create course rooms,
-  // enroll students (including antagna)
-  // We are currently handling 5 periods
-  const futurePeriods = Period.range(currentPeriod, 1, 5);
-
-  await ldapBind();
-
+  const allRounds = await getAllCourseRounds();
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);
   log.info(`Creating csv files in ${dir}`);
 
-  for (const period of futurePeriods) {
-    log.info(`Handling ${period}, including admitted`);
-    const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
-    const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
-    const enrollmentsCsv = createCsvSerializer(
-      `${dir}/enrollments-${period}.csv`
-    );
+  const coursesCsv = createCsvSerializer(`${dir}/courses.csv`);
+  const sectionsCsv = createCsvSerializer(`${dir}/sections.csv`);
+  allRounds
+    .filter((round) => !isFarFuture(round))
+    .map((round) => ({
+      courseRoom: createRoom(round),
+      section: createSection(round),
+    }))
+    .forEach(({ courseRoom, section }) => {
+      coursesCsv.write(courseRoom);
+      sectionsCsv.write(section);
+    });
 
+  coursesCsv.end();
+  sectionsCsv.end();
+
+  const roundsWithAntagnaStudents = allRounds.filter(shouldHaveAntagna);
+  const roundsWithoutAntagnaStudents = allRounds.filter(
+    (round) => !shouldHaveAntagna(round)
+  );
+
+  const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
+
+  await ldapBind();
+
+  for (const round of roundsWithAntagnaStudents) {
     // eslint-disable-next-line no-await-in-loop
-    for (const round of await getCourseRounds(period)) {
-      round.sisId = createSisCourseId(round);
-      // log.info(`Getting enrollments for ${round.sisId}`);
-      // log.info(round.dump);
-
-      coursesCsv.write(createRoom(round));
-      sectionsCsv.write(createSection(round));
-
-      // eslint-disable-next-line no-await-in-loop
-      const enrollments = await loadEnrollments(round, {
-        includeAntagna: true,
-      });
-      for (const enrollment of enrollments) {
-        enrollmentsCsv.write(enrollment);
-      }
+    const enrollments = await loadEnrollments(round, {
+      includeAntagna: true,
+    });
+    for (const enrollment of enrollments) {
+      enrollmentsCsv.write(enrollment);
     }
-
-    coursesCsv.end();
-    sectionsCsv.end();
-    enrollmentsCsv.end();
   }
 
-  // Current and previous where we are going to remove antagna
-  // We are currently handling 5 periods
-  for (const period of Period.range(currentPeriod, -4, 0)) {
-    log.info(`Handling ${period}, removing admitted`);
-    const coursesCsv = createCsvSerializer(`${dir}/courses-${period}.csv`);
-    const sectionsCsv = createCsvSerializer(`${dir}/sections-${period}.csv`);
-    const enrollmentsCsv = createCsvSerializer(
-      `${dir}/enrollments-${period}.csv`
-    );
-
+  for (const round of roundsWithoutAntagnaStudents) {
     // eslint-disable-next-line no-await-in-loop
-    for (const round of await getCourseRounds(period)) {
-      round.sisId = createSisCourseId(round);
-      // log.info(`Getting enrollments for ${round.sisId}`);
-
-      coursesCsv.write(createRoom(round));
-      sectionsCsv.write(createSection(round));
-
-      // eslint-disable-next-line no-await-in-loop
-      const enrollments = await loadEnrollments(round);
-      for (const enrollment of enrollments) {
-        enrollmentsCsv.write(enrollment);
-      }
-
-      // eslint-disable-next-line no-await-in-loop
-      for (const enrollment of await canvas.getAntagnaToDelete(round.sisId)) {
-        enrollmentsCsv.write(enrollment);
-      }
+    const enrollments = await loadEnrollments(round, {
+      includeAntagna: false,
+    });
+    for (const enrollment of enrollments) {
+      enrollmentsCsv.write(enrollment);
     }
-
-    coursesCsv.end();
-    sectionsCsv.end();
-    enrollmentsCsv.end();
   }
 
   await ldapUnbind();
+
+  enrollmentsCsv.end();
 
   const zipFileName = path.join(baseDir, "files.zip");
   log.info(`Creating zip file ${zipFileName}`);
