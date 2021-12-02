@@ -37,10 +37,9 @@ function createCsvSerializer(name) {
 }
 
 function createRoom(round) {
-  const sisId = createSisCourseId(round);
   return {
-    course_id: sisId,
-    short_name: sisId,
+    course_id: round.sisId,
+    short_name: round.sisId,
     long_name: createLongName(round),
     start_date: createStartDate(round),
     end_date: createEndDate(round),
@@ -51,10 +50,9 @@ function createRoom(round) {
 }
 
 function createSection(round) {
-  const sisId = createSisCourseId(round);
   return {
-    section_id: sisId,
-    course_id: sisId,
+    section_id: round.sisId,
+    course_id: round.sisId,
     integration_id: round.ladokUid,
     name: `Section for the course ${createLongName(round)}`,
     status: "active",
@@ -112,7 +110,8 @@ async function main() {
   log.info('Run batch...')
 
   await ldapBind();
-  const courseRoundData = await getCourseRoundData();
+  const courseRoundData = (await getCourseRoundData())
+    .map(r => ({sisId:createSisCourseId(r), ...r})) // Add sisId
 
   const pastOrFutureRounds = removeRoundsInTheFarFuture(courseRoundData);
   // create courserooms and sections for these rounds
@@ -122,6 +121,8 @@ async function main() {
   // Enroll registered students and teachers for these rounds
   const enrollments = []
   for (const round of pastOrFutureRounds) {
+    console.log(`load enrollments for ${round.sisId}`)
+    // TODO: requires a round.sisId. Should I handle it here, or rebuild?
     enrollments.push(...await loadEnrollments(round, {
         includeAntagna: false,
       }));

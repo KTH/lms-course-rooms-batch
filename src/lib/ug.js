@@ -96,6 +96,7 @@ function getUgNameLadokBase(courseCode) {
 }
 
 async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
+  log.debug(`getting enrollments for ${sisSectionId}`)
   const members = await searchGroup(groupName);
   const users = await getUsersForMembers(members);
 
@@ -116,6 +117,7 @@ async function loadAllEnrollments(rounds) {
 }
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
+  
   const result = [];
   const ugRoleCanvasRole = [
     // role_id's are defined in Canvas
@@ -124,7 +126,6 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
     { type: "assistants", roleId: 5 },
   ];
 
-  // const roundId = round.sisId.slice(-1);
   // prettier-ignore
   const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
 
@@ -154,7 +155,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
     ...(await getEnrollmentCsvData(
       round.sisId,
       3,
-      `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
+      `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`
     ))
   );
 
@@ -163,13 +164,14 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
       ...(await getEnrollmentCsvData(
         round.sisId,
         25,
-        `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
+        `${ugNameLadokBase}.antagna_${round.startTerm}.${round.roundId}`
       ))
     );
   }
 
   return result;
 }
+
 
 /// ////////////////
 
