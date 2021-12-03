@@ -9,7 +9,6 @@ const os = require("os");
 const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
 const {
   getAllCourseRounds,
-  addSisId,
   isFarFuture,
   createRoom,
   createSection,
@@ -26,7 +25,7 @@ function createCsvSerializer(name) {
 
 async function start() {
   log.info("Run batch...");
-  const allRounds = (await getAllCourseRounds()).map(addSisId);
+  const allRounds = await getAllCourseRounds();
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);

@@ -34,6 +34,13 @@ function createSection(round) {
   };
 }
 
+function _addSisId(round) {
+  return {
+    ...round,
+    sisId: createSisCourseId(round),
+  };
+}
+
 /**
  * Returns a list of Kopps rounds that can be handled at this moment
  */
@@ -56,7 +63,7 @@ async function getAllCourseRounds() {
     result.push(...(await getCourseRounds(term)));
   }
 
-  return result;
+  return result.map(_addSisId);
 }
 
 function isFarFuture(round) {
@@ -73,18 +80,11 @@ function shouldHaveAntagna(round) {
   return startDate - new Date() < THREE_DAYS;
 }
 
-function addSisId(round) {
-  return {
-    ...round,
-    sisId: createSisCourseId(round),
-  };
-}
-
 module.exports = {
   createRoom,
   createSection,
   getAllCourseRounds,
   isFarFuture,
   shouldHaveAntagna,
-  addSisId,
+  _addSisId,
 };
