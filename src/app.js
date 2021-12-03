@@ -14,6 +14,7 @@ const {
   createAccountId,
   createEndDate,
   createStartDate,
+  createSisCourseId,
 } = require("./lib/utils");
 
 function createCsvSerializer(name) {
@@ -85,9 +86,16 @@ function shouldHaveAntagna(round) {
   return startDate - new Date() < THREE_DAYS;
 }
 
+function addSisId(round) {
+  return {
+    ...round,
+    sisId: createSisCourseId(round),
+  };
+}
+
 async function start() {
   log.info("Run batch...");
-  const allRounds = await getAllCourseRounds();
+  const allRounds = (await getAllCourseRounds()).map(addSisId);
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);
