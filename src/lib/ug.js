@@ -107,8 +107,11 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
+// TODO: Split into three functions: loadAntagna, loadRegistered, loadTeachers
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const teacherEnrollments = [];
+  // TODO: round ID already exists as its own field in Kopps. Use it instead of
+  //       converting to SIS ID and then back to round ID
   const roundId = round.sisId.slice(-1);
 
   // Teacher enrollments
