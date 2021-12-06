@@ -2,6 +2,38 @@ const { expect, describe, it } = require("@jest/globals");
 
 const courseRoundsUtils = require("./courseRoundsUtils");
 
+describe("shouldHaveAntagna", () => {
+  const mockedDate = new Date("2021-02-01T00:00:01Z");
+  beforeAll(() => {
+    jest.useFakeTimers("modern").setSystemTime(mockedDate);
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it("should NOT have antagna if the course started four days ago", () => {
+    const courseRound = {
+      firstYearsemester: "20211",
+      offeredSemesters: [
+        { semester: "20211", startDate: "2021-01-28", endDate: "2022-10-23" },
+      ],
+    };
+    const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
+    expect(result).toEqual(false);
+  }); 
+
+  it("should have antagna if the course started two days ago", () => {
+    const courseRound = {
+      firstYearsemester: "20211",
+      offeredSemesters: [
+        { semester: "20211", startDate: "2021-01-30", endDate: "2022-10-23" },
+      ],
+    };
+    const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
+    expect(result).toEqual(true);
+  }); 
+});
 describe("isFarFuture", () => {
   const mockedDate = new Date("2021-02-01T00:00:01Z");
   beforeAll(() => {
