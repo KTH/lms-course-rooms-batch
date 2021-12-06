@@ -21,10 +21,10 @@ function getUgNameLadokBase(courseCode) {
 // One object for adding registered, another obj for removing antagna
 async function loadRegisteredStudentEnrollments(round) {
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
-  const groupName = `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`;
+  const groupName = `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`;
 
   // OPTIONAL: should we check in Canvas if the student is antagen?
-  const registeredStudentEnrollments = await (
+  const registeredStudentEnrollments = (
     await loadMembers(groupName)
   ).flatMap((kthId) => [
     {
@@ -40,6 +40,7 @@ async function loadRegisteredStudentEnrollments(round) {
       status: "deleted",
     },
   ]);
+  return registeredStudentEnrollments
 }
 
 async function loadAntagnaUnEnrollments(round) {
@@ -55,12 +56,12 @@ async function loadAntagnaEnrollments(round) {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
   const registeredStudentIds = await loadMembers(
-    `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
+    `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`
   );
 
   // Get the antagna students for this round
   const antagnaStudentIds = await loadMembers(
-    `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
+    `${ugNameLadokBase}.antagna_${round.startTerm}.${round.roundId}`
   );
 
   return purgeRegisteredFromAntagna(

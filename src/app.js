@@ -5,8 +5,13 @@ const csv = require("fast-csv");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-
-const { loadEnrollments, ldapBind, ldapUnbind } = require("./lib/ug");
+const {
+  loadTeacherEnrollments,
+  loadAntagnaEnrollments,
+  loadAntagnaUnEnrollments,
+  loadRegisteredStudentEnrollments,
+} = require("./lib/enrollmentsUtils");
+const { ldapBind, ldapUnbind } = require("./lib/ug");
 const {
   getAllCourseRounds,
   isFarFuture,
@@ -96,8 +101,8 @@ async function start() {
   const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
   await ldapBind();
 
-  const roundsWithAntagnaStudents = allRounds.filter(shouldHaveAntagna);
-  for (const round of roundsWithAntagnaStudents) {
+  const roundsIncludingAntagnaStudents = allRounds.filter(shouldHaveAntagna);
+  for (const round of roundsIncludingAntagnaStudents) {
     [
       ...(await loadTeacherEnrollments(round)),
       ...(await loadRegisteredStudentEnrollments(round)),
@@ -105,11 +110,11 @@ async function start() {
     ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
   }
 
-  const roundsWithoutAntagnaStudents = allRounds.filter(
+  const roundsExcludingAntagnaStudents = allRounds.filter(
     (round) => !shouldHaveAntagna(round)
   );
 
-  for (const round of roundsWithAntagnaStudents) {
+  for (const round of roundsExcludingAntagnaStudents) {
     [
       ...(await loadTeacherEnrollments(round)),
       ...(await loadRegisteredStudentEnrollments(round)),

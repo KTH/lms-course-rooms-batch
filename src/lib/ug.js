@@ -110,7 +110,7 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
 
 async function loadMembers(groupName) {
   const members = await searchGroup(groupName);
-  return getUsersForMembers(members).map((user) => user.ugKthid);
+  return (await getUsersForMembers(members)).map((user) => user.ugKthid);
 }
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
