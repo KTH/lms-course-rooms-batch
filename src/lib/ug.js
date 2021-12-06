@@ -2,11 +2,12 @@ const { Client } = require("ldapts");
 const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
-const ldapClient = new Client({
-  url: process.env.UG_URL,
+let ldapClient 
+async function ldapBind() {
+  ldapClient = new Client({
+    url: process.env.UG_URL,
 });
 
-async function ldapBind() {
   log.info("Connecting to UG via LDAP...");
   await ldapClient.bind(process.env.UG_USERNAME, process.env.UG_PASSWORD);
 }
@@ -107,7 +108,11 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
-// TODO: Split into three functions: loadAntagna, loadRegistered, loadTeachers
+async function loadMembers(groupName){
+  const members = await searchGroup(groupName);
+  return getUsersForMembers(members).map(user => user.ugKthid);
+}
+
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
   const teacherEnrollments = [];
   // TODO: round ID already exists as its own field in Kopps. Use it instead of
@@ -186,4 +191,5 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
+  loadMembers
 };

@@ -36,17 +36,23 @@ function createCsvSerializer(name) {
 //    - coursesData -- creates course rooms
 //    - sectionsData -- creates a section in each course room
 
+
+// Enrollments for rounds that should include antagna
 // 1. Find course rounds that should include teachers and both antagna and registered students.
-// 2. For each course round, take a list of: teachers, antagna and registered students.
-// 3. For each student:
-//    - if is registered:
+// 2. For each course round, take a list of: teachers, antagna (source of thruth: UG) and registered students.
+// make sure that no student is in both antagna list and registered list
+//
+// 3. For each registeredStudent:
 //      - Write a line to add registered
 //      - Write a line to remove antagen (optional: check in Canvas if its actually antagen)
-//    - if is antagna:
-//      - Write a line to add antagen
-// 4. For each teacher
+// 4. For each antagen:
+//      - Write a line to add antagen 
+//
+//  5. For each teacher:
 //    - Write a line to add them with its correct role (teacher, assistant, examiner, etc).
 
+
+// Enrollments for rounds that should NOT include antagna
 // 1. Find course rounds that should inlcude teachers but only registered students. Antagna should be removed
 // 2. For each course round, take a list of: teachers and registered students.
 // 3. For each person (teacher, student):
@@ -66,6 +72,7 @@ async function start() {
     (round) => !isFarFuture(round)
   );
 
+  // Create course rooms and sections
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);
@@ -86,14 +93,27 @@ async function start() {
   coursesCsv.end();
   sectionsCsv.end();
 
+// Enrollments for rounds that should include antagna
+
+  const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
+  await ldapBind();
+
   const roundsWithAntagnaStudents = allRounds.filter(shouldHaveAntagna);
+  const enrollments = []
+  for (const round of roundsWithAntagnaStudents){
+    const teachers = await ug.loadTeacherEnrollments(round)
+    const registeredStudents = await loadRegisteredStudentEnrollments(round)
+    const antagnaEnrollments = await loadAntagnaEnrollments(round)
+  }
+
+
+
+
+
   const roundsWithoutAntagnaStudents = allRounds.filter(
     (round) => !shouldHaveAntagna(round)
   );
 
-  const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
-
-  await ldapBind();
 
   for (const round of roundsWithAntagnaStudents) {
     // eslint-disable-next-line no-await-in-loop
