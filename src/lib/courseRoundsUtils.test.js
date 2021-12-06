@@ -12,7 +12,9 @@ describe("shouldHaveAntagna", () => {
     jest.useRealTimers();
   });
 
-  it.todo("should NOT have antagna if the course starts in the far future?")
+  // The current implementation adds antagna even for course rooms in the far future.
+  // This shouldn't happen. Should this be handled in shouldHaveAntagna, or before this function is called (ie in app.js:start())
+  it.todo("should NOT have antagna if the course starts in the far future")
 
   it("should NOT have antagna if the course starts in the future", () => {
     
