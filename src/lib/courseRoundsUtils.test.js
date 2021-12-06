@@ -12,6 +12,20 @@ describe("shouldHaveAntagna", () => {
     jest.useRealTimers();
   });
 
+  it.todo("should NOT have antagna if the course starts in the far future?")
+
+  it("should NOT have antagna if the course starts in the future", () => {
+    
+    const courseRound = {
+      firstYearsemester: "20211",
+      offeredSemesters: [
+        { semester: "20211", startDate: "2021-06-28", endDate: "2022-10-23" },
+      ],
+    };
+    const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
+    expect(result).toEqual(false);
+  }); 
+
   it("should NOT have antagna if the course started four days ago", () => {
     const courseRound = {
       firstYearsemester: "20211",
