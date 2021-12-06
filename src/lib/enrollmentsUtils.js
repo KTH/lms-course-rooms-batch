@@ -50,6 +50,7 @@ async function loadAntagnaEnrollments(round){
 }
 
 function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds){
+  return antagnaStudentIds.filter(antagen => !registeredStudentIds.includes(antagen))
   
   
 }
