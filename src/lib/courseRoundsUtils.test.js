@@ -43,7 +43,6 @@ describe("isFarFuture", () => {
     const result = courseRoundsUtils.isFarFuture(courseRound);
     expect(result).toEqual(false);
   });
-  // TODO: test multiple offeredSemesters
  it("should return false even if the first semester in the array is in the far future", () => {
     const courseRound = {
       firstYearsemester: "20201",
