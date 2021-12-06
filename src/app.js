@@ -97,11 +97,12 @@ async function start() {
   await ldapBind();
 
   const roundsWithAntagnaStudents = allRounds.filter(shouldHaveAntagna);
-  const enrollments = [];
   for (const round of roundsWithAntagnaStudents) {
-    const teachers = await ug.loadTeacherEnrollments(round);
-    const registeredStudents = await loadRegisteredStudentEnrollments(round);
-    const antagnaEnrollments = await loadAntagnaEnrollments(round);
+    [
+      ...(await loadTeacherEnrollments(round)),
+      ...(await loadRegisteredStudentEnrollments(round)),
+      ...(await loadAntagnaEnrollments(round)),
+    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
   }
 
   const roundsWithoutAntagnaStudents = allRounds.filter(
@@ -109,24 +110,14 @@ async function start() {
   );
 
   for (const round of roundsWithAntagnaStudents) {
-    // eslint-disable-next-line no-await-in-loop
-    const enrollments = await loadEnrollments(round, {
-      includeAntagna: true,
-    });
-    for (const enrollment of enrollments) {
-      enrollmentsCsv.write(enrollment);
-    }
+    [
+      ...(await loadTeacherEnrollments(round)),
+      ...(await loadRegisteredStudentEnrollments(round)),
+      ...(await loadAntagnaUnEnrollments(round)),
+    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
   }
 
-  for (const round of roundsWithoutAntagnaStudents) {
-    // eslint-disable-next-line no-await-in-loop
-    const enrollments = await loadEnrollments(round, {
-      includeAntagna: false,
-    });
-    for (const enrollment of enrollments) {
-      enrollmentsCsv.write(enrollment);
-    }
-  }
+  process.exit();
 
   await ldapUnbind();
 
