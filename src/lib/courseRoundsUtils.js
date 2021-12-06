@@ -77,7 +77,7 @@ function isFarFuture(round) {
  * Should remove antagna 3 days after the course starts
  */
 function shouldHaveAntagna(round) {
-  const THREE_DAYS = 3 * 24  * 60 * 60 * 1000;
+  const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
   return new Date() - startDate < THREE_DAYS;

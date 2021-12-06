@@ -12,9 +12,7 @@ describe("shouldHaveAntagna", () => {
     jest.useRealTimers();
   });
 
-
   it("should have antagna if the course starts in the future", () => {
-    
     const courseRound = {
       firstYearsemester: "20211",
       offeredSemesters: [
@@ -23,7 +21,7 @@ describe("shouldHaveAntagna", () => {
     };
     const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
     expect(result).toEqual(true);
-  }); 
+  });
 
   it("should NOT have antagna if the course started four days ago", () => {
     const courseRound = {
@@ -34,7 +32,7 @@ describe("shouldHaveAntagna", () => {
     };
     const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
     expect(result).toEqual(false);
-  }); 
+  });
 
   it("should have antagna if the course started two days ago", () => {
     const courseRound = {
@@ -45,7 +43,7 @@ describe("shouldHaveAntagna", () => {
     };
     const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
     expect(result).toEqual(true);
-  }); 
+  });
 });
 describe("isFarFuture", () => {
   const mockedDate = new Date("2021-02-01T00:00:01Z");
@@ -88,7 +86,7 @@ describe("isFarFuture", () => {
     const result = courseRoundsUtils.isFarFuture(courseRound);
     expect(result).toEqual(false);
   });
- it("should return false even if the first semester in the array is in the far future", () => {
+  it("should return false even if the first semester in the array is in the far future", () => {
     const courseRound = {
       firstYearsemester: "20201",
       offeredSemesters: [
@@ -98,5 +96,5 @@ describe("isFarFuture", () => {
     };
     const result = courseRoundsUtils.isFarFuture(courseRound);
     expect(result).toEqual(false);
-  }); 
+  });
 });

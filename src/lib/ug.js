@@ -2,11 +2,11 @@ const { Client } = require("ldapts");
 const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
-let ldapClient 
+let ldapClient;
 async function ldapBind() {
   ldapClient = new Client({
     url: process.env.UG_URL,
-});
+  });
 
   log.info("Connecting to UG via LDAP...");
   await ldapClient.bind(process.env.UG_USERNAME, process.env.UG_PASSWORD);
@@ -108,9 +108,9 @@ async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
   }));
 }
 
-async function loadMembers(groupName){
+async function loadMembers(groupName) {
   const members = await searchGroup(groupName);
-  return getUsersForMembers(members).map(user => user.ugKthid);
+  return getUsersForMembers(members).map((user) => user.ugKthid);
 }
 
 async function loadEnrollments(round, { includeAntagna = false } = {}) {
@@ -191,5 +191,5 @@ module.exports = {
   ldapBind,
   ldapUnbind,
   loadEnrollments,
-  loadMembers
+  loadMembers,
 };
