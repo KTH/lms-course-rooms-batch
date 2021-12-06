@@ -25,7 +25,8 @@ function createCsvSerializer(name) {
 
 async function start() {
   log.info("Run batch...");
-  const allRounds = await getAllCourseRounds();
+  const allRounds = (await getAllCourseRounds()).filter((round) => !isFarFuture(round))
+
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);
@@ -34,7 +35,6 @@ async function start() {
   const coursesCsv = createCsvSerializer(`${dir}/courses.csv`);
   const sectionsCsv = createCsvSerializer(`${dir}/sections.csv`);
   allRounds
-    .filter((round) => !isFarFuture(round))
     .map((round) => ({
       courseRoom: createRoom(round),
       section: createSection(round),
