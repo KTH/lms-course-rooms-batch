@@ -23,6 +23,9 @@ function createCsvSerializer(name) {
   return serializer;
 }
 
+
+// TODO: add integration test for this function.
+// For instance: test that no antagna is added to far future rounds
 async function start() {
   log.info("Run batch...");
   const allRounds = (await getAllCourseRounds()).filter((round) => !isFarFuture(round))
