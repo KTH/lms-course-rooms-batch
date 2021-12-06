@@ -16,7 +16,7 @@ describe("shouldHaveAntagna", () => {
   // This shouldn't happen. Should this be handled in shouldHaveAntagna, or before this function is called (ie in app.js:start())
   it.todo("should NOT have antagna if the course starts in the far future")
 
-  it("should NOT have antagna if the course starts in the future", () => {
+  it("should have antagna if the course starts in the future", () => {
     
     const courseRound = {
       firstYearsemester: "20211",
@@ -25,7 +25,7 @@ describe("shouldHaveAntagna", () => {
       ],
     };
     const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
-    expect(result).toEqual(false);
+    expect(result).toEqual(true);
   }); 
 
   it("should NOT have antagna if the course started four days ago", () => {
@@ -43,7 +43,7 @@ describe("shouldHaveAntagna", () => {
     const courseRound = {
       firstYearsemester: "20211",
       offeredSemesters: [
-        { semester: "20211", startDate: "2021-01-30", endDate: "2022-10-23" },
+        { semester: "20211", startDate: "2021-01-31", endDate: "2022-10-23" },
       ],
     };
     const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
