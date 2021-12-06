@@ -44,4 +44,15 @@ describe("isFarFuture", () => {
     expect(result).toEqual(false);
   });
   // TODO: test multiple offeredSemesters
+ it("should return false even if the first semester in the array is in the far future", () => {
+    const courseRound = {
+      firstYearsemester: "20201",
+      offeredSemesters: [
+        { semester: "20222", startDate: "2022-06-01", endDate: "2022-10-23" },
+        { semester: "20201", startDate: "2020-01-01", endDate: "2022-10-23" },
+      ],
+    };
+    const result = courseRoundsUtils.isFarFuture(courseRound);
+    expect(result).toEqual(false);
+  }); 
 });
