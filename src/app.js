@@ -124,12 +124,12 @@ async function start() {
     ...roundsExcludingAntagnaStudents,
     ...roundsIncludingAntagnaStudents,
   ]) {
+    /* eslint-disable */
     [
-      // eslint-disable-next-line no-await-in-loop
       ...(await loadTeacherEnrollments(round)),
-      // eslint-disable-next-line no-await-in-loop
       ...(await loadRegisteredStudentEnrollments(round)),
     ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
+    /* eslint-enable */
   }
 
   await ldapUnbind();
