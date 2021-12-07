@@ -1,5 +1,6 @@
 const { getAntagna } = require("./canvas");
 const { loadMembers } = require("./ug");
+
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 3;
 
@@ -52,6 +53,12 @@ async function loadAntagnaUnEnrollments(round) {
   }));
 }
 
+function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
+  return antagnaStudentIds.filter(
+    (antagen) => !registeredStudentIds.includes(antagen)
+  );
+}
+
 async function loadAntagnaEnrollments(round) {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
@@ -75,14 +82,9 @@ async function loadAntagnaEnrollments(round) {
   }));
 }
 
-function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
-  return antagnaStudentIds.filter(
-    (antagen) => !registeredStudentIds.includes(antagen)
-  );
-}
-
 async function loadTeacherEnrollments(round) {
   const teacherEnrollments = [];
+  // eslint-disable-next-line prefer-destructuring
   const roundId = round.roundId;
 
   // Teacher enrollments
@@ -109,6 +111,7 @@ async function loadTeacherEnrollments(round) {
 
   for (const { canvasRoleId, ugGroupName } of teacherRoles) {
     teacherEnrollments.push(
+      // eslint-disable-next-line no-await-in-loop
       ...(await loadMembers(ugGroupName)).map((kthId) => ({
         section_id: round.sisId,
         user_id: kthId,
