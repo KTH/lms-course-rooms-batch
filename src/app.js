@@ -102,27 +102,35 @@ async function start() {
   await ldapBind();
 
   const roundsIncludingAntagnaStudents = allRounds.filter(shouldHaveAntagna);
-  for (const round of roundsIncludingAntagnaStudents) {
-    [
-      ...(await loadTeacherEnrollments(round)),
-      ...(await loadRegisteredStudentEnrollments(round)),
-      ...(await loadAntagnaEnrollments(round)),
-    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
-  }
-
   const roundsExcludingAntagnaStudents = allRounds.filter(
     (round) => !shouldHaveAntagna(round)
   );
 
-  for (const round of roundsExcludingAntagnaStudents) {
-    [
-      ...(await loadTeacherEnrollments(round)),
-      ...(await loadRegisteredStudentEnrollments(round)),
-      ...(await loadAntagnaUnEnrollments(round)),
-    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
+  for (const round of roundsIncludingAntagnaStudents) {
+    // eslint-disable-next-line no-await-in-loop
+    (await loadAntagnaEnrollments(round)).forEach((enrollment) =>
+      enrollmentsCsv.write(enrollment)
+    );
   }
 
-  process.exit();
+  for (const round of roundsExcludingAntagnaStudents) {
+    // eslint-disable-next-line no-await-in-loop
+    (await loadAntagnaUnEnrollments(round)).forEach((enrollment) =>
+      enrollmentsCsv.write(enrollment)
+    );
+  }
+
+  for (const round of [
+    ...roundsExcludingAntagnaStudents,
+    ...roundsIncludingAntagnaStudents,
+  ]) {
+    [
+      // eslint-disable-next-line no-await-in-loop
+      ...(await loadTeacherEnrollments(round)),
+      // eslint-disable-next-line no-await-in-loop
+      ...(await loadRegisteredStudentEnrollments(round)),
+    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
+  }
 
   await ldapUnbind();
 
@@ -145,7 +153,9 @@ async function start() {
   });
 
   log.info(`Uploading ${zipFileName} to canvas`);
-  await canvas.uploadCsvZip(zipFileName);
+  const result = await canvas.uploadCsvZip(zipFileName);
+  console.log(result);
+  // TODO: log the response file
 
   log.info(`Finished batch successfully.`);
 }

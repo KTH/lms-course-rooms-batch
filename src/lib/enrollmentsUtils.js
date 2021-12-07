@@ -24,23 +24,23 @@ async function loadRegisteredStudentEnrollments(round) {
   const groupName = `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`;
 
   // OPTIONAL: should we check in Canvas if the student is antagen?
-  const registeredStudentEnrollments = (
-    await loadMembers(groupName)
-  ).flatMap((kthId) => [
-    {
-      section_id: round.sisId,
-      user_id: kthId,
-      role_id: REGISTERED_STUDENT,
-      status: "active",
-    },
-    {
-      section_id: round.sisId,
-      user_id: kthId,
-      role_id: ANTAGEN_STUDENT,
-      status: "deleted",
-    },
-  ]);
-  return registeredStudentEnrollments
+  const registeredStudentEnrollments = (await loadMembers(groupName)).flatMap(
+    (kthId) => [
+      {
+        section_id: round.sisId,
+        user_id: kthId,
+        role_id: REGISTERED_STUDENT,
+        status: "active",
+      },
+      {
+        section_id: round.sisId,
+        user_id: kthId,
+        role_id: ANTAGEN_STUDENT,
+        status: "deleted",
+      },
+    ]
+  );
+  return registeredStudentEnrollments;
 }
 
 async function loadAntagnaUnEnrollments(round) {
