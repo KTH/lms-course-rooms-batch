@@ -2,6 +2,7 @@ const { Client } = require("ldapts");
 const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
+const memoizee = require('memoizee')
 let ldapClient;
 async function ldapBind() {
   ldapClient = new Client({
@@ -59,27 +60,45 @@ async function searchGroup(groupName) {
   return members;
 }
 
+// const cacheStats = {
+//   total: 0,
+//   fail: 0,
+// };
+
+async function getKthId(dn) {
+  // cacheStats.fail++;
+  return ldapSearch({ base: dn, scope: "base", attributes: ["ugKthId"] }).then(
+    (entries) => entries[0].ugKthid
+  );
+}
+
+getKthId = memoizee(getKthId);
+
+
 /*
  * For string array with ldap keys for users, fetch every user object
  */
 async function getUsersForMembers(members) {
-  const usersForMembers = [];
+  const kthIds = [];
   for (const member of members) {
-    const filter = new EqualityFilter({
-      attribute: "distinguishedName",
-      value: member,
-    });
-    // eslint-disable-next-line no-await-in-loop
-    const searchEntries = await ldapSearch({
-      filter,
-      attributes: ["ugKthid"],
-      paged: {
-        pageSize: 1000,
-      },
-    });
-    usersForMembers.push(...searchEntries);
+    // cacheStats.total++;
+    const kthId = await getKthId(member);
+    kthIds.push(kthId);
+    // const filter = new EqualityFilter({
+    //   attribute: "distinguishedName",
+    //   value: member,
+    // });
+    // // eslint-disable-next-line no-await-in-loop
+    // const searchEntries = await ldapSearch({
+    //   filter,
+    //   attributes: ["ugKthid"],
+    //   paged: {
+    //     pageSize: 1000,
+    //   },
+    // });
+    // kthIds.push(...searchEntries);
   }
-  return usersForMembers;
+  return kthIds;
 }
 
 function getUgNameLadokBase(courseCode) {
@@ -188,6 +207,7 @@ async function loadEnrollments(round, { includeAntagna = false } = {}) {
 /// ////////////////
 
 module.exports = {
+  ldapClient,
   ldapBind,
   ldapUnbind,
   loadEnrollments,
