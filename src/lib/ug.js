@@ -65,7 +65,7 @@ async function searchGroup(groupName) {
 //   fail: 0,
 // };
 
-// TODO: this cached function returns 30% less enrollments then the original. If we are 
+// TODO: this cached function returns 30% less enrollments then the original. If we are
 // to cache, make sure that it works properly
 //
 // async function _getKthId(dn) {
@@ -76,7 +76,6 @@ async function searchGroup(groupName) {
 // }
 
 // getKthId = memoizee(_getKthId);
-
 
 /*
  * For string array with ldap keys for users, fetch every user object

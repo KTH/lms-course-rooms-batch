@@ -70,23 +70,22 @@ function createCsvSerializer(name) {
 // 3. Send files to Canvas
 // 4. Report result to logging
 async function start() {
-
+  /* eslint-disable */
   // START TODO remove this, it's only for test!
-  const _Date = global.Date
-  global.Date = function(){
-    if(arguments.length){
-      return new _Date(...arguments)
-    }
-    else{
+  const _Date = global.Date;
+  global.Date = function () {
+    if (arguments.length) {
+      return new _Date(...arguments);
+    } else {
       return new _Date("2021-09-01T00:00:01Z");
     }
-
-  }
-  global.Date.now = _Date.now
+  };
+  global.Date.now = _Date.now;
   // END
+  /* eslint-enable */
 
   log.info("Run batch...");
-  log.info(`Today: ${new Date()}`)
+  log.info(`Today: ${new Date()}`);
   const allRounds = (await getAllCourseRounds()).filter(
     (round) => !isFarFuture(round)
   );
@@ -135,8 +134,8 @@ async function start() {
   }
 
   // Re-bind, solves the problem with unbound ldap.
-  await ldapUnbind()
-  await ldapBind()
+  await ldapUnbind();
+  await ldapBind();
   for (const round of [
     ...roundsExcludingAntagnaStudents,
     ...roundsIncludingAntagnaStudents,
@@ -173,7 +172,9 @@ async function start() {
   log.info(`Uploading ${zipFileName} to canvas`);
   const result = await canvas.uploadCsvZip(zipFileName);
 
-  log.info(`Finished batch successfully. Sis id ${result.body.id} sent to Canvas`);
+  log.info(
+    `Finished batch successfully. Sis id ${result.body.id} sent to Canvas`
+  );
 }
 
 start();

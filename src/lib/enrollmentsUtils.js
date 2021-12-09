@@ -21,7 +21,6 @@ function getUgNameLadokBase(courseCode) {
 // return a list of enrollment objects, prepared to be used for writing csv file.
 // One object for adding registered, another obj for removing antagna
 async function loadRegisteredStudentEnrollments(round) {
-
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
   const groupName = `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`;
 
