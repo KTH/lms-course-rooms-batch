@@ -113,19 +113,11 @@ async function start() {
   sectionsCsv.end();
 
   const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
-  await ldapBind();
 
   const roundsIncludingAntagnaStudents = allRounds.filter(shouldHaveAntagna);
   const roundsExcludingAntagnaStudents = allRounds.filter(
     (round) => !shouldHaveAntagna(round)
   );
-
-  for (const round of roundsIncludingAntagnaStudents) {
-    // eslint-disable-next-line no-await-in-loop
-    (await loadAntagnaEnrollments(round)).forEach((enrollment) =>
-      enrollmentsCsv.write(enrollment)
-    );
-  }
 
   for (const round of roundsExcludingAntagnaStudents) {
     // eslint-disable-next-line no-await-in-loop
@@ -134,9 +126,14 @@ async function start() {
     );
   }
 
-  // Re-bind, solves the problem with unbound ldap.
-  await ldapUnbind()
-  await ldapBind()
+  await ldapBind();
+  for (const round of roundsIncludingAntagnaStudents) {
+    // eslint-disable-next-line no-await-in-loop
+    (await loadAntagnaEnrollments(round)).forEach((enrollment) =>
+      enrollmentsCsv.write(enrollment)
+    );
+  }
+
   for (const round of [
     ...roundsExcludingAntagnaStudents,
     ...roundsIncludingAntagnaStudents,
