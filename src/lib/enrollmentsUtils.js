@@ -83,7 +83,6 @@ async function loadAntagnaEnrollments(round) {
 }
 
 async function loadTeacherEnrollments(round) {
-  // TODO: this code fails on the first call, right? Why?
   const teacherEnrollments = [];
   // eslint-disable-next-line prefer-destructuring
   const roundId = round.roundId;
