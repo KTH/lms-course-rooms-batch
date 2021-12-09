@@ -2,7 +2,7 @@ const { Client } = require("ldapts");
 const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
-const memoizee = require('memoizee')
+// const memoizee = require('memoizee')
 let ldapClient;
 async function ldapBind() {
   ldapClient = new Client({
@@ -65,14 +65,17 @@ async function searchGroup(groupName) {
 //   fail: 0,
 // };
 
-async function getKthId(dn) {
-  // cacheStats.fail++;
-  return ldapSearch({ base: dn, scope: "base", attributes: ["ugKthId"] }).then(
-    (entries) => entries[0].ugKthid
-  );
-}
+// TODO: this cached function returns 30% less enrollments then the original. If we are 
+// to cache, make sure that it works properly
+//
+// async function _getKthId(dn) {
+//   // cacheStats.fail++;
+//   return ldapSearch({ base: dn, scope: "base", attributes: ["ugKthId"] }).then(
+//     (entries) => entries[0].ugKthid
+//   );
+// }
 
-getKthId = memoizee(getKthId);
+// getKthId = memoizee(_getKthId);
 
 
 /*
@@ -81,22 +84,22 @@ getKthId = memoizee(getKthId);
 async function getUsersForMembers(members) {
   const kthIds = [];
   for (const member of members) {
-    // cacheStats.total++;
-    const kthId = await getKthId(member);
-    kthIds.push(kthId);
-    // const filter = new EqualityFilter({
-    //   attribute: "distinguishedName",
-    //   value: member,
-    // });
-    // // eslint-disable-next-line no-await-in-loop
-    // const searchEntries = await ldapSearch({
-    //   filter,
-    //   attributes: ["ugKthid"],
-    //   paged: {
-    //     pageSize: 1000,
-    //   },
-    // });
-    // kthIds.push(...searchEntries);
+    // const kthId = await getKthId(member);
+    // kthIds.push(kthId);
+
+    const filter = new EqualityFilter({
+      attribute: "distinguishedName",
+      value: member,
+    });
+    // eslint-disable-next-line no-await-in-loop
+    const searchEntries = await ldapSearch({
+      filter,
+      attributes: ["ugKthid"],
+      paged: {
+        pageSize: 1000,
+      },
+    });
+    kthIds.push(...searchEntries);
   }
   return kthIds;
 }
