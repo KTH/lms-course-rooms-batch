@@ -55,22 +55,22 @@ describe("isFarFuture", () => {
     jest.useRealTimers();
   });
 
-  it("should return true if the course round starts in more then 6 months", () => {
+  it("should return true if the course round starts in more then 9 months", () => {
     const courseRound = {
       firstYearsemester: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2021-09-01", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-10-02", endDate: "2022-10-23" },
       ],
     };
     const result = courseRoundsUtils.isFarFuture(courseRound);
     expect(result).toEqual(true);
   });
 
-  it("should return false if the course round starts within 6 months", () => {
+  it("should return false if the course round starts in less then 9 months", () => {
     const courseRound = {
       firstYearsemester: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2021-06-01", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-09-01", endDate: "2022-10-23" },
       ],
     };
     const result = courseRoundsUtils.isFarFuture(courseRound);
@@ -90,7 +90,7 @@ describe("isFarFuture", () => {
     const courseRound = {
       firstYearsemester: "20201",
       offeredSemesters: [
-        { semester: "20222", startDate: "2022-06-01", endDate: "2022-10-23" },
+        { semester: "20222", startDate: "2022-19-01", endDate: "2022-10-23" },
         { semester: "20201", startDate: "2020-01-01", endDate: "2022-10-23" },
       ],
     };
