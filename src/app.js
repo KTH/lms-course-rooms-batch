@@ -1,4 +1,7 @@
-require("./check");
+if (process.env.NODE_ENV !== "test") {
+  require("./check");
+}
+
 const log = require("skog");
 const Zip = require("jszip");
 const csv = require("fast-csv");
@@ -25,38 +28,27 @@ function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
   const serializer = csv.format({ headers: true });
   serializer.pipe(writer);
-  return serializer;
+
+  return {
+    write(...args) {
+      serializer.write(...args);
+    },
+    end() {
+      serializer.end();
+
+      return new Promise((resolve, reject) => {
+        writer.on("finish", resolve).on("error", reject);
+      });
+    },
+  };
 }
 
-// TODO: add integration test for this function.
-// For instance: test that no antagna is added to far future rounds
+async function generateFiles(dir) {
+  log.info(`Creating csv files in ${dir}`);
 
-async function start() {
-  /* eslint-disable */
-  // START TODO remove this, it's only for test!
-  const _Date = global.Date;
-  global.Date = function () {
-    if (arguments.length) {
-      return new _Date(...arguments);
-    } else {
-      return new _Date("2021-09-01T00:00:01Z");
-    }
-  };
-  global.Date.now = _Date.now;
-  // END
-  /* eslint-enable */
-
-  log.info("Run batch...");
-  log.info(`Today: ${new Date()}`);
   const allRounds = (await getAllCourseRounds()).filter(
     (round) => !isFarFuture(round)
   );
-
-  // Create course rooms and sections
-  const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
-  const dir = path.join(baseDir, "csv");
-  fs.mkdirSync(dir);
-  log.info(`Creating csv files in ${dir}`);
 
   const coursesCsv = createCsvSerializer(`${dir}/courses.csv`);
   const sectionsCsv = createCsvSerializer(`${dir}/sections.csv`);
@@ -70,8 +62,8 @@ async function start() {
       sectionsCsv.write(section);
     });
 
-  coursesCsv.end();
-  sectionsCsv.end();
+  await coursesCsv.end();
+  await sectionsCsv.end();
 
   const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
 
@@ -109,7 +101,26 @@ async function start() {
 
   await ldapUnbind();
 
-  enrollmentsCsv.end();
+  await enrollmentsCsv.end();
+}
+
+// TODO: add integration test for this function.
+// For instance: test that no antagna is added to far future rounds
+
+async function start() {
+  if (process.env.NODE_ENV === "test") {
+    return;
+  }
+
+  log.info("Run batch...");
+  log.info(`Today: ${new Date()}`);
+
+  // Create course rooms and sections
+  const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
+  const dir = path.join(baseDir, "csv");
+  fs.mkdirSync(dir);
+
+  await generateFiles(dir);
 
   const zipFileName = path.join(baseDir, "files.zip");
   log.info(`Creating zip file ${zipFileName}`);
@@ -134,5 +145,9 @@ async function start() {
     `Finished batch successfully. Sis id ${result.body.id} sent to Canvas`
   );
 }
+
+module.exports = {
+  generateFiles,
+};
 
 start();
