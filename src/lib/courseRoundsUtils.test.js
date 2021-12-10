@@ -66,7 +66,7 @@ describe("isFarFuture", () => {
     expect(result).toEqual(true);
   });
 
-  it("should return false if the course round starts in less then 9 months", () => {
+  it("should return false if the course round starts in less then apx 9 months", () => {
     const courseRound = {
       firstYearsemester: "20202",
       offeredSemesters: [
@@ -76,6 +76,7 @@ describe("isFarFuture", () => {
     const result = courseRoundsUtils.isFarFuture(courseRound);
     expect(result).toEqual(false);
   });
+
   it("should return false if the course round has already started", () => {
     const courseRound = {
       firstYearsemester: "20202",
@@ -86,6 +87,7 @@ describe("isFarFuture", () => {
     const result = courseRoundsUtils.isFarFuture(courseRound);
     expect(result).toEqual(false);
   });
+
   it("should return false even if the first semester in the array is in the far future", () => {
     const courseRound = {
       firstYearsemester: "20201",
