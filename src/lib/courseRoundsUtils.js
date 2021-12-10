@@ -67,10 +67,10 @@ async function getAllCourseRounds() {
 }
 
 function isFarFuture(round) {
-  const HALF_YEAR = 180 * 24 * 60 * 60 * 1000;
+  const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
-  return startDate - new Date() > HALF_YEAR;
+  return startDate - new Date() > threshold;
 }
 
 /**

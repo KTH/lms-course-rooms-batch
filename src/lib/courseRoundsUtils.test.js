@@ -55,11 +55,11 @@ describe("isFarFuture", () => {
     jest.useRealTimers();
   });
 
-  it("should return true if the course round starts in more then 9 months", () => {
+  it("should return true if the course round starts in more then apx 9 months", () => {
     const courseRound = {
       firstYearsemester: "20202",
       offeredSemesters: [
-        { semester: "20202", startDate: "2021-10-02", endDate: "2022-10-23" },
+        { semester: "20202", startDate: "2021-10-30", endDate: "2022-10-23" },
       ],
     };
     const result = courseRoundsUtils.isFarFuture(courseRound);
