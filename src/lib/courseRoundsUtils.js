@@ -1,3 +1,6 @@
+/**
+ * Module with functions that contain logic for creating course rounds
+ */
 const { getCourseRounds } = require("./kopps");
 const {
   createLongName,
@@ -8,9 +11,11 @@ const {
 } = require("./utils");
 
 /**
- * Functions that contain logic
+ * Given a Kopps `round`, returns an object that matches the `courses.csv`
+ * Canvas SIS Import Format for that round
+ *
+ * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
  */
-
 function createRoom(round) {
   return {
     course_id: round.sisId,
@@ -24,6 +29,12 @@ function createRoom(round) {
   };
 }
 
+/**
+ * Given a Kopps `round`, returns an object that matches the `sections.csv`
+ * Canvas SIS Import Format for that round
+ *
+ * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
+ */
 function createSection(round) {
   return {
     section_id: round.sisId,
@@ -66,6 +77,10 @@ async function getAllCourseRounds() {
   return result.map(_addSisId);
 }
 
+/**
+ * Return `true` if the given `round` is in the future, i.e. aprox 9 months ahead
+ * from the current date
+ */
 function isFarFuture(round) {
   const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
@@ -74,7 +89,8 @@ function isFarFuture(round) {
 }
 
 /**
- * Should remove antagna 3 days after the course starts
+ * Return `true` if the given `round` should include antagna "students", i.e.
+ * if its start date was three days ago or later
  */
 function shouldHaveAntagna(round) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;

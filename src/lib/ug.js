@@ -2,7 +2,6 @@ const { Client } = require("ldapts");
 const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
-// const memoizee = require('memoizee')
 let ldapClient;
 async function ldapBind() {
   ldapClient = new Client({
@@ -60,32 +59,12 @@ async function searchGroup(groupName) {
   return members;
 }
 
-// const cacheStats = {
-//   total: 0,
-//   fail: 0,
-// };
-
-// TODO: this cached function returns 30% less enrollments then the original. If we are
-// to cache, make sure that it works properly
-//
-// async function _getKthId(dn) {
-//   // cacheStats.fail++;
-//   return ldapSearch({ base: dn, scope: "base", attributes: ["ugKthId"] }).then(
-//     (entries) => entries[0].ugKthid
-//   );
-// }
-
-// getKthId = memoizee(_getKthId);
-
 /*
  * For string array with ldap keys for users, fetch every user object
  */
 async function getUsersForMembers(members) {
   const kthIds = [];
   for (const member of members) {
-    // const kthId = await getKthId(member);
-    // kthIds.push(kthId);
-
     const filter = new EqualityFilter({
       attribute: "distinguishedName",
       value: member,
@@ -107,8 +86,6 @@ async function loadMembers(groupName) {
   const members = await searchGroup(groupName);
   return (await getUsersForMembers(members)).map((user) => user.ugKthid);
 }
-
-/// ////////////////
 
 module.exports = {
   ldapClient,
