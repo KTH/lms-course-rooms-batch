@@ -32,22 +32,7 @@ function createCsvSerializer(name) {
 // For instance: test that no antagna is added to far future rounds
 
 async function start() {
-  /* eslint-disable */
-  // START TODO remove this, it's only for test!
-  const _Date = global.Date;
-  global.Date = function () {
-    if (arguments.length) {
-      return new _Date(...arguments);
-    } else {
-      return new _Date("2021-09-02T06:00:01Z");
-    }
-  };
-  global.Date.now = _Date.now;
-  // END
-  /* eslint-enable */
-
-  log.info("Run batch...");
-  log.info(`Today: ${new Date()}`);
+  log.info(`Run batch. Today is ${new Date()}`);
   const allRounds = (await getAllCourseRounds()).filter(
     (round) => !isFarFuture(round)
   );
