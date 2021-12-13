@@ -55,7 +55,7 @@ describe("isFarFuture", () => {
     jest.useRealTimers();
   });
 
-  it("should return true if the course round starts in more then apx 9 months", () => {
+  it("should return true if the course round starts in more than apx 9 months", () => {
     const courseRound = {
       firstYearsemester: "20202",
       offeredSemesters: [
@@ -66,7 +66,7 @@ describe("isFarFuture", () => {
     expect(result).toEqual(true);
   });
 
-  it("should return false if the course round starts in less then apx 9 months", () => {
+  it("should return false if the course round starts in less than apx 9 months", () => {
     const courseRound = {
       firstYearsemester: "20202",
       offeredSemesters: [
@@ -88,7 +88,7 @@ describe("isFarFuture", () => {
     expect(result).toEqual(false);
   });
 
-  it("should return false even if the first semester in the array is in the far future", () => {
+  it("should pick the right startDate in 'offeredSemesters' array", () => {
     const courseRound = {
       firstYearsemester: "20201",
       offeredSemesters: [
