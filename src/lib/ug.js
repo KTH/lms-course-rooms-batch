@@ -2,11 +2,12 @@ const { Client } = require("ldapts");
 const { EqualityFilter } = require("ldapts/filters");
 const log = require("skog");
 
-const ldapClient = new Client({
-  url: process.env.UG_URL,
-});
-
+let ldapClient;
 async function ldapBind() {
+  ldapClient = new Client({
+    url: process.env.UG_URL,
+  });
+
   log.info("Connecting to UG via LDAP...");
   await ldapClient.bind(process.env.UG_USERNAME, process.env.UG_PASSWORD);
 }
@@ -62,7 +63,7 @@ async function searchGroup(groupName) {
  * For string array with ldap keys for users, fetch every user object
  */
 async function getUsersForMembers(members) {
-  const usersForMembers = [];
+  const kthIds = [];
   for (const member of members) {
     const filter = new EqualityFilter({
       attribute: "distinguishedName",
@@ -76,111 +77,19 @@ async function getUsersForMembers(members) {
         pageSize: 1000,
       },
     });
-    usersForMembers.push(...searchEntries);
+    kthIds.push(...searchEntries);
   }
-  return usersForMembers;
+  return kthIds;
 }
 
-function getUgNameLadokBase(courseCode) {
-  const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
-
-  if (!matching) {
-    throw new Error(
-      `UG: Wrong course code format [${courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
-    );
-  }
-
-  const [, prefix, suffix] = matching;
-
-  return `ladok2.kurser.${prefix}.${suffix}`;
-}
-
-async function getEnrollmentCsvData(sisSectionId, roleId, groupName) {
+async function loadMembers(groupName) {
   const members = await searchGroup(groupName);
-  const users = await getUsersForMembers(members);
-
-  return users.map((user) => ({
-    section_id: sisSectionId,
-    user_id: user.ugKthid,
-    role_id: roleId,
-    status: "active",
-  }));
+  return (await getUsersForMembers(members)).map((user) => user.ugKthid);
 }
-
-async function loadEnrollments(round, { includeAntagna = false } = {}) {
-  const teacherEnrollments = [];
-  const roundId = round.sisId.slice(-1);
-
-  // Teacher enrollments
-  // prettier-ignore
-  const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
-  const teacherRoles = [
-    {
-      canvasRoleId: 4,
-      ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.teachers`,
-    },
-    {
-      canvasRoleId: 9,
-      ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.courseresponsible`,
-    },
-    {
-      canvasRoleId: 5,
-      ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.assistants`,
-    },
-    {
-      canvasRoleId: 10,
-      ugGroupName: `${ugNameEduBase}.examiner`,
-    },
-  ];
-
-  for (const { canvasRoleId, ugGroupName } of teacherRoles) {
-    teacherEnrollments.push(
-      // eslint-disable-next-line no-await-in-loop
-      ...(await getEnrollmentCsvData(round.sisId, canvasRoleId, ugGroupName))
-    );
-  }
-
-  // Student enrollments
-  const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
-
-  const registeredStudentsEnrollments = await getEnrollmentCsvData(
-    round.sisId,
-    3,
-    `${ugNameLadokBase}.registrerade_${round.startTerm}.${roundId}`
-  );
-  let antagnaStudentsEnrollments = [];
-
-  if (includeAntagna) {
-    antagnaStudentsEnrollments = await getEnrollmentCsvData(
-      round.sisId,
-      25,
-      `${ugNameLadokBase}.antagna_${round.startTerm}.${roundId}`
-    );
-
-    for (const antagnaEnrollment of antagnaStudentsEnrollments) {
-      const isRegistered = registeredStudentsEnrollments.find(
-        (regEnr) => regEnr.user_id === antagnaEnrollment.user_id
-      );
-
-      if (isRegistered) {
-        // NOTE: Check in Canvas that the student has no longer antagna role
-        // otherwise this can provoke false SIS Import Errors
-        antagnaEnrollment.status = "deleted";
-      }
-    }
-  }
-
-  return [
-    ...teacherEnrollments,
-    ...registeredStudentsEnrollments,
-    ...antagnaStudentsEnrollments,
-  ];
-}
-
-/// ////////////////
 
 module.exports = {
+  ldapClient,
   ldapBind,
   ldapUnbind,
-  loadEnrollments,
+  loadMembers,
 };
