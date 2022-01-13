@@ -1,1 +1,1 @@
-0 4 * * * cd /usr/src/app && node src/app.js || node src/app.js
+0 4 * * * cd /usr/src/app && npx ts-node --transpile-only src/app.ts || npx ts-node --transpile-only src/app.ts
