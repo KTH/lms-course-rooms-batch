@@ -1,5 +1,5 @@
-const { getAntagna } = require("./canvas");
-const { loadMembers } = require("./ug");
+import { getAntagna } from "./canvas";
+import { loadMembers } from "./ug";
 
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 3;
@@ -123,7 +123,7 @@ async function loadTeacherEnrollments(round) {
   return teacherEnrollments;
 }
 
-module.exports = {
+export {
   purgeRegisteredFromAntagna,
   loadAntagnaEnrollments,
   loadAntagnaUnEnrollments,

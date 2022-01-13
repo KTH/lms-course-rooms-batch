@@ -1,6 +1,7 @@
-const { expect, test } = require("@jest/globals");
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+import { expect, test } from "@jest/globals";
 
-const utils = require("./utils");
+import * as utils from "./utils";
 
 test("should choose the latest date plus 10 days", () => {
   const courseRound = {

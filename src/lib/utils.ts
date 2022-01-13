@@ -49,7 +49,7 @@ function createStartDate(round) {
   return `${startDate}T06:00:00Z`;
 }
 
-module.exports = {
+export {
   createSisCourseId,
   createLongName,
   createAccountId,

@@ -1,14 +1,14 @@
 /**
  * Module with functions that contain logic for creating course rounds
  */
-const { getCourseRounds } = require("./kopps");
-const {
+import { getCourseRounds } from "./kopps";
+import {
   createLongName,
   createAccountId,
   createEndDate,
   createStartDate,
   createSisCourseId,
-} = require("./utils");
+} from "./utils";
 
 /**
  * Given a Kopps `round`, returns an object that matches the `courses.csv`
@@ -52,26 +52,18 @@ function _addSisId(round) {
   };
 }
 
-function today() {
-  const date = new Date();
-  date.setHours(0);
-  date.setMinutes(0);
-  date.setSeconds(1);
-  return date;
-}
-
 /**
  * Returns a list of Kopps rounds that can be handled at this moment
  */
 async function getAllCourseRounds() {
-  const _today = today();
-  const lastYear = _today.getFullYear() - 1;
-  const nextYear = _today.getFullYear() + 1;
+  const today = new Date();
+  const lastYear = today.getFullYear() - 1;
+  const nextYear = today.getFullYear() + 1;
 
   const terms = [
     `${lastYear}2`,
-    `${_today.getFullYear()}1`,
-    `${_today.getFullYear()}2`,
+    `${today.getFullYear()}1`,
+    `${today.getFullYear()}2`,
     `${nextYear}1`,
   ];
 
@@ -92,8 +84,9 @@ async function getAllCourseRounds() {
 function isFarFuture(round) {
   const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
+  const now = new Date();
 
-  return startDate - today() > threshold;
+  return (startDate.valueOf() - now.valueOf()) > threshold;
 }
 
 /**
@@ -103,11 +96,12 @@ function isFarFuture(round) {
 function shouldHaveAntagna(round) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
+  const now = new Date();
 
-  return today() - startDate < THREE_DAYS;
+  return (now.valueOf() - startDate.valueOf()) < THREE_DAYS;
 }
 
-module.exports = {
+export {
   createRoom,
   createSection,
   getAllCourseRounds,
