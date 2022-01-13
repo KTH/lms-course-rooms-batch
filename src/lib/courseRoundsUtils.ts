@@ -86,7 +86,7 @@ function isFarFuture(round) {
   const startDate = new Date(createStartDate(round));
   const now = new Date();
 
-  return (startDate.valueOf() - now.valueOf()) > threshold;
+  return startDate.valueOf() - now.valueOf() > threshold;
 }
 
 /**
@@ -98,7 +98,7 @@ function shouldHaveAntagna(round) {
   const startDate = new Date(createStartDate(round));
   const now = new Date();
 
-  return (now.valueOf() - startDate.valueOf()) < THREE_DAYS;
+  return now.valueOf() - startDate.valueOf() < THREE_DAYS;
 }
 
 export {

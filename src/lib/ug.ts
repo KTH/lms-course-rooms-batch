@@ -87,9 +87,4 @@ async function loadMembers(groupName) {
   return (await getUsersForMembers(members)).map((user) => user.ugKthid);
 }
 
-export {
-  ldapClient,
-  ldapBind,
-  ldapUnbind,
-  loadMembers,
-};
+export { ldapBind, ldapUnbind, loadMembers };
