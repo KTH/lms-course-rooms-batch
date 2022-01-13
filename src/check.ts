@@ -1,5 +1,5 @@
 require("dotenv").config();
-const log = require("skog");
+import log from "skog";
 
 log.init.pino({
   app: "lms-course-rooms-batch",

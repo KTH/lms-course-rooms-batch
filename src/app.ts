@@ -1,25 +1,25 @@
 require("./check");
-const log = require("skog");
-const Zip = require("jszip");
-const csv = require("fast-csv");
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const {
+import log from "skog";
+import Zip from "jszip";
+import csv from "fast-csv";
+import fs from "fs";
+import path from "path";
+import os from "os";
+import {
   loadTeacherEnrollments,
   loadAntagnaEnrollments,
   loadAntagnaUnEnrollments,
   loadRegisteredStudentEnrollments,
-} = require("./lib/enrollmentsUtils");
-const { ldapBind, ldapUnbind } = require("./lib/ug");
-const {
+} from "./lib/enrollmentsUtils";
+import { ldapBind, ldapUnbind } from "./lib/ug";
+import {
   getAllCourseRounds,
   isFarFuture,
   createRoom,
   createSection,
   shouldHaveAntagna,
-} = require("./lib/courseRoundsUtils");
-const canvas = require("./lib/canvas");
+} from "./lib/courseRoundsUtils";
+import * as canvas from "./lib/canvas";
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
