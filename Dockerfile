@@ -17,6 +17,7 @@ COPY ["package-lock.json", "package-lock.json"]
 RUN npm ci --unsafe-perm
 COPY . .
 # Add extra build steps if needed: "RUN npm run build" etc
+RUN npm run build
 
 # Second "stage" is a builder image, used to install production dependencies
 FROM node:14 AS builder
@@ -34,9 +35,9 @@ FROM node:14-alpine AS production
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/node_modules node_modules
 # Add extra build steps if needed: "COPY --from=development /usr/src/app/dist dist" etc
-
+COPY --from=development /usr/src/app/dist dist
 COPY . .
 
 ADD crontab /etc/crontabs/root
 RUN chmod 0644 /etc/crontabs/root
-CMD npx ts-node --transpile-only src/check.ts && crond -f -L /dev/stdout
+CMD node dist/check.js && crond -f -L /dev/stdout
