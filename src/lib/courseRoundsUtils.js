@@ -96,7 +96,12 @@ function shouldHaveAntagna(round) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
-  return new Date() - startDate < THREE_DAYS;
+  const today = new Date();
+  today.setHours(0);
+  today.setMinutes(0);
+  today.setSeconds(1);
+
+  return today - startDate < THREE_DAYS;
 }
 
 module.exports = {
