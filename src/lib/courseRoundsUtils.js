@@ -77,6 +77,14 @@ async function getAllCourseRounds() {
   return result.map(_addSisId);
 }
 
+function today() {
+  const date = new Date();
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setSeconds(1);
+  return date;
+}
+
 /**
  * Return `true` if the given `round` is in the future, i.e. aprox 9 months ahead
  * from the current date
@@ -85,7 +93,7 @@ function isFarFuture(round) {
   const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
-  return startDate - new Date() > threshold;
+  return startDate - today() > threshold;
 }
 
 /**
@@ -96,12 +104,7 @@ function shouldHaveAntagna(round) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
-  const today = new Date();
-  today.setHours(0);
-  today.setMinutes(0);
-  today.setSeconds(1);
-
-  return today - startDate < THREE_DAYS;
+  return today() - startDate < THREE_DAYS;
 }
 
 module.exports = {
