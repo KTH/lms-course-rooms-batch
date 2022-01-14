@@ -52,18 +52,26 @@ function _addSisId(round) {
   };
 }
 
+function today() {
+  const date = new Date();
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setSeconds(1);
+  return date;
+}
+
 /**
  * Returns a list of Kopps rounds that can be handled at this moment
  */
 async function getAllCourseRounds() {
-  const today = new Date();
-  const lastYear = today.getFullYear() - 1;
-  const nextYear = today.getFullYear() + 1;
+  const _today = today();
+  const lastYear = _today.getFullYear() - 1;
+  const nextYear = _today.getFullYear() + 1;
 
   const terms = [
     `${lastYear}2`,
-    `${today.getFullYear()}1`,
-    `${today.getFullYear()}2`,
+    `${_today.getFullYear()}1`,
+    `${_today.getFullYear()}2`,
     `${nextYear}1`,
   ];
 
@@ -75,14 +83,6 @@ async function getAllCourseRounds() {
   }
 
   return result.map(_addSisId);
-}
-
-function today() {
-  const date = new Date();
-  date.setHours(0);
-  date.setMinutes(0);
-  date.setSeconds(1);
-  return date;
 }
 
 /**
