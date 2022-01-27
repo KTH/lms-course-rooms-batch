@@ -1,7 +1,9 @@
+/* eslint-disable import/first */
 require("./check");
+
 import log from "skog";
 import Zip from "jszip";
-import csv from "fast-csv";
+import * as csv from "fast-csv";
 import fs from "fs";
 import path from "path";
 import os from "os";
