@@ -9,18 +9,18 @@ const canvasApi = new CanvasApi(
   process.env.CANVAS_API_TOKEN
 );
 
-export async function uploadCsvZip(fileName) {
+export async function uploadCsvZip(fileName): Promise<any> {
   return canvasApi.sendSis("accounts/1/sis_imports", fileName);
 }
 
 /** Return enrolled people as "Admitted not registered student" in a given section SIS ID */
 export async function getAntagna(sectionSisId) {
   try {
-    const enrollments = await canvasApi
-      .list(`sections/sis_section_id:${sectionSisId}/enrollments`, {
+    const enrollments = (await canvasApi
+      .listItems(`sections/sis_section_id:${sectionSisId}/enrollments`, {
         role_id: [25],
       })
-      .toArray();
+      .toArray()) as any[];
 
     return enrollments.filter((e) => e.sis_user_id).map((e) => e.sis_user_id);
   } catch (err) {
