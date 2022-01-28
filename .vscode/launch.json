@@ -11,7 +11,8 @@
       "runtimeArgs": ["run-script", "dev"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "pwa-node",
+      "outputCapture": "std"
     },
     {
       "name": "start via NPM",
@@ -20,7 +21,8 @@
       "runtimeArgs": ["run-script", "start"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "pwa-node",
+      "outputCapture": "std"
     }
   ]
 }
