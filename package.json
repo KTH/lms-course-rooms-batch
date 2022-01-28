@@ -6,12 +6,12 @@
   "scripts": {
     "start": "ts-node --transpile-only src/app.ts",
     "dev": "ts-node-dev --respawn src/app.ts | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'",
-    "tsc": "tsc src/app.ts",
+    "tsc": "tsc --noEmit",
     "format": "prettier --write .",
     "test:lint": "eslint src/**/*.ts",
     "test:format": "prettier --check .",
     "test:unit": "jest",
-    "test": "npm run test:unit && npm run test:lint && npm run test:format",
+    "test": "npm run tsc && npm run test:unit && npm run test:lint && npm run test:format",
     "build": "npm test"
   },
   "author": "KTH Royal Institute of Technology",
