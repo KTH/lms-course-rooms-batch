@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-require("./check");
+import "./check";
 
 import log from "skog";
 import JSZip from "jszip";
