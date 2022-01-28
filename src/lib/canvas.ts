@@ -9,10 +9,10 @@ const canvasApi = new CanvasApi(
   process.env.CANVAS_API_TOKEN
 );
 
-interface SisImportBody{
-  id:string
+interface SisImportBody {
+  id: string;
 }
-export async function uploadCsvZip(fileName){
+export async function uploadCsvZip(fileName) {
   return canvasApi.sendSis<SisImportBody>("accounts/1/sis_imports", fileName);
 }
 
