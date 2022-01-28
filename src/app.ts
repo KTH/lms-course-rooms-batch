@@ -2,11 +2,11 @@
 require("./check");
 
 import log from "skog";
-import Zip from "jszip";
+import JSZip from "jszip";
 import * as csv from "fast-csv";
-import fs from "fs";
-import path from "path";
-import os from "os";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
 import {
   loadTeacherEnrollments,
   loadAntagnaEnrollments,
@@ -100,7 +100,7 @@ async function start() {
 
   const zipFileName = path.join(baseDir, "files.zip");
   log.info(`Creating zip file ${zipFileName}`);
-  const zip = new Zip();
+  const zip = new JSZip();
 
   for (const file of fs.readdirSync(dir)) {
     zip.file(file, fs.readFileSync(path.join(dir, file)));

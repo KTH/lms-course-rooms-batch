@@ -6,6 +6,7 @@
   "scripts": {
     "start": "ts-node --transpile-only src/app.ts",
     "dev": "ts-node-dev --respawn src/app.ts | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'",
+    "tsc": "tsc src/app.ts",
     "format": "prettier --write .",
     "test:lint": "eslint src/**/*.ts",
     "test:format": "prettier --check .",
@@ -32,7 +33,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@kth/canvas-api": "^3.0.2",
+    "@kth/canvas-api": "^4.0.2",
     "@kth/reqvars": "^2.0.1",
     "@swc/core": ">=1.2.0",
     "dotenv": "^8.2.0",
