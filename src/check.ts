@@ -1,6 +1,3 @@
-/* eslint-disable import/first */
-require("dotenv").config();
-
 import log from "skog";
 
 log.init.pino({

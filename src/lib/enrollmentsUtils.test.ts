@@ -1,5 +1,6 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 import { expect, describe, it } from "@jest/globals";
+import "../getEnvVars";
 
 import * as enrollmentsUtils from "./enrollmentsUtils";
 
