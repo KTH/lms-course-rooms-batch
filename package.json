@@ -33,7 +33,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@kth/canvas-api": "^4.0.2",
+    "@kth/canvas-api": "^4.1.0",
     "@kth/reqvars": "^2.0.1",
     "@swc/core": ">=1.2.0",
     "dotenv": "^8.2.0",
