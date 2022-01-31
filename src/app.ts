@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
-import "./getEnvVars";
 import "./check";
+
 import log from "skog";
 import JSZip from "jszip";
 import * as csv from "fast-csv";
