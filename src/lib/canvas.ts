@@ -4,36 +4,25 @@
 import log from "skog";
 import CanvasApi from "@kth/canvas-api";
 
-const canvasApi =
-  process.env.CANVAS_API_URL !== undefined
-    ? new CanvasApi(process.env.CANVAS_API_URL, process.env.CANVAS_API_TOKEN)
-    : null;
-
-function _checkCanvasApiAvailable() {
-  const errMsg = [];
-  if (canvasApi === null) {
-    errMsg.push("Missing Canvas API client.");
-
-    if (!process.env.CANVAS_API_URL) {
-      errMsg.push("Env var CANVAS_API_URL has not been set.");
-    }
-  }
-  if (errMsg.length > 0) {
-    throw new Error(errMsg.join(" "));
-  }
+let canvasApi: CanvasApi;
+if (process.env.NODE_ENV === "test") {
+  log.info("NOTE: Not instantiating canvas api since this is a test!");
+} else {
+  canvasApi = new CanvasApi(
+    process.env.CANVAS_API_URL,
+    process.env.CANVAS_API_TOKEN
+  );
 }
 
 interface SisImportBody {
   id: string;
 }
 export async function uploadCsvZip(fileName) {
-  _checkCanvasApiAvailable();
   return canvasApi.sendSis<SisImportBody>("accounts/1/sis_imports", fileName);
 }
 
 /** Return enrolled people as "Admitted not registered student" in a given section SIS ID */
 export async function getAntagna(sectionSisId) {
-  _checkCanvasApiAvailable();
   try {
     const enrollments = (await canvasApi
       .listItems(`sections/sis_section_id:${sectionSisId}/enrollments`, {
