@@ -1,6 +1,7 @@
-const { expect, describe, it } = require("@jest/globals");
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+import { expect, describe, it } from "@jest/globals";
 
-const enrollmentsUtils = require("./enrollmentsUtils");
+import * as enrollmentsUtils from "./enrollmentsUtils";
 
 describe("purgeRegisteredFromAntagna", () => {
   it("should return a list of the antagna students who isnt also registered", () => {

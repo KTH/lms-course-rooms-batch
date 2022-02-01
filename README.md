@@ -12,6 +12,12 @@
   npm run dev
   ```
 
+  or in prod mode
+
+  ```
+  npm start
+  ```
+
 ## Contributing
 
 You can contribute to this project by opening issue or PRs to it.

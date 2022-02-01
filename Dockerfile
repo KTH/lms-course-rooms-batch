@@ -39,4 +39,4 @@ COPY . .
 
 ADD crontab /etc/crontabs/root
 RUN chmod 0644 /etc/crontabs/root
-CMD node src/check.js && crond -f -L /dev/stdout
+CMD npx ts-node --transpile-only src/check.ts && crond -f -L /dev/stdout

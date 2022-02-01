@@ -1,14 +1,14 @@
 /**
  * Module with functions that contain logic for creating course rounds
  */
-const { getCourseRounds } = require("./kopps");
-const {
+import { getCourseRounds } from "./kopps";
+import {
   createLongName,
   createAccountId,
   createEndDate,
   createStartDate,
   createSisCourseId,
-} = require("./utils");
+} from "./utils";
 
 /**
  * Given a Kopps `round`, returns an object that matches the `courses.csv`
@@ -52,7 +52,7 @@ function _addSisId(round) {
   };
 }
 
-function today() {
+function today(): Date {
   const date = new Date();
   date.setHours(0);
   date.setMinutes(0);
@@ -93,7 +93,8 @@ function isFarFuture(round) {
   const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
-  return startDate - today() > threshold;
+  // TS requires us to call .valueOf() on date obj
+  return startDate.valueOf() - today().valueOf() > threshold;
 }
 
 /**
@@ -104,10 +105,11 @@ function shouldHaveAntagna(round) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
-  return today() - startDate < THREE_DAYS;
+  // TS requires us to call .valueOf() on date obj
+  return today().valueOf() - startDate.valueOf() < THREE_DAYS;
 }
 
-module.exports = {
+export {
   createRoom,
   createSection,
   getAllCourseRounds,

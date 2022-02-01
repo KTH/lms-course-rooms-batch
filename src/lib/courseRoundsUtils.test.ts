@@ -1,6 +1,7 @@
-const { expect, describe, it } = require("@jest/globals");
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+import { expect, describe, it } from "@jest/globals";
 
-const courseRoundsUtils = require("./courseRoundsUtils");
+import * as courseRoundsUtils from "./courseRoundsUtils";
 
 describe("shouldHaveAntagna", () => {
   const mockedDate = new Date("2021-02-01T00:00:01Z");

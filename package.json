@@ -2,30 +2,40 @@
   "name": "lms-course-rooms-batch",
   "version": "1.0.0",
   "description": "Script to synchronize course rooms in Canvas",
-  "main": "src/app.js",
+  "main": "src/app.ts",
   "scripts": {
-    "start": "npm run dev",
-    "dev": "node src/app.js | pino-pretty",
+    "start": "ts-node --transpile-only src/app.ts",
+    "dev": "ts-node-dev --respawn src/app.ts | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'",
+    "tsc": "tsc --noEmit",
     "format": "prettier --write .",
-    "test:lint": "eslint src",
+    "test:lint": "eslint src/**/*.ts",
     "test:format": "prettier --check .",
     "test:unit": "jest",
-    "test": "npm run test:unit && npm run test:lint && npm run test:format",
+    "test": "npm run tsc && npm run test:unit && npm run test:lint && npm run test:format",
     "build": "npm test"
   },
   "author": "KTH Royal Institute of Technology",
   "license": "MIT",
   "devDependencies": {
-    "@jest/globals": "^26.6.2",
+    "@jest/globals": "^27.4.6",
     "@kth/eslint-config-kth": "^1.0.10",
+    "@swc-node/jest": "^1.4.3",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
     "eslint": "^7.29.0",
-    "jest": "^26.6.3",
+    "jest": "^27.0.0",
     "pino-pretty": "^4.5.0",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.7",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@kth/canvas-api": "^3.0.2",
+    "@kth/canvas-api": "^4.1.0",
     "@kth/reqvars": "^2.0.1",
+    "@swc/core": ">=1.2.0",
     "dotenv": "^8.2.0",
     "fast-csv": "^4.3.6",
     "got": "^11.8.1",
@@ -33,6 +43,7 @@
     "ldapts": "^2.11.0",
     "memoizee": "^0.4.15",
     "pino": "^6.11.1",
-    "skog": "^2.1.0"
+    "skog": "^2.1.0",
+    "ts-node": "^10.4.0"
   }
 }

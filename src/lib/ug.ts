@@ -1,8 +1,8 @@
-const { Client } = require("ldapts");
-const { EqualityFilter } = require("ldapts/filters");
-const log = require("skog");
+import { Client, SearchOptions } from "ldapts";
+import { EqualityFilter } from "ldapts/filters";
+import log from "skog";
 
-let ldapClient;
+let ldapClient: Client;
 async function ldapBind() {
   ldapClient = new Client({
     url: process.env.UG_URL,
@@ -19,14 +19,15 @@ async function ldapUnbind() {
 
 async function ldapSearch({
   base = "OU=UG,DC=ug,DC=kth,DC=se",
-  filter = "",
-  attributes = [],
-  scope = "sub",
-  timeLimit = 10,
+  // We are typing the input search options by picking from the SearchOptions interface
+  filter = "" as SearchOptions["filter"],
+  attributes = [] as SearchOptions["attributes"],
+  scope = "sub" as SearchOptions["scope"],
+  timeLimit = 10 as SearchOptions["timeLimit"],
   ...extraOptions
 }) {
   try {
-    const options = {
+    const options: SearchOptions = {
       scope,
       timeLimit,
       filter,
@@ -87,9 +88,4 @@ async function loadMembers(groupName) {
   return (await getUsersForMembers(members)).map((user) => user.ugKthid);
 }
 
-module.exports = {
-  ldapClient,
-  ldapBind,
-  ldapUnbind,
-  loadMembers,
-};
+export { ldapBind, ldapUnbind, loadMembers };

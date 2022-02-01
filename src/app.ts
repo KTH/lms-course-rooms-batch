@@ -1,25 +1,27 @@
-require("./check");
-const log = require("skog");
-const Zip = require("jszip");
-const csv = require("fast-csv");
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const {
+/* eslint-disable import/first */
+import "./check";
+
+import log from "skog";
+import JSZip from "jszip";
+import * as csv from "fast-csv";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
+import {
   loadTeacherEnrollments,
   loadAntagnaEnrollments,
   loadAntagnaUnEnrollments,
   loadRegisteredStudentEnrollments,
-} = require("./lib/enrollmentsUtils");
-const { ldapBind, ldapUnbind } = require("./lib/ug");
-const {
+} from "./lib/enrollmentsUtils";
+import { ldapBind, ldapUnbind } from "./lib/ug";
+import {
   getAllCourseRounds,
   isFarFuture,
   createRoom,
   createSection,
   shouldHaveAntagna,
-} = require("./lib/courseRoundsUtils");
-const canvas = require("./lib/canvas");
+} from "./lib/courseRoundsUtils";
+import * as canvas from "./lib/canvas";
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -98,7 +100,7 @@ async function start() {
 
   const zipFileName = path.join(baseDir, "files.zip");
   log.info(`Creating zip file ${zipFileName}`);
-  const zip = new Zip();
+  const zip = new JSZip();
 
   for (const file of fs.readdirSync(dir)) {
     zip.file(file, fs.readFileSync(path.join(dir, file)));
@@ -116,7 +118,7 @@ async function start() {
   const result = await canvas.uploadCsvZip(zipFileName);
 
   log.info(
-    `Finished batch successfully. Sis id ${result.body.id} sent to Canvas`
+    `Finished batch successfully. Sis id ${result.body.id} sent to Canas`
   );
 }
 
