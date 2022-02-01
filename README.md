@@ -11,7 +11,9 @@
   ```
   npm run dev
   ```
+
   or in prod mode
+
   ```
   npm start
   ```
