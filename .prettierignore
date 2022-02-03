@@ -4,3 +4,4 @@ buildinfo.js
 # From here on, everything is a copy from .gitignore
 node_modules
 .env
+dist
