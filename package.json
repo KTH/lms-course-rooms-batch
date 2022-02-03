@@ -20,6 +20,7 @@
     "@jest/globals": "^27.4.6",
     "@kth/eslint-config-kth": "^2.0.2",
     "@swc-node/jest": "^1.4.3",
+    "@swc/core": "^1.2.136",
     "@types/jest": "^27.4.0",
     "@types/node": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
@@ -28,13 +29,13 @@
     "jest": "^27.0.0",
     "pino-pretty": "^4.5.0",
     "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.4"
   },
   "dependencies": {
     "@kth/canvas-api": "^4.1.0",
     "@kth/reqvars": "^2.0.1",
-    "@swc/core": ">=1.2.0",
     "dotenv": "^8.2.0",
     "fast-csv": "^4.3.6",
     "got": "^11.8.1",
@@ -42,7 +43,6 @@
     "ldapts": "^2.11.0",
     "memoizee": "^0.4.15",
     "pino": "^6.11.1",
-    "skog": "^2.1.0",
-    "ts-node": "^10.4.0"
+    "skog": "^2.1.0"
   }
 }
