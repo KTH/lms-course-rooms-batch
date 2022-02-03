@@ -4,7 +4,7 @@
   "description": "Script to synchronize course rooms in Canvas",
   "main": "src/app.ts",
   "scripts": {
-    "start": "ts-node --transpile-only src/app.ts",
+    "start": "node dist/app.js",
     "dev": "ts-node-dev --respawn src/app.ts | pino-pretty -e options,response -o '{msg}' --ignore options,pid,hostname,app,req_id --singleLine --translateTime 'HH:MM:ss.l'",
     "format": "prettier --write .",
     "test:compile": "tsc --noEmit",
