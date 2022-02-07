@@ -1,1 +1,1 @@
-0 4 * * * cd /usr/src/app && node dist/app.js || node dist/app.js
+0 4 * * * cd /usr/src/app && node --enable-source-maps dist/app.js || node --enable-source-maps dist/app.js

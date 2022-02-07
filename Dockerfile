@@ -39,4 +39,4 @@ COPY . .
 
 ADD crontab /etc/crontabs/root
 RUN chmod 0644 /etc/crontabs/root
-CMD node dist/check.js && crond -f -L /dev/stdout
+CMD node --enable-source-maps dist/check.js && crond -f -L /dev/stdout
