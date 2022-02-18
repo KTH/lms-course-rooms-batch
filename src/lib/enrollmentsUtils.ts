@@ -2,7 +2,7 @@ import { getAntagna } from "./canvas";
 import { loadMembers } from "./ug";
 
 const ANTAGEN_STUDENT = 25;
-const REGISTERED_STUDENT = 3;
+const REGISTERED_STUDENT = 164;
 
 function getUgNameLadokBase(courseCode) {
   const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
