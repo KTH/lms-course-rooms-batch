@@ -1,10 +1,8 @@
 import { getAntagna } from "./canvas";
 import { loadMembers } from "./ug";
 
-enum Role{
-  ANTAGEN_STUDENT = 25,
-  REGISTERED_STUDENT = 164
-}
+const ANTAGEN_STUDENT = 25;
+const REGISTERED_STUDENT = 164;
 
 function getUgNameLadokBase(courseCode) {
   const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
@@ -32,13 +30,13 @@ async function loadRegisteredStudentEnrollments(round) {
       {
         section_id: round.sisId,
         user_id: kthId,
-        role_id: Role.REGISTERED_STUDENT,
+        role_id: REGISTERED_STUDENT,
         status: "active",
       },
       {
         section_id: round.sisId,
         user_id: kthId,
-        role_id: Role.ANTAGEN_STUDENT,
+        role_id: ANTAGEN_STUDENT,
         status: "deleted",
       },
     ]
@@ -50,7 +48,7 @@ async function loadAntagnaUnEnrollments(round) {
   return (await getAntagna(round.sisId)).map((kthId) => ({
     section_id: round.sisId,
     user_id: kthId,
-    role_id: Role.ANTAGEN_STUDENT,
+    role_id: ANTAGEN_STUDENT,
     status: "deleted",
   }));
 }
@@ -79,7 +77,7 @@ async function loadAntagnaEnrollments(round) {
   ).map((kthId) => ({
     section_id: round.sisId,
     user_id: kthId,
-    role_id: Role.ANTAGEN_STUDENT,
+    role_id: ANTAGEN_STUDENT,
     status: "active",
   }));
 }
