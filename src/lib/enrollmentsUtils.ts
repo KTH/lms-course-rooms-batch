@@ -4,7 +4,7 @@ import { loadMembers } from "./ug";
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
 const MANUALLY_ADDED_STUDENT = 15;
-const ORIGINAL_STUDENT = 4;
+const ORIGINAL_STUDENT = 3;
 
 function getUgNameLadokBase(courseCode) {
   const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
@@ -35,10 +35,26 @@ async function loadRegisteredStudentEnrollments(round) {
         role_id: REGISTERED_STUDENT,
         status: "active",
       },
+      // Remove antagna, since the user is registered he/she shouldn't also be antagen
       {
         section_id: round.sisId,
         user_id: kthId,
         role_id: ANTAGEN_STUDENT,
+        status: "deleted",
+      },
+      // Remove manually added student, since the user is registered he/she shouldn't be considered as manually handled anymore
+      // TODO: verify that stickiness of manually added students don't block this.
+      {
+        section_id: round.sisId,
+        user_id: kthId,
+        role_id: MANUALLY_ADDED_STUDENT,
+        status: "deleted",
+      },
+      // Remove the original student role. This is to prevent the users to have double student roles. This is probably temporary, and can be removed once no active course room have any students enrolled with this deprecated role.
+      {
+        section_id: round.sisId,
+        user_id: kthId,
+        role_id: ORIGINAL_STUDENT,
         status: "deleted",
       },
     ]
