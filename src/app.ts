@@ -35,10 +35,9 @@ function createCsvSerializer(name) {
 
 async function start() {
   log.info(`Run batch. Today is ${new Date()}`);
-  const allRounds = (await getAllCourseRounds())
-    .filter((round) => !isFarFuture(round))
-    // TODO: remove this line!
-    .filter((r) => r.sisId.match("A11IYAVT221"));
+  const allRounds = (await getAllCourseRounds()).filter(
+    (round) => !isFarFuture(round)
+  );
 
   // Create course rooms and sections
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
