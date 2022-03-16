@@ -3,6 +3,8 @@ import { loadMembers } from "./ug";
 
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
+const MANUALLY_ADDED_STUDENT = 15;
+const ORIGINAL_STUDENT = 4;
 
 function getUgNameLadokBase(courseCode) {
   const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
