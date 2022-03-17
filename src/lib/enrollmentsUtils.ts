@@ -1,6 +1,7 @@
 import { getAntagna } from "./canvas";
 import { loadMembers } from "./ug";
 
+// The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
 const MANUALLY_ADDED_STUDENT = 15;
@@ -43,7 +44,6 @@ async function loadRegisteredStudentEnrollments(round) {
         status: "deleted",
       },
       // Remove manually added student, since the user is registered he/she shouldn't be considered as manually handled anymore
-      // TODO: verify that stickiness of manually added students don't block this.
       {
         section_id: round.sisId,
         user_id: kthId,
