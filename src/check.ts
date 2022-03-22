@@ -2,10 +2,12 @@
 require("dotenv").config();
 
 import log from "skog";
+import pino from "pino";
 
-log.init.pino({
-  app: "lms-course-rooms-batch",
-});
+log.init.pino(
+  { app: "lms-course-rooms-batch" },
+  { timestamp: pino.stdTimeFunctions.isoTime }
+);
 
 process.on("uncaughtException", (err) => {
   log.fatal(err, `Reject: ${err}`);
