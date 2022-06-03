@@ -40,7 +40,7 @@ function createSection(round: KoppsRound) {
     section_id: round.ladokUid,
     course_id: round.ladokUid,
     integration_id: undefined,
-    name: `Section for the course ${createLongName(round)}`,
+    name: createShortName(round),
     status: "active",
   };
 }

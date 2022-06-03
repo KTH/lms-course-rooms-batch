@@ -14,6 +14,7 @@ export interface KoppsRound {
   language: string;
   schoolCode: string;
   ladokUid: string;
+  applicationCode: string;
   title: {
     sv: string;
     en: string;
@@ -79,6 +80,8 @@ export async function getCourseRounds(term): Promise<KoppsRound[]> {
       language: c.language,
       schoolCode: c.school_code,
       ladokUid: c.course_round_applications[0].ladok_uid,
+      applicationCode:
+        c.course_round_applications[0].course_round_application_code,
       title: {
         sv: c.course_name,
         en: c.course_name_en,

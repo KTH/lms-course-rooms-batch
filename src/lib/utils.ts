@@ -2,26 +2,22 @@ import { KoppsRound } from "./kopps";
 
 const terms = { VT: 1, HT: 2, 1: "VT", 2: "HT" };
 
-function createLongName(round: KoppsRound) {
-  const termNum = round.startTerm[4];
-  const term = terms[termNum];
-  const title = round.title[round.language === "Svenska" ? "sv" : "en"];
-  let result = round.courseCode;
-  if (round.shortName) {
-    result += ` ${round.shortName}`;
-  }
-  result += ` ${term}${round.startTerm.substring(2, 4)}-${
-    round.roundId
-  } ${title}`;
-  return result;
-}
-
-function createShortName({ courseCode, startTerm, roundId }: KoppsRound) {
+function createShortName({
+  courseCode,
+  startTerm,
+  applicationCode,
+}: KoppsRound) {
   const termNum = startTerm[4];
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
 
-  return `${courseCode}${term}${shortYear}${roundId}`;
+  return `${courseCode} ${term}${shortYear} (${applicationCode})`;
+}
+
+function createLongName(round: KoppsRound) {
+  const title = round.title[round.language === "Svenska" ? "sv" : "en"];
+
+  return `${createShortName(round)} ${title}`;
 }
 
 function createAccountId(round: KoppsRound) {
