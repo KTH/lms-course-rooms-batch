@@ -6,8 +6,28 @@ class KoppsError extends Error {
   code: number;
 }
 
+export interface KoppsRound {
+  courseCode: string;
+  firstYearsemester: string;
+  roundId: string;
+  shortName: string;
+  language: string;
+  schoolCode: string;
+  ladokUid: string;
+  title: {
+    sv: string;
+    en: string;
+  };
+  startTerm: string;
+  offeredSemesters: {
+    semester: string;
+    startDate: string;
+    endDate: string;
+  }[];
+}
+
 /** Singleton object wrapping API calls to Kopps. */
-export async function getCourseRounds(term) {
+export async function getCourseRounds(term): Promise<KoppsRound[]> {
   let courseRounds = [];
   try {
     log.debug(`Reaching Kopps endpoint /courses/offerings for ${term}`);

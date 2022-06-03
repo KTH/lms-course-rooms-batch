@@ -1,7 +1,7 @@
 /**
  * Module with functions that contain logic for creating course rounds
  */
-import { getCourseRounds } from "./kopps";
+import { getCourseRounds, KoppsRound } from "./kopps";
 import {
   createLongName,
   createAccountId,
@@ -16,7 +16,7 @@ import {
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
  */
-function createRoom(round) {
+function createRoom(round: KoppsRound) {
   return {
     course_id: round.ladokUid,
     short_name: createShortName(round),
@@ -35,7 +35,7 @@ function createRoom(round) {
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
  */
-function createSection(round) {
+function createSection(round: KoppsRound) {
   return {
     section_id: round.ladokUid,
     course_id: round.ladokUid,
@@ -82,7 +82,7 @@ async function getAllCourseRounds() {
  * Return `true` if the given `round` is in the future, i.e. aprox 9 months ahead
  * from the current date
  */
-function isFarFuture(round) {
+function isFarFuture(round: KoppsRound) {
   const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
@@ -94,7 +94,7 @@ function isFarFuture(round) {
  * Return `true` if the given `round` should include antagna "students", i.e.
  * if its start date was three days ago or later
  */
-function shouldHaveAntagna(round) {
+function shouldHaveAntagna(round: KoppsRound) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
