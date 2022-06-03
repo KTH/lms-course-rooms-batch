@@ -28,13 +28,13 @@ async function loadRegisteredStudentEnrollments(round) {
   const registeredStudentEnrollments = (await loadMembers(groupName)).flatMap(
     (kthId) => [
       {
-        section_id: round.sisId,
+        section_id: round.ladokUid,
         user_id: kthId,
         role_id: REGISTERED_STUDENT,
         status: "active",
       },
       {
-        section_id: round.sisId,
+        section_id: round.ladokUid,
         user_id: kthId,
         role_id: ANTAGEN_STUDENT,
         status: "deleted",
@@ -45,8 +45,8 @@ async function loadRegisteredStudentEnrollments(round) {
 }
 
 async function loadAntagnaUnEnrollments(round) {
-  return (await getAntagna(round.sisId)).map((kthId) => ({
-    section_id: round.sisId,
+  return (await getAntagna(round.ladokUid)).map((kthId) => ({
+    section_id: round.ladokUid,
     user_id: kthId,
     role_id: ANTAGEN_STUDENT,
     status: "deleted",
@@ -75,7 +75,7 @@ async function loadAntagnaEnrollments(round) {
     registeredStudentIds,
     antagnaStudentIds
   ).map((kthId) => ({
-    section_id: round.sisId,
+    section_id: round.ladokUid,
     user_id: kthId,
     role_id: ANTAGEN_STUDENT,
     status: "active",
@@ -113,7 +113,7 @@ async function loadTeacherEnrollments(round) {
     teacherEnrollments.push(
       // eslint-disable-next-line no-await-in-loop
       ...(await loadMembers(ugGroupName)).map((kthId) => ({
-        section_id: round.sisId,
+        section_id: round.ladokUid,
         user_id: kthId,
         role_id: canvasRoleId,
         status: "active",

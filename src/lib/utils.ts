@@ -14,7 +14,7 @@ function createLongName(round) {
   return result;
 }
 
-function createSisCourseId({ courseCode, startTerm, roundId }) {
+function createShortName({ courseCode, startTerm, roundId }) {
   const termNum = startTerm[4];
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
@@ -50,7 +50,7 @@ function createStartDate(round) {
 }
 
 export {
-  createSisCourseId,
+  createShortName,
   createLongName,
   createAccountId,
   createStartDate,

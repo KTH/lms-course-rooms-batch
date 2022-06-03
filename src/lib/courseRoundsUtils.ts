@@ -7,7 +7,7 @@ import {
   createAccountId,
   createEndDate,
   createStartDate,
-  createSisCourseId,
+  createShortName,
 } from "./utils";
 
 /**
@@ -18,13 +18,13 @@ import {
  */
 function createRoom(round) {
   return {
-    course_id: round.sisId,
-    short_name: round.sisId,
+    course_id: round.ladokUid,
+    short_name: createShortName(round),
     long_name: createLongName(round),
     start_date: createStartDate(round),
     end_date: createEndDate(round),
     account_id: createAccountId(round),
-    integration_id: round.ladokUid,
+    integration_id: undefined,
     status: "active",
   };
 }
@@ -37,18 +37,11 @@ function createRoom(round) {
  */
 function createSection(round) {
   return {
-    section_id: round.sisId,
-    course_id: round.sisId,
-    integration_id: round.ladokUid,
+    section_id: round.ladokUid,
+    course_id: round.ladokUid,
+    integration_id: undefined,
     name: `Section for the course ${createLongName(round)}`,
     status: "active",
-  };
-}
-
-function _addSisId(round) {
-  return {
-    ...round,
-    sisId: createSisCourseId(round),
   };
 }
 
@@ -82,7 +75,7 @@ async function getAllCourseRounds() {
     result.push(...(await getCourseRounds(term)));
   }
 
-  return result.map(_addSisId);
+  return result;
 }
 
 /**
@@ -115,5 +108,4 @@ export {
   getAllCourseRounds,
   isFarFuture,
   shouldHaveAntagna,
-  _addSisId,
 };
