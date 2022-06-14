@@ -4,7 +4,6 @@ import { loadMembers } from "./ug";
 // The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
-const MANUALLY_ADDED_STUDENT = 15;
 const ORIGINAL_STUDENT = 3;
 
 function getUgNameLadokBase(courseCode) {
@@ -41,13 +40,6 @@ async function loadRegisteredStudentEnrollments(round) {
         section_id: round.sisId,
         user_id: kthId,
         role_id: ANTAGEN_STUDENT,
-        status: "deleted",
-      },
-      // Remove manually added student, since the user is registered he/she shouldn't be considered as manually handled anymore
-      {
-        section_id: round.sisId,
-        user_id: kthId,
-        role_id: MANUALLY_ADDED_STUDENT,
         status: "deleted",
       },
       // Remove the original student role. This is to prevent the users to have double student roles. This is probably temporary, and can be removed once no active course room have any students enrolled with this deprecated role.
