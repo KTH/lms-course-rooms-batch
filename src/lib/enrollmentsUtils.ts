@@ -2,8 +2,10 @@ import { getAntagna } from "./canvas";
 import { KoppsRound } from "./kopps";
 import { loadMembers } from "./ug";
 
+// The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
 const ANTAGEN_STUDENT = 25;
-const REGISTERED_STUDENT = 3;
+const REGISTERED_STUDENT = 164;
+const OLD_REGISTERED_STUDENT_ROLE = 3;
 
 function getUgNameLadokBase(courseCode) {
   const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
@@ -34,10 +36,18 @@ async function loadRegisteredStudentEnrollments(round: KoppsRound) {
         role_id: REGISTERED_STUDENT,
         status: "active",
       },
+      // Remove antagna, since the user is registered he/she shouldn't also be antagen
       {
         section_id: round.ladokUid,
         user_id: kthId,
         role_id: ANTAGEN_STUDENT,
+        status: "deleted",
+      },
+      // Remove the old student role. This is to prevent the users from having double student roles. This is probably temporary, and can be removed once this app has run in production once.
+      {
+        section_id: round.ladokUid,
+        user_id: kthId,
+        role_id: OLD_REGISTERED_STUDENT_ROLE,
         status: "deleted",
       },
     ]
