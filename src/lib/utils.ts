@@ -1,32 +1,30 @@
+import { KoppsRound } from "./kopps";
+
 const terms = { VT: 1, HT: 2, 1: "VT", 2: "HT" };
 
-function createLongName(round) {
-  const termNum = round.startTerm[4];
-  const term = terms[termNum];
-  const title = round.title[round.language === "Svenska" ? "sv" : "en"];
-  let result = round.courseCode;
-  if (round.shortName) {
-    result += ` ${round.shortName}`;
-  }
-  result += ` ${term}${round.startTerm.substring(2, 4)}-${
-    round.roundId
-  } ${title}`;
-  return result;
-}
-
-function createSisCourseId({ courseCode, startTerm, roundId }) {
+function createShortName({
+  courseCode,
+  startTerm,
+  applicationCode,
+}: KoppsRound) {
   const termNum = startTerm[4];
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
 
-  return `${courseCode}${term}${shortYear}${roundId}`;
+  return `${courseCode} ${term}${shortYear} (${applicationCode})`;
 }
 
-function createAccountId(round) {
+function createLongName(round: KoppsRound) {
+  const title = round.title[round.language === "Svenska" ? "sv" : "en"];
+
+  return `${createShortName(round)} ${title}`;
+}
+
+function createAccountId(round: KoppsRound) {
   return `${round.schoolCode} - Imported course rounds`;
 }
 
-function createEndDate(round, addNumberOfDays = 60) {
+function createEndDate(round: KoppsRound, addNumberOfDays = 60) {
   // A round can span multiple semesters. Choose the last end date of all of the semesters to be used as end date for the course round
   const semestersDescending = round.offeredSemesters.sort(
     (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
@@ -41,7 +39,7 @@ function createEndDate(round, addNumberOfDays = 60) {
   return roomEndDateStr;
 }
 
-function createStartDate(round) {
+function createStartDate(round: KoppsRound) {
   const { startDate } = round.offeredSemesters.find(
     (o) => o.semester === round.firstYearsemester
   );
@@ -50,7 +48,7 @@ function createStartDate(round) {
 }
 
 export {
-  createSisCourseId,
+  createShortName,
   createLongName,
   createAccountId,
   createStartDate,

@@ -1,13 +1,13 @@
 /**
  * Module with functions that contain logic for creating course rounds
  */
-import { getCourseRounds } from "./kopps";
+import { getCourseRounds, KoppsRound } from "./kopps";
 import {
   createLongName,
   createAccountId,
   createEndDate,
   createStartDate,
-  createSisCourseId,
+  createShortName,
 } from "./utils";
 
 /**
@@ -16,15 +16,15 @@ import {
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
  */
-function createRoom(round) {
+function createRoom(round: KoppsRound) {
   return {
-    course_id: round.sisId,
-    short_name: round.sisId,
+    course_id: round.ladokUid,
+    short_name: createShortName(round),
     long_name: createLongName(round),
     start_date: createStartDate(round),
     end_date: createEndDate(round),
     account_id: createAccountId(round),
-    integration_id: round.ladokUid,
+    integration_id: undefined,
     status: "active",
   };
 }
@@ -35,20 +35,13 @@ function createRoom(round) {
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
  */
-function createSection(round) {
+function createSection(round: KoppsRound) {
   return {
-    section_id: round.sisId,
-    course_id: round.sisId,
-    integration_id: round.ladokUid,
-    name: `Section for the course ${createLongName(round)}`,
+    section_id: round.ladokUid,
+    course_id: round.ladokUid,
+    integration_id: undefined,
+    name: createShortName(round),
     status: "active",
-  };
-}
-
-function _addSisId(round) {
-  return {
-    ...round,
-    sisId: createSisCourseId(round),
   };
 }
 
@@ -82,14 +75,14 @@ async function getAllCourseRounds() {
     result.push(...(await getCourseRounds(term)));
   }
 
-  return result.map(_addSisId);
+  return result;
 }
 
 /**
  * Return `true` if the given `round` is in the future, i.e. aprox 9 months ahead
  * from the current date
  */
-function isFarFuture(round) {
+function isFarFuture(round: KoppsRound) {
   const threshold = 9 * 30 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
@@ -101,7 +94,7 @@ function isFarFuture(round) {
  * Return `true` if the given `round` should include antagna "students", i.e.
  * if its start date was three days ago or later
  */
-function shouldHaveAntagna(round) {
+function shouldHaveAntagna(round: KoppsRound) {
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
   const startDate = new Date(createStartDate(round));
 
@@ -115,5 +108,4 @@ export {
   getAllCourseRounds,
   isFarFuture,
   shouldHaveAntagna,
-  _addSisId,
 };

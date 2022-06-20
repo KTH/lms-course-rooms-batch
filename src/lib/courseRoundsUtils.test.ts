@@ -2,6 +2,7 @@
 import { expect, describe, it } from "@jest/globals";
 
 import * as courseRoundsUtils from "./courseRoundsUtils";
+import { KoppsRound } from "./kopps";
 
 describe("shouldHaveAntagna", () => {
   const mockedDate = new Date("2021-02-01T00:00:01Z");
@@ -20,7 +21,9 @@ describe("shouldHaveAntagna", () => {
         { semester: "20211", startDate: "2021-06-28", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
+    const result = courseRoundsUtils.shouldHaveAntagna(
+      courseRound as KoppsRound
+    );
     expect(result).toEqual(true);
   });
 
@@ -31,7 +34,9 @@ describe("shouldHaveAntagna", () => {
         { semester: "20211", startDate: "2021-01-28", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
+    const result = courseRoundsUtils.shouldHaveAntagna(
+      courseRound as KoppsRound
+    );
     expect(result).toEqual(false);
   });
 
@@ -42,7 +47,9 @@ describe("shouldHaveAntagna", () => {
         { semester: "20211", startDate: "2021-01-31", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.shouldHaveAntagna(courseRound);
+    const result = courseRoundsUtils.shouldHaveAntagna(
+      courseRound as KoppsRound
+    );
     expect(result).toEqual(true);
   });
 });
@@ -63,7 +70,7 @@ describe("isFarFuture", () => {
         { semester: "20202", startDate: "2021-10-30", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.isFarFuture(courseRound);
+    const result = courseRoundsUtils.isFarFuture(courseRound as KoppsRound);
     expect(result).toEqual(true);
   });
 
@@ -74,7 +81,7 @@ describe("isFarFuture", () => {
         { semester: "20202", startDate: "2021-09-01", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.isFarFuture(courseRound);
+    const result = courseRoundsUtils.isFarFuture(courseRound as KoppsRound);
     expect(result).toEqual(false);
   });
 
@@ -85,7 +92,7 @@ describe("isFarFuture", () => {
         { semester: "20202", startDate: "2019-06-01", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.isFarFuture(courseRound);
+    const result = courseRoundsUtils.isFarFuture(courseRound as KoppsRound);
     expect(result).toEqual(false);
   });
 
@@ -97,7 +104,7 @@ describe("isFarFuture", () => {
         { semester: "20201", startDate: "2020-01-01", endDate: "2022-10-23" },
       ],
     };
-    const result = courseRoundsUtils.isFarFuture(courseRound);
+    const result = courseRoundsUtils.isFarFuture(courseRound as KoppsRound);
     expect(result).toEqual(false);
   });
 });

@@ -1,4 +1,5 @@
 import { getAntagna } from "./canvas";
+import { KoppsRound } from "./kopps";
 import { loadMembers } from "./ug";
 
 const ANTAGEN_STUDENT = 25;
@@ -20,7 +21,7 @@ function getUgNameLadokBase(courseCode) {
 
 // return a list of enrollment objects, prepared to be used for writing csv file.
 // One object for adding registered, another obj for removing antagna
-async function loadRegisteredStudentEnrollments(round) {
+async function loadRegisteredStudentEnrollments(round: KoppsRound) {
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
   const groupName = `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`;
 
@@ -28,13 +29,13 @@ async function loadRegisteredStudentEnrollments(round) {
   const registeredStudentEnrollments = (await loadMembers(groupName)).flatMap(
     (kthId) => [
       {
-        section_id: round.sisId,
+        section_id: round.ladokUid,
         user_id: kthId,
         role_id: REGISTERED_STUDENT,
         status: "active",
       },
       {
-        section_id: round.sisId,
+        section_id: round.ladokUid,
         user_id: kthId,
         role_id: ANTAGEN_STUDENT,
         status: "deleted",
@@ -44,9 +45,9 @@ async function loadRegisteredStudentEnrollments(round) {
   return registeredStudentEnrollments;
 }
 
-async function loadAntagnaUnEnrollments(round) {
-  return (await getAntagna(round.sisId)).map((kthId) => ({
-    section_id: round.sisId,
+async function loadAntagnaUnEnrollments(round: KoppsRound) {
+  return (await getAntagna(round.ladokUid)).map((kthId) => ({
+    section_id: round.ladokUid,
     user_id: kthId,
     role_id: ANTAGEN_STUDENT,
     status: "deleted",
@@ -59,7 +60,7 @@ function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
   );
 }
 
-async function loadAntagnaEnrollments(round) {
+async function loadAntagnaEnrollments(round: KoppsRound) {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
   const registeredStudentIds = await loadMembers(
@@ -75,14 +76,14 @@ async function loadAntagnaEnrollments(round) {
     registeredStudentIds,
     antagnaStudentIds
   ).map((kthId) => ({
-    section_id: round.sisId,
+    section_id: round.ladokUid,
     user_id: kthId,
     role_id: ANTAGEN_STUDENT,
     status: "active",
   }));
 }
 
-async function loadTeacherEnrollments(round) {
+async function loadTeacherEnrollments(round: KoppsRound) {
   const teacherEnrollments = [];
   // eslint-disable-next-line prefer-destructuring
   const roundId = round.roundId;
@@ -113,7 +114,7 @@ async function loadTeacherEnrollments(round) {
     teacherEnrollments.push(
       // eslint-disable-next-line no-await-in-loop
       ...(await loadMembers(ugGroupName)).map((kthId) => ({
-        section_id: round.sisId,
+        section_id: round.ladokUid,
         user_id: kthId,
         role_id: canvasRoleId,
         status: "active",
