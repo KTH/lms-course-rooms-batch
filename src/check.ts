@@ -1,13 +1,10 @@
 /* eslint-disable import/first */
 require("dotenv").config();
 
-import log from "skog";
-import pino from "pino";
+import log, { initializeLogger, setFields } from "skog";
 
-log.init.pino(
-  { app: "lms-course-rooms-batch" },
-  { timestamp: pino.stdTimeFunctions.isoTime }
-);
+initializeLogger();
+setFields({ app: "lms-course-rooms-batch" });
 
 process.on("uncaughtException", (err) => {
   log.fatal(err, `Reject: ${err}`);
