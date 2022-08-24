@@ -45,8 +45,8 @@ async function start() {
   fs.mkdirSync(dir);
   log.info(`Creating csv files in ${dir}`);
 
-  const coursesCsv = createCsvSerializer(`${dir}/courses.csv`);
-  const sectionsCsv = createCsvSerializer(`${dir}/sections.csv`);
+  const coursesCsv = createCsvSerializer(`${dir}/lms-course-rooms-batch-courses.csv`);
+  const sectionsCsv = createCsvSerializer(`${dir}/lms-course-rooms-batch-sections.csv`);
   allRounds
     .map((round) => ({
       courseRoom: createRoom(round),
@@ -60,7 +60,7 @@ async function start() {
   coursesCsv.end();
   sectionsCsv.end();
 
-  const enrollmentsCsv = createCsvSerializer(`${dir}/enrollments.csv`);
+  const enrollmentsCsv = createCsvSerializer(`${dir}/lms-course-rooms-batch-enrollments.csv`);
 
   const roundsIncludingAntagnaStudents = allRounds.filter(shouldHaveAntagna);
   const roundsExcludingAntagnaStudents = allRounds.filter(
