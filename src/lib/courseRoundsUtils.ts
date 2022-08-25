@@ -11,7 +11,7 @@ import {
 } from "./utils";
 
 /**
- * Given a Kopps `round`, returns an object that matches the `courses.csv`
+ * Given a Kopps `round`, returns an object that matches the `lms-course-rooms-batch-courses.csv`
  * Canvas SIS Import Format for that round
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
@@ -30,7 +30,7 @@ function createRoom(round: KoppsRound) {
 }
 
 /**
- * Given a Kopps `round`, returns an object that matches the `sections.csv`
+ * Given a Kopps `round`, returns an object that matches the `lms-course-rooms-batch-sections.csv`
  * Canvas SIS Import Format for that round
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
