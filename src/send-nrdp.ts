@@ -6,6 +6,9 @@ export default async function sendBatchOK(): Promise<void> {
     log.info(`sending check to Nagios at ${process.env.NRDP_URL}`);
     const data = {
       https: { rejectUnauthorized: false },
+      timeout: {
+        request: 10000
+      },
       form: {
         token: process.env.NRDP_TOKEN,
         cmd: "submitcheck",
