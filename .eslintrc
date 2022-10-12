@@ -1,5 +1,5 @@
 {
-  "extends": ["@kth/eslint-config-kth"],
+  "extends": ["@kth/eslint-config-kth", "plugin:import/typescript"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "settings": {
