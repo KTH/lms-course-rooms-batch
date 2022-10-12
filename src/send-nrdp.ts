@@ -7,7 +7,7 @@ export default async function sendBatchOK(): Promise<void> {
     const data = {
       https: { rejectUnauthorized: false },
       timeout: {
-        request: 10000
+        request: 10000,
       },
       form: {
         token: process.env.NRDP_TOKEN,
