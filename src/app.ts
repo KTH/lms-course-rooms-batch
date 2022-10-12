@@ -22,6 +22,7 @@ import {
   shouldHaveAntagna,
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
+import sendBatchOK from "./send-nrdp";
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -126,6 +127,7 @@ async function start() {
   log.info(
     `Finished batch successfully. Sis id ${result.body.id} sent to Canas`
   );
+  sendBatchOK();
 }
 
 start();
