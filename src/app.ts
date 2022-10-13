@@ -125,7 +125,7 @@ async function start() {
   const result = await canvas.uploadCsvZip(zipFileName);
 
   log.info(
-    `Finished batch successfully. Sis id ${result.body.id} sent to Canas`
+    `Finished batch successfully. Sis id ${result.body.id} sent to Canvas`
   );
   sendBatchOK();
 }
