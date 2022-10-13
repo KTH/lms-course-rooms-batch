@@ -22,7 +22,7 @@ import {
   shouldHaveAntagna,
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
-import sendBatchOK from "./send-nrdp";
+import sendBatchOK from "./sendNrdp";
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -35,6 +35,10 @@ function createCsvSerializer(name) {
 // For instance: test that no antagna is added to far future rounds
 
 async function start() {
+  if (!process.env.NRDP_TOKEN) {
+    log.info("No nrdp token set, NOT sending any checks to Nagios!");
+  }
+
   log.info(`Run batch. Today is ${new Date()}`);
   const allRounds = (await getAllCourseRounds()).filter(
     (round) => !isFarFuture(round)

@@ -23,7 +23,5 @@ export default async function sendBatchOK(): Promise<void> {
       },
     };
     await got.post(process.env.NRDP_URL, data);
-  } else {
-    log.info("No nrdp token set, NOT sending any checks to Nagios!");
   }
 }
