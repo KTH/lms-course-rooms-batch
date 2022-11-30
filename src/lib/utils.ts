@@ -12,7 +12,7 @@ function createShortName({
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
 
-  return `${courseCode} ${term}${shortYear} (${applicationCode}) (${shortName})`;
+  return `${courseCode} ${term}${shortYear} (${applicationCode}) ${shortName?'('+shortName+')':''}`;
 }
 
 function createLongName(round: KoppsRound) {
