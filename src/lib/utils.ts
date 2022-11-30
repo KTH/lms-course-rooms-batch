@@ -6,12 +6,13 @@ function createShortName({
   courseCode,
   startTerm,
   applicationCode,
+  shortName,
 }: KoppsRound) {
   const termNum = startTerm[4];
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
 
-  return `${courseCode} ${term}${shortYear} (${applicationCode})`;
+  return `${courseCode} ${term}${shortYear} (${applicationCode}) (${shortName})`;
 }
 
 function createLongName(round: KoppsRound) {
