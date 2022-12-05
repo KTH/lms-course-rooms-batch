@@ -2,7 +2,7 @@ import { KoppsRound } from "./kopps";
 
 const terms = { VT: 1, HT: 2, 1: "VT", 2: "HT" };
 
-function createShortName({
+function createCanvasShortName({
   courseCode,
   startTerm,
   applicationCode,
@@ -12,13 +12,15 @@ function createShortName({
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
 
-  return `${courseCode} ${term}${shortYear} (${applicationCode}) ${shortName?'('+shortName+')':''}`;
+  return `${courseCode} ${term}${shortYear} (${applicationCode}) ${
+    shortName ? "(" + shortName + ")" : ""
+  }`;
 }
 
 function createLongName(round: KoppsRound) {
   const title = round.title[round.language === "Svenska" ? "sv" : "en"];
 
-  return `${createShortName(round)} ${title}`;
+  return `${createCanvasShortName(round)} ${title}`;
 }
 
 function createAccountId(round: KoppsRound) {
@@ -49,7 +51,7 @@ function createStartDate(round: KoppsRound) {
 }
 
 export {
-  createShortName,
+  createCanvasShortName,
   createLongName,
   createAccountId,
   createStartDate,
