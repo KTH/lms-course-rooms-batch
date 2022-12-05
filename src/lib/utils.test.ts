@@ -4,23 +4,25 @@ import { KoppsRound } from "./kopps";
 
 import * as utils from "./utils";
 
-test("Canvas shortName should include kopps shortName but not activityCode", () => {
+test("Canvas shortName should include kopps shortName but not applicationCode", () => {
   const round = {
-    courseCode: "cc",
+    courseCode: "SF1625",
     startTerm: "20221",
     applicationCode: "applicationCode",
     shortName: "shortName",
   } as KoppsRound;
-  expect(utils.createCanvasShortName(round)).toBe("cc VT22 (shortName)");
+  expect(utils.createCanvasShortName(round)).toBe("SF1625 VT22 (shortName)");
 });
 
 test("Canvas shortName should include activityCode", () => {
   const round = {
-    courseCode: "cc",
+    courseCode: "SF1625",
     startTerm: "20221",
     applicationCode: "applicationCode",
   } as KoppsRound;
-  expect(utils.createCanvasShortName(round)).toBe("cc VT22 (shortName)");
+  expect(utils.createCanvasShortName(round)).toBe(
+    "SF1625 VT22 (applicationCode)"
+  );
 });
 
 test("should choose the latest date plus 10 days", () => {

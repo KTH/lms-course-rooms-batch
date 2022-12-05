@@ -11,12 +11,14 @@ function createCanvasShortName({
   const termNum = startTerm[4];
   const shortYear = `${startTerm[2]}${startTerm[3]}`;
   const term = terms[termNum];
-
-  return `${courseCode} ${term}${shortYear} (${applicationCode}) ${
-    shortName ? "(" + shortName + ")" : ""
-  }`;
+  let result = `${courseCode} ${term}${shortYear}`;
+  if (shortName) {
+    result += ` (${shortName})`;
+  } else {
+    result += ` (${applicationCode})`;
+  }
+  return result;
 }
-
 function createLongName(round: KoppsRound) {
   const title = round.title[round.language === "Svenska" ? "sv" : "en"];
 
