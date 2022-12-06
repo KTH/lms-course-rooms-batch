@@ -14,7 +14,7 @@ test("Canvas shortName should include kopps shortName but not applicationCode", 
   expect(utils.createCanvasShortName(round)).toBe("SF1625 VT22 (shortName)");
 });
 
-test("Canvas shortName should include activityCode", () => {
+test("Canvas shortName should include applicationCode", () => {
   const round = {
     courseCode: "SF1625",
     startTerm: "20221",
