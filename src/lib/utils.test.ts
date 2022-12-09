@@ -25,6 +25,20 @@ test("Canvas shortName should include applicationCode", () => {
   );
 });
 
+test("Canvas longName should include put paranthesis last", () => {
+  const round = {
+    language: "Svenska",
+    title: { en: "English title", sv: "Svensk titel" },
+    courseCode: "SF1625",
+    startTerm: "20221",
+    applicationCode: "applicationCode",
+    shortName: "shortName",
+  } as KoppsRound;
+  expect(utils.createLongName(round)).toBe(
+    "SF1625 VT22 Svensk titel (shortName)"
+  );
+});
+
 test("should choose the latest date plus 10 days", () => {
   const courseRound = {
     offeredSemesters: [
