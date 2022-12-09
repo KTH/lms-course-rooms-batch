@@ -25,7 +25,7 @@ test("Canvas shortName should include applicationCode", () => {
   );
 });
 
-test("Canvas longName should include put paranthesis last", () => {
+test("Canvas longName should put paranthesis last", () => {
   const round = {
     language: "Svenska",
     title: { en: "English title", sv: "Svensk titel" },

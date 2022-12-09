@@ -10,7 +10,9 @@ function createTerm(startTerm: string): string {
 }
 
 function createCanvasShortName(round: KoppsRound): string {
-  return `${round.courseCode} ${createTerm(round.startTerm)}`;
+  return `${round.courseCode} ${createTerm(round.startTerm)} (${
+    round.shortName || round.applicationCode
+  })`;
 }
 
 function createLongName(round: KoppsRound): string {
