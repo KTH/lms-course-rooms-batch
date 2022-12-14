@@ -7,7 +7,7 @@ import {
   createAccountId,
   createEndDate,
   createStartDate,
-  createShortName,
+  createCanvasShortName,
 } from "./utils";
 
 /**
@@ -19,7 +19,7 @@ import {
 function createRoom(round: KoppsRound) {
   return {
     course_id: round.ladokUid,
-    short_name: createShortName(round),
+    short_name: createCanvasShortName(round),
     long_name: createLongName(round),
     start_date: createStartDate(round),
     end_date: createEndDate(round),
@@ -40,7 +40,7 @@ function createSection(round: KoppsRound) {
     section_id: round.ladokUid,
     course_id: round.ladokUid,
     integration_id: undefined,
-    name: createShortName(round),
+    name: createCanvasShortName(round),
     status: "active",
   };
 }

@@ -18,4 +18,4 @@ process.on("unhandledRejection", (reason) => {
 
 require("@kth/reqvars").check();
 
-log.info("Enrvironment check successful");
+log.info("Environment check successful");
