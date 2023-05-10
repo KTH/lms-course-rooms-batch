@@ -30,13 +30,21 @@ RUN npm ci --production --unsafe-perm
 # but use the already installed ones.
 #
 # This way we can deliver an image without the toolchain (python, make, etc)
+FROM kthregistry.azurecr.io/small-busybox:latest AS site
 FROM node:16-alpine AS production
+
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/node_modules node_modules
+
+# This is needed to start a server with a `_monitor` route.
+COPY --from=site /busybox /busybox
+COPY --from=site /home/static/httpd.conf /home/static/httpd.conf
+EXPOSE 80
+
 # Add extra build steps if needed: "COPY --from=development /usr/src/app/dist dist" etc
 
 COPY . .
 
 ADD crontab /etc/crontabs/root
 RUN chmod 0644 /etc/crontabs/root
-CMD npx ts-node --transpile-only src/check.ts && crond -f -L /dev/stdout
+CMD npx ts-node --transpile-only src/check.ts && /busybox httpd -f -v -p 80 -c /home/static/httpd.conf & crond -f -L /dev/stdout
