@@ -34,7 +34,7 @@ function createCsvSerializer(name) {
 // TODO: add integration test for this function.
 // For instance: test that no antagna is added to far future rounds
 
-async function start() {
+module.exports = async function start(context, timer) {
   if (!process.env.NRDP_TOKEN) {
     log.info("No nrdp token set, NOT sending any checks to Nagios!");
   }
@@ -133,5 +133,3 @@ async function start() {
   );
   sendBatchOK();
 }
-
-start();
