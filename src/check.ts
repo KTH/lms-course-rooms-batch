@@ -18,4 +18,12 @@ process.on("unhandledRejection", (reason) => {
 
 require("@kth/reqvars").check();
 
+if (process.env.NRDP_TOKEN && process.env.NRDP_URL && process.env.NRDP_HOST) {
+  log.info("NRDP variables set. This app will send checks to Nagios");
+} else {
+  log.error(
+    `NRDP is not properly configured. This app will NOT send any checks to Nagios. Current values are: NRDP_URL=${process.env.NRDP_URL}, NRDP_HOST=${process.env.NRDP_HOST}`
+  );
+}
+
 log.info("Environment check successful");
