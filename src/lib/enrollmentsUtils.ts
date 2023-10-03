@@ -7,51 +7,51 @@ const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
 const OLD_REGISTERED_STUDENT_ROLE = 3;
 
-function getUgNameLadokBase(courseCode) {
-  const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
+function getUgNameLadokBase(round: KoppsRound) {
+  const matching = round.courseCode.match(/^(F?\w{2})(\w{4})$/);
 
   if (!matching) {
     throw new Error(
-      `UG: Wrong course code format [${courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
+      `UG: Wrong course code format [${round.courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
     );
   }
 
   const [, prefix, suffix] = matching;
 
-  return `ladok2.kurser.${prefix}.${suffix}`;
+  return `ladok2.kurser.${prefix}.${suffix}.${round.startTerm}.${round.applicationCode}`;
 }
 
 // return a list of enrollment objects, prepared to be used for writing csv file.
 // One object for adding registered, another obj for removing antagna
 async function loadRegisteredStudentEnrollments(round: KoppsRound) {
-  const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
-  const groupName = `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`;
+  const ugNameLadokBase = getUgNameLadokBase(round);
+  const registeredStudentIds = await loadMembers(
+    `${ugNameLadokBase}.registrerad`
+  );
 
   // OPTIONAL: should we check in Canvas if the student is antagen?
-  const registeredStudentEnrollments = (await loadMembers(groupName)).flatMap(
-    (kthId) => [
-      {
-        section_id: round.ladokUid,
-        user_id: kthId,
-        role_id: REGISTERED_STUDENT,
-        status: "active",
-      },
-      // Remove antagna, since the user is registered he/she shouldn't also be antagen
-      {
-        section_id: round.ladokUid,
-        user_id: kthId,
-        role_id: ANTAGEN_STUDENT,
-        status: "deleted",
-      },
-      // Remove the old student role. This is to prevent the users from having double student roles. This is probably temporary, and can be removed once this app has run in production once.
-      {
-        section_id: round.ladokUid,
-        user_id: kthId,
-        role_id: OLD_REGISTERED_STUDENT_ROLE,
-        status: "deleted",
-      },
-    ]
-  );
+  const registeredStudentEnrollments = registeredStudentIds.flatMap((kthId) => [
+    {
+      section_id: round.ladokUid,
+      user_id: kthId,
+      role_id: REGISTERED_STUDENT,
+      status: "active",
+    },
+    // Remove antagna, since the user is registered he/she shouldn't also be antagen
+    {
+      section_id: round.ladokUid,
+      user_id: kthId,
+      role_id: ANTAGEN_STUDENT,
+      status: "deleted",
+    },
+    // Remove the old student role. This is to prevent the users from having double student roles. This is probably temporary, and can be removed once this app has run in production once.
+    {
+      section_id: round.ladokUid,
+      user_id: kthId,
+      role_id: OLD_REGISTERED_STUDENT_ROLE,
+      status: "deleted",
+    },
+  ]);
   return registeredStudentEnrollments;
 }
 
@@ -72,15 +72,13 @@ function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
 
 async function loadAntagnaEnrollments(round: KoppsRound) {
   // Get the Registered students for this round
-  const ugNameLadokBase = getUgNameLadokBase(round.courseCode);
+  const ugNameLadokBase = getUgNameLadokBase(round);
   const registeredStudentIds = await loadMembers(
-    `${ugNameLadokBase}.registrerade_${round.startTerm}.${round.roundId}`
+    `${ugNameLadokBase}.registrerad`
   );
 
   // Get the antagna students for this round
-  const antagnaStudentIds = await loadMembers(
-    `${ugNameLadokBase}.antagna_${round.startTerm}.${round.roundId}`
-  );
+  const antagnaStudentIds = await loadMembers(`${ugNameLadokBase}.antagen`);
 
   return purgeRegisteredFromAntagna(
     registeredStudentIds,
