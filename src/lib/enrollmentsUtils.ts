@@ -44,13 +44,6 @@ async function loadRegisteredStudentEnrollments(round: KoppsRound) {
       role_id: ANTAGEN_STUDENT,
       status: "deleted",
     },
-    // Remove the old student role. This is to prevent the users from having double student roles. This is probably temporary, and can be removed once this app has run in production once.
-    {
-      section_id: round.ladokUid,
-      user_id: kthId,
-      role_id: OLD_REGISTERED_STUDENT_ROLE,
-      status: "deleted",
-    },
   ]);
   return registeredStudentEnrollments;
 }
