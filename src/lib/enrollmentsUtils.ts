@@ -5,7 +5,24 @@ import { loadMembers } from "./ug";
 // The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
-const OLD_REGISTERED_STUDENT_ROLE = 3;
+
+/**
+ * This function is used to support the old ug format, and is needed since UG don't update the old folders, but also doesn't populate the new folders with all data
+ *
+ */
+function getUgNameLadokBase_old(courseCode) {
+  const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
+
+  if (!matching) {
+    throw new Error(
+      `UG: Wrong course code format [${courseCode}]. Format should be "XXXYYYY" (example: "AAA1111")`
+    );
+  }
+
+  const [, prefix, suffix] = matching;
+
+  return `ladok2.kurser.${prefix}.${suffix}`;
+}
 
 function getUgNameLadokBase(round: KoppsRound) {
   const matching = round.courseCode.match(/^(F?\w{2})(\w{4})$/);
@@ -25,12 +42,21 @@ function getUgNameLadokBase(round: KoppsRound) {
 // One object for adding registered, another obj for removing antagna
 async function loadRegisteredStudentEnrollments(round: KoppsRound) {
   const ugNameLadokBase = getUgNameLadokBase(round);
+
   const registeredStudentIds = await loadMembers(
     `${ugNameLadokBase}.registrerad`
   );
 
+  const ugNameLadokBase_old = getUgNameLadokBase_old(round.courseCode);
+  const registeredStudentIds_old = await loadMembers(
+    `${ugNameLadokBase_old}.registrerade_${round.startTerm}.${round.roundId}`
+  );
+
   // OPTIONAL: should we check in Canvas if the student is antagen?
-  const registeredStudentEnrollments = registeredStudentIds.flatMap((kthId) => [
+  const registeredStudentEnrollments = [
+    ...registeredStudentIds,
+    ...registeredStudentIds_old,
+  ].flatMap((kthId) => [
     {
       section_id: round.ladokUid,
       user_id: kthId,

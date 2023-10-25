@@ -18,7 +18,8 @@ async function ldapUnbind() {
 }
 
 async function ldapSearch({
-  base = "OU=UG,DC=ug,DC=kth,DC=se",
+  base = "OU=UG,DC=ref,DC=ug,DC=kth,DC=se",
+  // base = "OU=UG,DC=ug,DC=kth,DC=se",
   // We are typing the input search options by picking from the SearchOptions interface
   filter = "" as SearchOptions["filter"],
   attributes = [] as SearchOptions["attributes"],
