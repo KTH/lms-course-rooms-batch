@@ -40,7 +40,15 @@ function getUgNameLadokBase(round: KoppsRound) {
 
 // return a list of enrollment objects, prepared to be used for writing csv file.
 // One object for adding registered, another obj for removing antagna
-async function loadRegisteredStudentEnrollments(round: KoppsRound) {
+// TODO: use shared type for enrollment
+async function loadRegisteredStudentEnrollments(round: KoppsRound): Promise<
+  {
+    section_id: string;
+    user_id: any;
+    role_id: number;
+    status: string;
+  }[]
+> {
   const ugNameLadokBase = getUgNameLadokBase(round);
 
   const registeredStudentIds = await loadMembers(
@@ -89,11 +97,15 @@ function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
   );
 }
 
-async function loadAntagnaEnrollments(round: KoppsRound) {
+async function loadAntagnaEnrollments(
+  round: KoppsRound,
+  registeredStudentEnrollments: [{ user_id: string }] // TODO: use shared type for enrollment
+) {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round);
-  const registeredStudentIds = await loadMembers(
-    `${ugNameLadokBase}.registrerad`
+  const ugNameLadokBase_old = getUgNameLadokBase_old(round.courseCode);
+  const registeredStudentIds = registeredStudentEnrollments.map(
+    (e) => e.user_id
   );
 
   // Get the antagna students for this round
