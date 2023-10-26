@@ -78,15 +78,10 @@ async function start() {
     const registeredStudentEnrollments = await loadRegisteredStudentEnrollments(
       round
     );
-    const antagnaEnrollments = await loadAntagnaEnrollments(
-      round,
-      registeredStudentEnrollments
-    );
-    const teacherEnrollments = await loadTeacherEnrollments(round);
     [
-      ...antagnaEnrollments,
-      ...teacherEnrollments,
       ...registeredStudentEnrollments,
+      ...(await loadAntagnaEnrollments(round, registeredStudentEnrollments)),
+      ...(await loadTeacherEnrollments(round)),
     ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
   }
 
