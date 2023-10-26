@@ -5,7 +5,7 @@ type Enrollment = {
   section_id: string;
   user_id: string;
   role_id: number;
-  status: "active" | "deleted";
+  status: string;
 };
 // The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
 const ANTAGEN_STUDENT = 25;
