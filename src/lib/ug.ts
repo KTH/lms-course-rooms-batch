@@ -71,7 +71,6 @@ async function getUsersForMembers(members) {
       attribute: "distinguishedName",
       value: member,
     });
-    // eslint-disable-next-line no-await-in-loop
     const searchEntries = await ldapSearch({
       filter,
       attributes: ["ugKthid"],

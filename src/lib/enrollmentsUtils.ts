@@ -125,7 +125,6 @@ async function loadAntagnaEnrollments(
 
 async function loadTeacherEnrollments(round: KoppsRound) {
   const teacherEnrollments = [];
-  // eslint-disable-next-line prefer-destructuring
   const roundId = round.roundId;
 
   // Teacher enrollments
@@ -152,7 +151,6 @@ async function loadTeacherEnrollments(round: KoppsRound) {
 
   for (const { canvasRoleId, ugGroupName } of teacherRoles) {
     teacherEnrollments.push(
-      // eslint-disable-next-line no-await-in-loop
       ...(await loadMembers(ugGroupName)).map((kthId) => ({
         section_id: round.ladokUid,
         user_id: kthId,

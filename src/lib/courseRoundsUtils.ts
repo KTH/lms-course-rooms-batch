@@ -71,7 +71,6 @@ async function getAllCourseRounds() {
   const result = [];
 
   for (const term of terms) {
-    // eslint-disable-next-line no-await-in-loop
     result.push(...(await getCourseRounds(term)));
   }
 

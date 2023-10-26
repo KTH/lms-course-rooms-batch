@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import got from "got";
 import log from "skog";
 
