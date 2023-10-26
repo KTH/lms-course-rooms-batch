@@ -44,7 +44,7 @@ function getUgNameLadokBase(round: KoppsRound) {
 async function loadRegisteredStudentEnrollments(round: KoppsRound): Promise<
   {
     section_id: string;
-    user_id: any;
+    user_id: string;
     role_id: number;
     status: string;
   }[]
@@ -99,7 +99,7 @@ function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
 
 async function loadAntagnaEnrollments(
   round: KoppsRound,
-  registeredStudentEnrollments: [{ user_id: string }] // TODO: use shared type for enrollment
+  registeredStudentEnrollments: { user_id: string }[] // TODO: use shared type for enrollment
 ) {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round);

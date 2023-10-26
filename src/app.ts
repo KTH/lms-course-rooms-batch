@@ -84,12 +84,20 @@ async function start() {
   await ldapBind();
   for (const round of roundsIncludingAntagnaStudents) {
     /* eslint-disable */
-    [
-      ...(await loadAntagnaEnrollments(round)),
-      ...(await loadTeacherEnrollments(round)),
-      ...(await loadRegisteredStudentEnrollments(round)),
-    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
+    const registeredStudentEnrollments = await loadRegisteredStudentEnrollments(
+      round
+    );
+    const antagnaEnrollments = await loadAntagnaEnrollments(
+      round,
+      registeredStudentEnrollments
+    );
+    const teacherEnrollments = await loadTeacherEnrollments(round);
     /* eslint-enable */
+    [
+      ...antagnaEnrollments,
+      ...teacherEnrollments,
+      ...registeredStudentEnrollments,
+    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
   }
 
   for (const round of roundsExcludingAntagnaStudents) {
