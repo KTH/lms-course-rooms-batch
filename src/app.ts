@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import "./check";
 
 import log from "skog";
@@ -76,7 +75,6 @@ async function start() {
 
   await ldapBind();
   for (const round of roundsIncludingAntagnaStudents) {
-    /* eslint-disable */
     const registeredStudentEnrollments = await loadRegisteredStudentEnrollments(
       round
     );
@@ -85,7 +83,6 @@ async function start() {
       registeredStudentEnrollments
     );
     const teacherEnrollments = await loadTeacherEnrollments(round);
-    /* eslint-enable */
     [
       ...antagnaEnrollments,
       ...teacherEnrollments,
@@ -94,12 +91,10 @@ async function start() {
   }
 
   for (const round of roundsExcludingAntagnaStudents) {
-    /* eslint-disable */
     [
       ...(await loadTeacherEnrollments(round)),
       ...(await loadRegisteredStudentEnrollments(round)),
     ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
-    /* eslint-enable */
   }
 
   await ldapUnbind();
