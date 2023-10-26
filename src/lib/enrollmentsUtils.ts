@@ -109,6 +109,7 @@ async function loadAntagnaEnrollments(
   );
 
   // Get the antagna students for this round
+  // TODO: Also load antagna from the old folders!
   const antagnaStudentIds = await loadMembers(`${ugNameLadokBase}.antagen`);
 
   return purgeRegisteredFromAntagna(

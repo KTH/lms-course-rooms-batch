@@ -74,13 +74,6 @@ async function start() {
     (round) => !shouldHaveAntagna(round)
   );
 
-  // for (const round of roundsExcludingAntagnaStudents) {
-  //   // eslint-disable-next-line no-await-in-loop
-  //   (await loadAntagnaUnEnrollments(round)).forEach((enrollment) =>
-  //     enrollmentsCsv.write(enrollment)
-  //   );
-  // }
-
   await ldapBind();
   for (const round of roundsIncludingAntagnaStudents) {
     /* eslint-disable */
