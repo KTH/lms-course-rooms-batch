@@ -83,16 +83,16 @@ async function start() {
 
   await ldapBind();
   for (const round of roundsIncludingAntagnaStudents) {
-    // eslint-disable-next-line no-await-in-loop
-    (await loadAntagnaEnrollments(round)).forEach((enrollment) =>
-      enrollmentsCsv.write(enrollment)
-    );
+    /* eslint-disable */
+    [
+      ...(await loadAntagnaEnrollments(round)),
+      ...(await loadTeacherEnrollments(round)),
+      ...(await loadRegisteredStudentEnrollments(round)),
+    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
+    /* eslint-enable */
   }
 
-  for (const round of [
-    ...roundsExcludingAntagnaStudents,
-    ...roundsIncludingAntagnaStudents,
-  ]) {
+  for (const round of roundsExcludingAntagnaStudents) {
     /* eslint-disable */
     [
       ...(await loadTeacherEnrollments(round)),
