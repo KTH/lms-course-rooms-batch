@@ -1,7 +1,12 @@
 import { getAntagna } from "./canvas";
 import { KoppsRound } from "./kopps";
 import { loadMembers } from "./ug";
-
+type Enrollment = {
+  section_id: string;
+  user_id: string;
+  role_id: number;
+  status: "active" | "deleted";
+};
 // The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
 const ANTAGEN_STUDENT = 25;
 const REGISTERED_STUDENT = 164;
@@ -10,7 +15,7 @@ const REGISTERED_STUDENT = 164;
  * This function is used to support the old ug format, and is needed since UG don't update the old folders, but also doesn't populate the new folders with all data
  *
  */
-function getUgNameLadokBase_old(courseCode) {
+function getUgNameLadokBase_old(courseCode): string {
   const matching = courseCode.match(/^(F?\w{2})(\w{4})$/);
 
   if (!matching) {
@@ -24,7 +29,7 @@ function getUgNameLadokBase_old(courseCode) {
   return `ladok2.kurser.${prefix}.${suffix}`;
 }
 
-function getUgNameLadokBase(round: KoppsRound) {
+function getUgNameLadokBase(round: KoppsRound): string {
   const matching = round.courseCode.match(/^(F?\w{2})(\w{4})$/);
 
   if (!matching) {
@@ -40,15 +45,9 @@ function getUgNameLadokBase(round: KoppsRound) {
 
 // return a list of enrollment objects, prepared to be used for writing csv file.
 // One object for adding registered, another obj for removing antagna
-// TODO: use shared type for enrollment
-async function loadRegisteredStudentEnrollments(round: KoppsRound): Promise<
-  {
-    section_id: string;
-    user_id: string;
-    role_id: number;
-    status: string;
-  }[]
-> {
+async function loadRegisteredStudentEnrollments(
+  round: KoppsRound
+): Promise<Enrollment[]> {
   const ugNameLadokBase = getUgNameLadokBase(round);
 
   const registeredStudentIds = await loadMembers(
@@ -82,7 +81,9 @@ async function loadRegisteredStudentEnrollments(round: KoppsRound): Promise<
   return registeredStudentEnrollments;
 }
 
-async function loadAntagnaUnEnrollments(round: KoppsRound) {
+async function loadAntagnaUnEnrollments(
+  round: KoppsRound
+): Promise<Enrollment[]> {
   return (await getAntagna(round.ladokUid)).map((kthId) => ({
     section_id: round.ladokUid,
     user_id: kthId,
@@ -91,7 +92,10 @@ async function loadAntagnaUnEnrollments(round: KoppsRound) {
   }));
 }
 
-function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
+function purgeRegisteredFromAntagna(
+  registeredStudentIds: string[],
+  antagnaStudentIds: string[]
+): string[] {
   return antagnaStudentIds.filter(
     (antagen) => !registeredStudentIds.includes(antagen)
   );
@@ -99,8 +103,8 @@ function purgeRegisteredFromAntagna(registeredStudentIds, antagnaStudentIds) {
 
 async function loadAntagnaEnrollments(
   round: KoppsRound,
-  registeredStudentEnrollments: { user_id: string }[] // TODO: use shared type for enrollment
-) {
+  registeredStudentEnrollments: Enrollment[]
+): Promise<Enrollment[]> {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round);
   const ugNameLadokBase_old = getUgNameLadokBase_old(round.courseCode);
@@ -109,8 +113,12 @@ async function loadAntagnaEnrollments(
   );
 
   // Get the antagna students for this round
-  // TODO: Also load antagna from the old folders!
-  const antagnaStudentIds = await loadMembers(`${ugNameLadokBase}.antagen`);
+  const antagnaStudentIds = [
+    ...(await loadMembers(`${ugNameLadokBase}.antagen`)),
+    ...(await loadMembers(
+      `${ugNameLadokBase_old}.antagna_${round.startTerm}.${round.roundId}`
+    )),
+  ];
 
   return purgeRegisteredFromAntagna(
     registeredStudentIds,
@@ -123,7 +131,9 @@ async function loadAntagnaEnrollments(
   }));
 }
 
-async function loadTeacherEnrollments(round: KoppsRound) {
+async function loadTeacherEnrollments(
+  round: KoppsRound
+): Promise<Enrollment[]> {
   const teacherEnrollments = [];
   const roundId = round.roundId;
 
@@ -168,4 +178,5 @@ export {
   loadAntagnaUnEnrollments,
   loadTeacherEnrollments,
   loadRegisteredStudentEnrollments,
+  Enrollment,
 };
