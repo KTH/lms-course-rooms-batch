@@ -2,7 +2,7 @@ import { getAntagna, Roles } from "./canvas";
 import { KoppsRound } from "./kopps";
 import { loadMembers } from "./ug";
 
-type Enrollment = {
+type CanvasCsvEnrollment = {
   section_id: string;
   user_id: string;
   role_id: (typeof Roles)[keyof typeof Roles];
@@ -45,7 +45,7 @@ function getUgNameLadokBase(round: KoppsRound): string {
 // One object for adding registered, another obj for removing antagna
 async function loadRegisteredStudentEnrollments(
   round: KoppsRound
-): Promise<Enrollment[]> {
+): Promise<CanvasCsvEnrollment[]> {
   const ugNameLadokBase = getUgNameLadokBase(round);
 
   const registeredStudentIds = await loadMembers(
@@ -81,7 +81,7 @@ async function loadRegisteredStudentEnrollments(
 
 async function loadAntagnaUnEnrollments(
   round: KoppsRound
-): Promise<Enrollment[]> {
+): Promise<CanvasCsvEnrollment[]> {
   return (await getAntagna(round.ladokUid)).map((kthId) => ({
     section_id: round.ladokUid,
     user_id: kthId,
@@ -101,8 +101,8 @@ function purgeRegisteredFromAntagna(
 
 async function loadAntagnaEnrollments(
   round: KoppsRound,
-  registeredStudentEnrollments: Enrollment[]
-): Promise<Enrollment[]> {
+  registeredStudentEnrollments: CanvasCsvEnrollment[]
+): Promise<CanvasCsvEnrollment[]> {
   // Get the Registered students for this round
   const ugNameLadokBase = getUgNameLadokBase(round);
   const ugNameLadokBase_old = getUgNameLadokBase_old(round.courseCode);
@@ -131,7 +131,7 @@ async function loadAntagnaEnrollments(
 
 async function loadTeacherEnrollments(
   round: KoppsRound
-): Promise<Enrollment[]> {
+): Promise<CanvasCsvEnrollment[]> {
   const teacherEnrollments = [];
   const roundId = round.roundId;
 
@@ -176,5 +176,5 @@ export {
   loadAntagnaUnEnrollments,
   loadTeacherEnrollments,
   loadRegisteredStudentEnrollments,
-  Enrollment,
+  CanvasCsvEnrollment,
 };
