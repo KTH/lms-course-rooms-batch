@@ -6,7 +6,7 @@ type CanvasCsvEnrollment = {
   section_id: string;
   user_id: string;
   role_id: (typeof Roles)[keyof typeof Roles];
-  status: string;
+  status: "active" | "deleted";
 };
 
 /**
@@ -66,14 +66,14 @@ async function loadRegisteredStudentEnrollments(
       section_id: round.ladokUid,
       user_id: kthId,
       role_id: Roles.REGISTERED_STUDENT,
-      status: "active",
+      status: "active" as const,
     },
     // Remove antagna, since the user is registered he/she shouldn't also be antagen
     {
       section_id: round.ladokUid,
       user_id: kthId,
       role_id: Roles.ANTAGEN_STUDENT,
-      status: "deleted",
+      status: "deleted" as const,
     },
   ]);
   return registeredStudentEnrollments;
@@ -125,7 +125,7 @@ async function loadAntagnaEnrollments(
     section_id: round.ladokUid,
     user_id: kthId,
     role_id: Roles.ANTAGEN_STUDENT,
-    status: "active",
+    status: "active" as const,
   }));
 }
 
@@ -163,7 +163,7 @@ async function loadTeacherEnrollments(
         section_id: round.ladokUid,
         user_id: kthId,
         role_id: canvasRoleId,
-        status: "active",
+        status: "active" as const,
       }))
     );
   }
