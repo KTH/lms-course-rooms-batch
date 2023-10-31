@@ -1,23 +1,13 @@
-import { getAntagna } from "./canvas";
+import { getAntagna, Roles } from "./canvas";
 import { KoppsRound } from "./kopps";
 import { loadMembers } from "./ug";
 
 type Enrollment = {
   section_id: string;
   user_id: string;
-  role_id: Role;
+  role_id: (typeof Roles)[keyof typeof Roles];
   status: string;
 };
-
-// The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
-enum Role {
-  ANTAGEN_STUDENT = 25,
-  REGISTERED_STUDENT = 164,
-  TEACHER = 4,
-  COURSE_RESPONSIBLE = 9,
-  TEACHER_ASSISTANT = 5,
-  EXAMINER = 10,
-}
 
 /**
  * This function is used to support the old ug format, and is needed since UG don't update the old folders, but also doesn't populate the new folders with all data
@@ -75,14 +65,14 @@ async function loadRegisteredStudentEnrollments(
     {
       section_id: round.ladokUid,
       user_id: kthId,
-      role_id: Role.REGISTERED_STUDENT,
+      role_id: Roles.REGISTERED_STUDENT,
       status: "active",
     },
     // Remove antagna, since the user is registered he/she shouldn't also be antagen
     {
       section_id: round.ladokUid,
       user_id: kthId,
-      role_id: Role.ANTAGEN_STUDENT,
+      role_id: Roles.ANTAGEN_STUDENT,
       status: "deleted",
     },
   ]);
@@ -95,7 +85,7 @@ async function loadAntagnaUnEnrollments(
   return (await getAntagna(round.ladokUid)).map((kthId) => ({
     section_id: round.ladokUid,
     user_id: kthId,
-    role_id: Role.ANTAGEN_STUDENT,
+    role_id: Roles.ANTAGEN_STUDENT,
     status: "deleted",
   }));
 }
@@ -134,7 +124,7 @@ async function loadAntagnaEnrollments(
   ).map((kthId) => ({
     section_id: round.ladokUid,
     user_id: kthId,
-    role_id: Role.ANTAGEN_STUDENT,
+    role_id: Roles.ANTAGEN_STUDENT,
     status: "active",
   }));
 }
@@ -150,19 +140,19 @@ async function loadTeacherEnrollments(
   const ugNameEduBase = `edu.courses.${round.courseCode.substring(0, 2)}.${round.courseCode}`;
   const teacherRoles = [
     {
-      canvasRoleId: Role.TEACHER,
+      canvasRoleId: Roles.TEACHER,
       ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.teachers`,
     },
     {
-      canvasRoleId: Role.COURSE_RESPONSIBLE,
+      canvasRoleId: Roles.COURSE_RESPONSIBLE,
       ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.courseresponsible`,
     },
     {
-      canvasRoleId: Role.TEACHER_ASSISTANT,
+      canvasRoleId: Roles.TEACHER_ASSISTANT,
       ugGroupName: `${ugNameEduBase}.${round.startTerm}.${roundId}.assistants`,
     },
     {
-      canvasRoleId: Role.EXAMINER,
+      canvasRoleId: Roles.EXAMINER,
       ugGroupName: `${ugNameEduBase}.examiner`,
     },
   ];
