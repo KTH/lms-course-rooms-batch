@@ -37,7 +37,7 @@ export async function getAntagna(sectionSisId) {
   try {
     const enrollments = (await canvasApi
       .listItems(`sections/sis_section_id:${sectionSisId}/enrollments`, {
-        role_id: [25],
+        role_id: [Roles.ANTAGEN_STUDENT],
       })
       .toArray()) as any[];
 
