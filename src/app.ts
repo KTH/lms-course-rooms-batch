@@ -87,6 +87,7 @@ async function start() {
 
   for (const round of roundsExcludingAntagnaStudents) {
     [
+      ...(await loadAntagnaUnEnrollments(round)),
       ...(await loadTeacherEnrollments(round)),
       ...(await loadRegisteredStudentEnrollments(round)),
     ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
