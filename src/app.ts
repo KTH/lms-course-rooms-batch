@@ -114,7 +114,6 @@ async function start() {
   });
 
   log.info(`Uploading ${zipFileName} to canvas`);
-  log.info("TODO: send files to canvas!");
   const result = await canvas.uploadCsvZip(zipFileName);
 
   log.info(
