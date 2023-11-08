@@ -11,6 +11,7 @@ type CanvasCsvEnrollment = {
 
 /**
  * This function is used to support the old ug format, and is needed since UG don't update the old folders, but also doesn't populate the new folders with all data
+ * Once the old folders aren't needed anymore this code is probably redundant. But that is probably a few years in the future at least.
  *
  */
 function getUgNameLadokBase_old(courseCode): string {
