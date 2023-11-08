@@ -1,4 +1,3 @@
-/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 import { expect, test } from "@jest/globals";
 import { KoppsRound } from "./kopps";
 

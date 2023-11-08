@@ -17,6 +17,17 @@ if (process.env.NODE_ENV === "test") {
 interface SisImportBody {
   id: string;
 }
+
+// The following id:s are taken from the roles in Canvas, found here: https://canvas.kth.se/api/v1/accounts/1/roles?per_page=100
+export const Roles = {
+  ANTAGEN_STUDENT: 25,
+  REGISTERED_STUDENT: 164,
+  TEACHER: 4,
+  COURSE_RESPONSIBLE: 9,
+  TEACHER_ASSISTANT: 5,
+  EXAMINER: 10,
+} as const;
+
 export async function uploadCsvZip(fileName) {
   return canvasApi.sendSis<SisImportBody>("accounts/1/sis_imports", fileName);
 }
@@ -26,7 +37,7 @@ export async function getAntagna(sectionSisId) {
   try {
     const enrollments = (await canvasApi
       .listItems(`sections/sis_section_id:${sectionSisId}/enrollments`, {
-        role_id: [25],
+        role_id: [Roles.ANTAGEN_STUDENT],
       })
       .toArray()) as any[];
 

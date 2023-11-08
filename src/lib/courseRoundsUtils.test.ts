@@ -1,4 +1,3 @@
-/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 import { expect, describe, it } from "@jest/globals";
 
 import * as courseRoundsUtils from "./courseRoundsUtils";

@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import "./check";
 
 import log from "skog";
@@ -74,31 +73,24 @@ async function start() {
     (round) => !shouldHaveAntagna(round)
   );
 
-  for (const round of roundsExcludingAntagnaStudents) {
-    // eslint-disable-next-line no-await-in-loop
-    (await loadAntagnaUnEnrollments(round)).forEach((enrollment) =>
-      enrollmentsCsv.write(enrollment)
-    );
-  }
-
   await ldapBind();
   for (const round of roundsIncludingAntagnaStudents) {
-    // eslint-disable-next-line no-await-in-loop
-    (await loadAntagnaEnrollments(round)).forEach((enrollment) =>
-      enrollmentsCsv.write(enrollment)
+    const registeredStudentEnrollments = await loadRegisteredStudentEnrollments(
+      round
     );
+    [
+      ...registeredStudentEnrollments,
+      ...(await loadAntagnaEnrollments(round, registeredStudentEnrollments)),
+      ...(await loadTeacherEnrollments(round)),
+    ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
   }
 
-  for (const round of [
-    ...roundsExcludingAntagnaStudents,
-    ...roundsIncludingAntagnaStudents,
-  ]) {
-    /* eslint-disable */
+  for (const round of roundsExcludingAntagnaStudents) {
     [
+      ...(await loadAntagnaUnEnrollments(round)),
       ...(await loadTeacherEnrollments(round)),
       ...(await loadRegisteredStudentEnrollments(round)),
     ].forEach((enrollment) => enrollmentsCsv.write(enrollment));
-    /* eslint-enable */
   }
 
   await ldapUnbind();

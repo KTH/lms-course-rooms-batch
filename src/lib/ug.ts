@@ -18,6 +18,7 @@ async function ldapUnbind() {
 }
 
 async function ldapSearch({
+  // base = "OU=UG,DC=ref,DC=ug,DC=kth,DC=se",
   base = "OU=UG,DC=ug,DC=kth,DC=se",
   // We are typing the input search options by picking from the SearchOptions interface
   filter = "" as SearchOptions["filter"],
@@ -70,7 +71,6 @@ async function getUsersForMembers(members) {
       attribute: "distinguishedName",
       value: member,
     });
-    // eslint-disable-next-line no-await-in-loop
     const searchEntries = await ldapSearch({
       filter,
       attributes: ["ugKthid"],
