@@ -115,12 +115,12 @@ async function start() {
 
   log.info(`Uploading ${zipFileName} to canvas`);
   log.info("TODO: send files to canvas!");
-  // const result = await canvas.uploadCsvZip(zipFileName);
+  const result = await canvas.uploadCsvZip(zipFileName);
 
-  // log.info(
-  //   `Finished batch successfully. Sis id ${result.body.id} sent to Canvas`
-  // );
-  // sendBatchOK();
+  log.info(
+    `Finished batch successfully. Sis id ${result.body.id} sent to Canvas`
+  );
+  sendBatchOK();
 }
 
 start();
