@@ -122,4 +122,11 @@ async function start() {
   sendBatchOK();
 }
 
-start();
+// Wrap in top level catch, to make sure that any errors are logged properly
+try {
+  start().catch((e) => {
+    log.error(e);
+  });
+} catch (e) {
+  log.error(e);
+}
