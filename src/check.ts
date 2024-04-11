@@ -26,3 +26,6 @@ if (process.env.NRDP_TOKEN && process.env.NRDP_URL && process.env.NRDP_HOST) {
 }
 
 log.info("Environment check successful");
+log.info(`Canvas API URL: ${process.env.CANVAS_API_URL},
+          UG URL: ${process.env.UG_URL}, 
+          Kopps API URL: ${process.env.KOPPS_API_URL}`);
