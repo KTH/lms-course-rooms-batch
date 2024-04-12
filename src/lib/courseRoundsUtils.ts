@@ -24,6 +24,7 @@ function createRoom(round: KoppsRound) {
     start_date: createStartDate(round),
     end_date: createEndDate(round),
     account_id: createAccountId(round),
+    term_id: round.firstYearsemester,
     integration_id: undefined,
     status: "active",
   };
