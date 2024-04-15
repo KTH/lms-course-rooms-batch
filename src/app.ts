@@ -18,6 +18,7 @@ import {
   isFarFuture,
   createRoom,
   createSection,
+  createTerms,
   shouldHaveAntagna,
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
@@ -51,18 +52,24 @@ async function start() {
   const sectionsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-sections.csv`
   );
+  const termsCsv = createCsvSerializer(
+    `${dir}/lms-course-rooms-batch-terms.csv`
+  );
   allRounds
     .map((round) => ({
       courseRoom: createRoom(round),
       section: createSection(round),
+      terms: createTerms(round),
     }))
-    .forEach(({ courseRoom, section }) => {
+    .forEach(({ courseRoom, section, terms }) => {
       coursesCsv.write(courseRoom);
       sectionsCsv.write(section);
+      termsCsv.write(terms)
     });
 
   coursesCsv.end();
   sectionsCsv.end();
+  termsCsv.end();
 
   const enrollmentsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-enrollments.csv`
