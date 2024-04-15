@@ -16,7 +16,7 @@ import {
  *
  * @link https://canvas.instructure.com/doc/api/file.sis_csv.html
  */
-function createRoom(round: KoppsRound) {  
+function createRoom(round: KoppsRound) {
   return {
     course_id: round.ladokUid,
     short_name: createCanvasShortName(round),
@@ -54,19 +54,19 @@ function today(): Date {
   return date;
 }
 
-function createTerms(round:KoppsRound){
-  return{
+function createTerms(round: KoppsRound) {
+  return {
     term_id: round.firstYearsemester,
     name: _createTermName(round.firstYearsemester),
     status: "active",
-  }
-} 
+  };
+}
 
-function _createTermName(term_id:string){
-  if(term_id.endsWith('1')){
-    return `VT ${term_id.slice(0,4)}`
+function _createTermName(term_id: string) {
+  if (term_id.endsWith("1")) {
+    return `VT ${term_id.slice(0, 4)}`;
   }
-  return `HT ${term_id.slice(0,4)}`
+  return `HT ${term_id.slice(0, 4)}`;
 }
 
 /**

@@ -64,7 +64,7 @@ async function start() {
     .forEach(({ courseRoom, section, terms }) => {
       coursesCsv.write(courseRoom);
       sectionsCsv.write(section);
-      termsCsv.write(terms)
+      termsCsv.write(terms);
     });
 
   coursesCsv.end();
