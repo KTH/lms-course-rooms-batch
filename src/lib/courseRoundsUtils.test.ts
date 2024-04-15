@@ -107,3 +107,13 @@ describe("isFarFuture", () => {
     expect(result).toEqual(false);
   });
 });
+
+describe("createTerms", () => {
+  it("Should create a term object", () => {
+    const fakeRound = {
+      firstYearsemester: "20231",
+    };
+    const result = courseRoundsUtils.createTerms(fakeRound as KoppsRound);
+    expect(result.name).toEqual("VT 2023");
+  });
+});
