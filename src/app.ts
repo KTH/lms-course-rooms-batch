@@ -19,8 +19,8 @@ import {
   createRoom,
   createSection,
   createTerm,
-  checkTerm,
   shouldHaveAntagna,
+  getTerms,
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
 import sendBatchOK from "./sendNrdp";
@@ -41,7 +41,7 @@ async function start() {
     (round) => !isFarFuture(round)
   );
 
-  // Create course rooms and sections
+  // Create course rooms and sections and terms
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);
@@ -56,22 +56,21 @@ async function start() {
   const termsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-terms.csv`
   );
-  let terms = [];
 
   allRounds
     .map((round) => ({
       courseRoom: createRoom(round),
       section: createSection(round),
-      term: createTerm(round),
     }))
-    .forEach(({ courseRoom, section, term }) => {
+    .forEach(({ courseRoom, section }) => {
       coursesCsv.write(courseRoom);
       sectionsCsv.write(section);
-      if (checkTerm(terms, term)) {
-        termsCsv.write(term);
-        terms.push(term);
-      }
     });
+
+  const terms = getTerms();
+  for (const idx in terms) {
+    termsCsv.write(createTerm(terms[idx]));
+  }
 
   coursesCsv.end();
   sectionsCsv.end();

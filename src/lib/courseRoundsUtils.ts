@@ -54,10 +54,10 @@ function today(): Date {
   return date;
 }
 
-function createTerm(round: KoppsRound) {
+function createTerm(term: string) {
   return {
-    term_id: round.firstYearsemester,
-    name: _createTermName(round.firstYearsemester),
+    term_id: term,
+    name: _createTermName(term),
     status: "active",
   };
 }
@@ -69,25 +69,23 @@ function _createTermName(term_id: string) {
   return `HT ${term_id.slice(0, 4)}`;
 }
 
-function checkTerm(terms, term) {
-  if (terms.some((t) => t.term_id === term.term_id)) return false;
-  return true;
+function getTerms(): Array<string> {
+  const _today = today();
+  const lastYear = _today.getFullYear() - 1;
+  const nextYear = _today.getFullYear() + 1;
+  return [
+    `${lastYear}2`,
+    `${_today.getFullYear()}1`,
+    `${_today.getFullYear()}2`,
+    `${nextYear}1`,
+  ];
 }
 
 /**
  * Returns a list of Kopps rounds that can be handled at this moment
  */
 async function getAllCourseRounds() {
-  const _today = today();
-  const lastYear = _today.getFullYear() - 1;
-  const nextYear = _today.getFullYear() + 1;
-
-  const terms = [
-    `${lastYear}2`,
-    `${_today.getFullYear()}1`,
-    `${_today.getFullYear()}2`,
-    `${nextYear}1`,
-  ];
+  const terms = getTerms();
 
   const result = [];
 
@@ -125,8 +123,8 @@ function shouldHaveAntagna(round: KoppsRound) {
 export {
   createRoom,
   createSection,
+  getTerms,
   createTerm,
-  checkTerm,
   getAllCourseRounds,
   isFarFuture,
   shouldHaveAntagna,
