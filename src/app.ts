@@ -18,11 +18,13 @@ import {
   isFarFuture,
   createRoom,
   createSection,
-  createTerms,
+  createTerm,
+  checkTerm,
   shouldHaveAntagna,
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
 import sendBatchOK from "./sendNrdp";
+import { KoppsRound } from "./lib/kopps";
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
@@ -55,16 +57,22 @@ async function start() {
   const termsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-terms.csv`
   );
+  let terms = []
+
   allRounds
     .map((round) => ({
       courseRoom: createRoom(round),
       section: createSection(round),
-      terms: createTerms(round),
+      term: createTerm(round),
+
     }))
-    .forEach(({ courseRoom, section, terms }) => {
+    .forEach(({ courseRoom, section, term}) => {
       coursesCsv.write(courseRoom);
       sectionsCsv.write(section);
-      termsCsv.write(terms);
+      if (checkTerm(terms, term)){
+        termsCsv.write(term)
+        terms.push(term)
+      }
     });
 
   coursesCsv.end();
