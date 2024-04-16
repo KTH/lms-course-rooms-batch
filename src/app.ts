@@ -57,21 +57,20 @@ async function start() {
   const termsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-terms.csv`
   );
-  let terms = []
+  let terms = [];
 
   allRounds
     .map((round) => ({
       courseRoom: createRoom(round),
       section: createSection(round),
       term: createTerm(round),
-
     }))
-    .forEach(({ courseRoom, section, term}) => {
+    .forEach(({ courseRoom, section, term }) => {
       coursesCsv.write(courseRoom);
       sectionsCsv.write(section);
-      if (checkTerm(terms, term)){
-        termsCsv.write(term)
-        terms.push(term)
+      if (checkTerm(terms, term)) {
+        termsCsv.write(term);
+        terms.push(term);
       }
     });
 

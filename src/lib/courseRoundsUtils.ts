@@ -69,10 +69,8 @@ function _createTermName(term_id: string) {
   return `HT ${term_id.slice(0, 4)}`;
 }
 
-
-function checkTerm(terms, term){
-  if (terms.some(t => t.term_id === term.term_id))
-    return false;
+function checkTerm(terms, term) {
+  if (terms.some((t) => t.term_id === term.term_id)) return false;
   return true;
 }
 
