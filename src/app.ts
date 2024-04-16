@@ -25,7 +25,6 @@ import {
 import * as canvas from "./lib/canvas";
 import sendBatchOK from "./sendNrdp";
 
-
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
   const serializer = csv.format({ headers: true });
