@@ -24,7 +24,7 @@ import {
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
 import sendBatchOK from "./sendNrdp";
-import { KoppsRound } from "./lib/kopps";
+
 
 function createCsvSerializer(name) {
   const writer = fs.createWriteStream(name);
