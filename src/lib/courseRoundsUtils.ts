@@ -24,6 +24,7 @@ function createRoom(round: KoppsRound) {
     start_date: createStartDate(round),
     end_date: createEndDate(round),
     account_id: createAccountId(round),
+    term_id: round.firstYearsemester,
     integration_id: undefined,
     status: "active",
   };
@@ -53,20 +54,38 @@ function today(): Date {
   return date;
 }
 
-/**
- * Returns a list of Kopps rounds that can be handled at this moment
- */
-async function getAllCourseRounds() {
+function createTerm(term: string) {
+  return {
+    term_id: term,
+    name: _createTermName(term),
+    status: "active",
+  };
+}
+
+function _createTermName(term_id: string) {
+  if (term_id.endsWith("1")) {
+    return `VT ${term_id.slice(0, 4)}`;
+  }
+  return `HT ${term_id.slice(0, 4)}`;
+}
+
+function getTerms(): Array<string> {
   const _today = today();
   const lastYear = _today.getFullYear() - 1;
   const nextYear = _today.getFullYear() + 1;
-
-  const terms = [
+  return [
     `${lastYear}2`,
     `${_today.getFullYear()}1`,
     `${_today.getFullYear()}2`,
     `${nextYear}1`,
   ];
+}
+
+/**
+ * Returns a list of Kopps rounds that can be handled at this moment
+ */
+async function getAllCourseRounds() {
+  const terms = getTerms();
 
   const result = [];
 
@@ -104,6 +123,8 @@ function shouldHaveAntagna(round: KoppsRound) {
 export {
   createRoom,
   createSection,
+  getTerms,
+  createTerm,
   getAllCourseRounds,
   isFarFuture,
   shouldHaveAntagna,

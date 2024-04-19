@@ -18,7 +18,9 @@ import {
   isFarFuture,
   createRoom,
   createSection,
+  createTerm,
   shouldHaveAntagna,
+  getTerms,
 } from "./lib/courseRoundsUtils";
 import * as canvas from "./lib/canvas";
 import sendBatchOK from "./sendNrdp";
@@ -39,7 +41,7 @@ async function start() {
     (round) => !isFarFuture(round)
   );
 
-  // Create course rooms and sections
+  // Create course rooms and sections and terms
   const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
   const dir = path.join(baseDir, "csv");
   fs.mkdirSync(dir);
@@ -51,6 +53,10 @@ async function start() {
   const sectionsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-sections.csv`
   );
+  const termsCsv = createCsvSerializer(
+    `${dir}/lms-course-rooms-batch-terms.csv`
+  );
+
   allRounds
     .map((round) => ({
       courseRoom: createRoom(round),
@@ -61,8 +67,14 @@ async function start() {
       sectionsCsv.write(section);
     });
 
+  const terms = getTerms();
+  for (const idx in terms) {
+    termsCsv.write(createTerm(terms[idx]));
+  }
+
   coursesCsv.end();
   sectionsCsv.end();
+  termsCsv.end();
 
   const enrollmentsCsv = createCsvSerializer(
     `${dir}/lms-course-rooms-batch-enrollments.csv`
