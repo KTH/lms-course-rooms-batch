@@ -64,9 +64,9 @@ function createTerm(term: string) {
 
 function _createTermName(term_id: string) {
   if (term_id.endsWith("1")) {
-    return `VT ${term_id.slice(0, 4)}`;
+    return `${term_id.slice(0, 4)} VT`;
   }
-  return `HT ${term_id.slice(0, 4)}`;
+  return `${term_id.slice(0, 4)} HT`;
 }
 
 function getTerms(): Array<string> {
